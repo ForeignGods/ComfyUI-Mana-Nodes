@@ -23,23 +23,23 @@ pip install -r requirements.txt
 Configure the font2img node by setting the following parameters in ComfyUI:
 
 ### Required Inputs
-<b>font_file:</b> fonts located in the <b>custom_nodes\ComfyUI-Mana-Nodes\font\example_font.ttf</b> directory (supports .ttf, .otf, .woff, .woff2).
-<b>font_size:</b> Size of the font.
-<b>font_color:</b> Color of the text. (https://www.w3.org/wiki/CSS3/Color/Extended_color_keywords)
-<b>background_color:</b> Background color of the image.
-<b>text_alignment:</b> Alignment of the text in the image.
-<b>line_spacing:</b> Spacing between lines of text.
-<b>frame_count:</b> Number of frames (images) to generate.
-<b>image_width:</b> Width of the generated images.
-<b>image_height:</b> Height of the generated images.
-<b>text:</b> The text to render in the images.
-<b>text_interpolation_options:</b> Mode of text interpolation ('strict', 'interpolation', 'cumulative').
-<b>start_x_offset, end_x_offset, start_y_offset, end_y_offset:</b> Offsets for text positioning.
-<b>start_rotation, end_rotation:</b> Rotation angles for the text.
+- <b>font_file:</b> fonts located in the <b>custom_nodes\ComfyUI-Mana-Nodes\font\example_font.ttf</b> directory (supports .ttf, .otf, .woff, .woff2).
+- <b>font_size:</b> Size of the font.
+- <b>font_color:</b> Color of the text. (https://www.w3.org/wiki/CSS3/Color/Extended_color_keywords)
+- <b>background_color:</b> Background color of the image.
+- <b>text_alignment:</b> Alignment of the text in the image.
+- <b>line_spacing:</b> Spacing between lines of text.
+- <b>frame_count:</b> Number of frames (images) to generate.
+- <b>image_width:</b> Width of the generated images.
+- <b>image_height:</b> Height of the generated images.
+- <b>text:</b> The text to render in the images.
+- <b>text_interpolation_options:</b> Mode of text interpolation ('strict', 'interpolation', 'cumulative').
+- <b>start_x_offset, end_x_offset, start_y_offset, end_y_offset:</b> Offsets for text positioning.
+- <b>start_rotation, end_rotation:</b> Rotation angles for the text.
 
 ### Optional Inputs
 
-<b>images:</b> Text will be overlayed on input_images instead of background_color.
+- <b>images:</b> Text will be overlayed on input_images instead of background_color.
 
 ### Parameters Explanation
 
@@ -55,9 +55,9 @@ Configure the font2img node by setting the following parameters in ComfyUI:
 
 #### `text_interpolation_options`
 - Defines the mode of text interpolation between frames.
-  - `"strict"`: Text is only inserted at specified frames.
-  - `"interpolation"`: Gradually interpolates text characters between frames.
-  - `"cumulative"`: Text set for a frame persists until updated in a subsequent frame.
+  - `strict`: Text is only inserted at specified frames.
+  - `interpolation`: Gradually interpolates text characters between frames.
+  - `cumulative`: Text set for a frame persists until updated in a subsequent frame.
 
 
 #### `start_x_offset`, `end_x_offset`, `start_y_offset`, `end_y_offset`
