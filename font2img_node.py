@@ -48,12 +48,12 @@ class font2img:
                 "end_rotation": ("INT", {"default": 0, "min": -360, "max": 360, "step": 1})        
             },
             "optional": {
-                "input_image": ("IMAGE", {"default": None, "display": "image_upload"})
+                "input_images": ("IMAGE", {"default": None, "display": "image_upload"})
             }
         }
 
     RETURN_TYPES = ("IMAGE",)
-    RETURN_NAMES = ("image",)
+    RETURN_NAMES = ("images",)
 
     FUNCTION = "run"
 
