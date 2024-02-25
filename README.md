@@ -68,5 +68,12 @@ Configure the font2img node by setting the following parameters in ComfyUI:
 - Defines the starting and ending rotation angles for the text, enabling it to rotate between these angles.
 - Input as integers in degrees. Example: `start_rotation = 0`, `end_rotation = 180` rotates the text from 0 to 180 degrees across frames.
 
+### Font Licences
+- <b>Personal Use:</b> The included fonts are for personal, non-commercial use. Please refrain from using these fonts in any commercial project without obtaining the appropriate licenses.
+
+- <b>License Compliance:</b> Each font may come with its own license agreement. It is the responsibility of the user to review and comply with these agreements. Some fonts may require a license for commercial use, modification, or distribution.
+- <b>Checking Licenses:</b> For any font you wish to use beyond personal projects, especially for commercial purposes, please check the font's license. This often involves visiting the creator’s or distributor's website to obtain the correct licensing information.
+- <b>Removing Fonts:</b> If any font creator or copyright holder wishes their font to be removed from this repository, please contact us, and we will promptly comply with your request.
+
 ## Contributing
 Your contributions to improve Mana Nodes are welcome! If you have suggestions or enhancements, feel free to fork this repository, apply your changes, and create a pull request. For significant modifications or feature requests, please open an issue first to discuss what you'd like to change.
