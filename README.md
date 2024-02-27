@@ -24,7 +24,8 @@ Configure the font2img node by setting the following parameters in ComfyUI:
 
 ### Required Inputs
 - <b>font_file:</b> fonts located in the <b>custom_nodes\ComfyUI-Mana-Nodes\font\example_font.ttf</b> directory (supports .ttf, .otf, .woff, .woff2).
-- <b>font_size:</b> Size of the font.
+- <b>start_font_size:</b> Starting size of the font.
+- <b>end_font_size:</b> Ending size of the font. The font size will transition from start_font_size to end_font_size across the frames.
 - <b>font_color:</b> Color of the text. (https://www.w3.org/wiki/CSS3/Color/Extended_color_keywords)
 - <b>background_color:</b> Background color of the image.
 - <b>text_alignment:</b> Alignment of the text in the image.
@@ -32,6 +33,7 @@ Configure the font2img node by setting the following parameters in ComfyUI:
 - <b>frame_count:</b> Number of frames (images) to generate.
 - <b>image_width:</b> Width of the generated images.
 - <b>image_height:</b> Height of the generated images.
+- <b>invert_mask:</b> Inverts the generated mask if set to True.
 - <b>text:</b> The text to render in the images.
 - <b>text_interpolation_options:</b> Mode of text interpolation ('strict', 'interpolation', 'cumulative').
 - <b>start_x_offset, end_x_offset, start_y_offset, end_y_offset:</b> Offsets for text positioning.
@@ -40,6 +42,11 @@ Configure the font2img node by setting the following parameters in ComfyUI:
 ### Optional Inputs
 
 - <b>images:</b> Text will be overlayed on input_images instead of background_color.
+
+### Outputs
+
+    images: The generated images with the specified text and configurations.
+    masks: Corresponding masks for the generated images. Masks represent the area occupied by the text in each image.
 
 ### Parameters Explanation
 
@@ -67,6 +74,11 @@ Configure the font2img node by setting the following parameters in ComfyUI:
 #### `start_rotation`, `end_rotation`
 - Defines the starting and ending rotation angles for the text, enabling it to rotate between these angles.
 - Input as integers in degrees. Example: `start_rotation = 0`, `end_rotation = 180` rotates the text from 0 to 180 degrees across frames.
+
+#### `start_font_size`, `end_font_size`
+
+- Sets the starting and ending font sizes for the text, allowing the text size to dynamically change across frames.
+- Input as integers representing the font size in points. Example: `start_font_size = 12`, `end_font_size = 24` will gradually increase the text size from 12 to 24 points across the frames.
 
 ### Font Licences
 - <b>Personal Use:</b> The included fonts are for personal, non-commercial use. Please refrain from using these fonts in any commercial project without obtaining the appropriate licenses.
