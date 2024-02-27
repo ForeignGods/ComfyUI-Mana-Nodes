@@ -24,8 +24,6 @@ Configure the font2img node by setting the following parameters in ComfyUI:
 
 ### Required Inputs
 - <b>font_file:</b> fonts located in the <b>custom_nodes\ComfyUI-Mana-Nodes\font\example_font.ttf</b> directory (supports .ttf, .otf, .woff, .woff2).
-- <b>start_font_size:</b> Starting size of the font.
-- <b>end_font_size:</b> Ending size of the font. The font size will transition from start_font_size to end_font_size across the frames.
 - <b>font_color:</b> Color of the text. (https://www.w3.org/wiki/CSS3/Color/Extended_color_keywords)
 - <b>background_color:</b> Background color of the image.
 - <b>text_alignment:</b> Alignment of the text in the image.
@@ -36,6 +34,7 @@ Configure the font2img node by setting the following parameters in ComfyUI:
 - <b>invert_mask:</b> Inverts the generated mask if set to True.
 - <b>text:</b> The text to render in the images.
 - <b>text_interpolation_options:</b> Mode of text interpolation ('strict', 'interpolation', 'cumulative').
+- <b>start_font_size, end_font_size:</b> Starting and ending size of the font. 
 - <b>start_x_offset, end_x_offset, start_y_offset, end_y_offset:</b> Offsets for text positioning.
 - <b>start_rotation, end_rotation:</b> Rotation angles for the text.
 
@@ -45,8 +44,8 @@ Configure the font2img node by setting the following parameters in ComfyUI:
 
 ### Outputs
 
-    images: The generated images with the specified text and configurations.
-    masks: Corresponding masks for the generated images. Masks represent the area occupied by the text in each image.
+- images: The generated images with the specified text and configurations.
+- masks: Corresponding masks for the generated images. Masks represent the area occupied by the text in each image.
 
 ### Parameters Explanation
 
