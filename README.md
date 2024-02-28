@@ -30,15 +30,10 @@ pip install -r requirements.txt
 
 ### Demo
 
-<div>
-  
-<img src="https://github.com/ForeignGods/ComfyUI-Mana-Nodes/assets/78089013/5a35d2d6-ae15-4ee1-ba81-582975633a93" width="256" height="384" alt="gif_00008-ezgif com-optimize">
-<img src="https://github.com/ForeignGods/ComfyUI-Mana-Nodes/assets/78089013/ca8a5636-7d82-4f72-82a7-f21dacfb4d01" width="256" height="384" alt="gif_00008-ezgif com-optimize">
-<img src="https://github.com/ForeignGods/ComfyUI-Mana-Nodes/assets/78089013/82e418bb-07d3-47a0-b329-d312c376dab3" width="256" height="384" alt="gif_00008-ezgif com-optimize">
-<img src="https://github.com/ForeignGods/ComfyUI-Mana-Nodes/assets/78089013/5fb74f2b-5b79-4b85-a0b6-e91aba9cab2" width="256" height="384" alt="gif_00008-ezgif com-optimize">
-<img src="https://github.com/ForeignGods/ComfyUI-Mana-Nodes/assets/78089013/b45ae2c0-60f7-4a32-87af-80b7a26783ab" width="256" height="384" alt="gif_00008-ezgif com-optimize">
-
-</div>
+<img src="https://github.com/ForeignGods/ComfyUI-Mana-Nodes/assets/78089013/5a35d2d6-ae15-4ee1-ba81-582975633a93" width="212" height="320" alt="gif_00008-ezgif com-optimize">
+<img src="https://github.com/ForeignGods/ComfyUI-Mana-Nodes/assets/78089013/ca8a5636-7d82-4f72-82a7-f21dacfb4d01" width="212" height="320" alt="gif_00008-ezgif com-optimize">
+<img src="https://github.com/ForeignGods/ComfyUI-Mana-Nodes/assets/78089013/82e418bb-07d3-47a0-b329-d312c376dab3" width="212" height="320" alt="gif_00008-ezgif com-optimize">
+<img src="https://github.com/ForeignGods/ComfyUI-Mana-Nodes/assets/78089013/b45ae2c0-60f7-4a32-87af-80b7a26783ab" width="212" height="320" alt="gif_00008-ezgif com-optimize">
 
 ### Required Inputs
 
@@ -105,6 +100,12 @@ Configure the font2img node by setting the following parameters in ComfyUI:
 - <b>License Compliance:</b> Each font may come with its own license agreement. It is the responsibility of the user to review and comply with these agreements. Some fonts may require a license for commercial use, modification, or distribution.
 - <b>Checking Licenses:</b> For any font you wish to use beyond personal projects, especially for commercial purposes, please check the font's license. This often involves visiting the creator’s or distributor's website to obtain the correct licensing information.
 - <b>Removing Fonts:</b> If any font creator or copyright holder wishes their font to be removed from this repository, please contact us, and we will promptly comply with your request.
+
+### Example Workflow
+
+The JSON of the example below is available in this repo: example_workflow.json
+
+![workflow](https://github.com/ForeignGods/ComfyUI-Mana-Nodes/assets/78089013/38d91b00-01b5-4ab2-b874-5bf4753cbea3)
 
 ## Contributing
 Your contributions to improve Mana Nodes are welcome! If you have suggestions or enhancements, feel free to fork this repository, apply your changes, and create a pull request. For significant modifications or feature requests, please open an issue first to discuss what you'd like to change.
