@@ -49,7 +49,6 @@ class font2img:
                 "anchor_x": ("INT", {"default": 0, "step": 1}),
                 "anchor_y": ("INT", {"default": 0, "step": 1}),
                 "start_rotation": ("INT", {"default": 0, "min": -360, "max": 360, "step": 1}),
-                "start_rotation": ("INT", {"default": 0, "min": -360, "max": 360, "step": 1}),
                 "end_rotation": ("INT", {"default": 0, "min": -360, "max": 360, "step": 1})        
             },
             "optional": {
