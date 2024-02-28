@@ -1,6 +1,13 @@
 # ComfyUI-Mana-Nodes
 Collection of custom nodes for ComfyUI.
 
+- [Installation](#installation)
+- [Demo](#demo)
+- [Nodes](#nodes)
+  - [font2img Node](#font2img-node)
+- [Font Licences](#font-licences)
+- [Contributing](#contributing)
+  
 ## Installation
 Simply clone the repo into the `custom_nodes` directory with this command:
 
@@ -17,6 +24,12 @@ If you are using a venv, make sure you have it activated before installation and
 ```
 pip install -r requirements.txt
 ```
+## Demo
+
+<img src="https://github.com/ForeignGods/ComfyUI-Mana-Nodes/assets/78089013/5a35d2d6-ae15-4ee1-ba81-582975633a93" width="256" height="384" alt="gif_00008-ezgif com-optimize">
+<img src="https://github.com/ForeignGods/ComfyUI-Mana-Nodes/assets/78089013/ca8a5636-7d82-4f72-82a7-f21dacfb4d01" width="256" height="384" alt="gif_00008-ezgif com-optimize">
+
+## Nodes
 
 ## font2img Node
 
