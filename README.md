@@ -30,10 +30,10 @@ pip install -r requirements.txt
 
 ### Demo
 
-<img src="https://github.com/ForeignGods/ComfyUI-Mana-Nodes/assets/78089013/5a35d2d6-ae15-4ee1-ba81-582975633a93" width="212" height="320" alt="gif_00008-ezgif com-optimize">
-<img src="https://github.com/ForeignGods/ComfyUI-Mana-Nodes/assets/78089013/ca8a5636-7d82-4f72-82a7-f21dacfb4d01" width="212" height="320" alt="gif_00008-ezgif com-optimize">
-<img src="https://github.com/ForeignGods/ComfyUI-Mana-Nodes/assets/78089013/82e418bb-07d3-47a0-b329-d312c376dab3" width="212" height="320" alt="gif_00008-ezgif com-optimize">
-<img src="https://github.com/ForeignGods/ComfyUI-Mana-Nodes/assets/78089013/b45ae2c0-60f7-4a32-87af-80b7a26783ab" width="212" height="320" alt="gif_00008-ezgif com-optimize">
+<img src="https://github.com/ForeignGods/ComfyUI-Mana-Nodes/assets/78089013/5a35d2d6-ae15-4ee1-ba81-582975633a93" width="205" height="310" alt="gif_00008-ezgif com-optimize">
+<img src="https://github.com/ForeignGods/ComfyUI-Mana-Nodes/assets/78089013/ca8a5636-7d82-4f72-82a7-f21dacfb4d01" width="205" height="310" alt="gif_00008-ezgif com-optimize">
+<img src="https://github.com/ForeignGods/ComfyUI-Mana-Nodes/assets/78089013/82e418bb-07d3-47a0-b329-d312c376dab3" width="205" height="310" alt="gif_00008-ezgif com-optimize">
+<img src="https://github.com/ForeignGods/ComfyUI-Mana-Nodes/assets/78089013/b45ae2c0-60f7-4a32-87af-80b7a26783ab" width="205" height="310" alt="gif_00008-ezgif com-optimize">
 
 ### Required Inputs
 
