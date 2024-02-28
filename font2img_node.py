@@ -1,5 +1,5 @@
 import os
-from PIL import Image, ImageDraw, ImageFont, ImageOps
+from PIL import Image, ImageDraw, ImageFont, ImageOps, ImageColor, ImageChops
 import numpy as np
 import torch
 from torchvision import transforms
@@ -37,31 +37,34 @@ class font2img:
                 "frame_count": ("INT", {"default": 1, "min": 1, "max": 1000, "step": 1}),
                 "image_width": ("INT", {"default": 100, "step": 1, "display": "number"}),
                 "image_height": ("INT", {"default": 100, "step": 1, "display": "number"}),
-                "invert_mask": ("BOOLEAN", {"default": False}),
                 "text": ("STRING", {"multiline": True, "placeholder": "Text"}),
                 "text_interpolation_options": (text_interpolation_options, {"default": "strict", "display": "dropdown"}),
-                "start_font_size": ("INT", {"default": 20, "min": 1, "max": 300, "step": 1, "display": "number"}),
-                "end_font_size": ("INT", {"default": 20, "min": 1, "max": 300, "step": 1, "display": "number"}),
+                "start_font_size": ("INT", {"default": 20, "min": 1, "step": 1, "display": "number"}),
+                "end_font_size": ("INT", {"default": 20, "min": 1, "step": 1, "display": "number"}),
                 "start_x_offset": ("INT", {"default": 0, "step": 1, "display": "number"}),
                 "end_x_offset": ("INT", {"default": 0, "step": 1, "display": "number"}),
                 "start_y_offset": ("INT", {"default": 0, "step": 1, "display": "number"}),
                 "end_y_offset": ("INT", {"default": 0, "step": 1, "display": "number"}),
+                "rotate_around_center": ("BOOLEAN", {"default": True}),
+                "anchor_x": ("INT", {"default": 0, "step": 1}),
+                "anchor_y": ("INT", {"default": 0, "step": 1}),
+                "start_rotation": ("INT", {"default": 0, "min": -360, "max": 360, "step": 1}),
                 "start_rotation": ("INT", {"default": 0, "min": -360, "max": 360, "step": 1}),
                 "end_rotation": ("INT", {"default": 0, "min": -360, "max": 360, "step": 1})        
             },
             "optional": {
-                "input_images": ("IMAGE", {"default": None, "display": "image_upload"})
+                "input_images": ("IMAGE", {"default": None, "display": "input_images"})
             }
         }
 
-    RETURN_TYPES = ("IMAGE", "MASK")
-    RETURN_NAMES = ("images","masks")
+    RETURN_TYPES = ("IMAGE", )
+    RETURN_NAMES = ("images",)
 
     FUNCTION = "run"
 
     CATEGORY = "font2img"
 
-    def run(self, invert_mask, end_font_size, start_font_size, text_interpolation_options, line_spacing, start_x_offset, end_x_offset, start_y_offset, end_y_offset, start_rotation, end_rotation, font_file, frame_count, text, font_color, background_color, image_width, image_height, text_alignment, **kwargs):
+    def run(self, end_font_size, start_font_size, text_interpolation_options, line_spacing, start_x_offset, end_x_offset, start_y_offset, end_y_offset, start_rotation, end_rotation, font_file, frame_count, text, font_color, background_color, image_width, image_height, text_alignment, anchor_x, anchor_y, rotate_around_center, **kwargs):
         frame_text_dict, is_structured_input = self.parse_text_input(text, frame_count)
         frame_text_dict = self.process_text_mode(frame_text_dict, text_interpolation_options, is_structured_input, frame_count)
 
@@ -70,51 +73,41 @@ class font2img:
         y_offset_increment = (end_y_offset - start_y_offset) / max(frame_count - 1, 1)
         font_size_increment = (end_font_size - start_font_size) / max(frame_count - 1, 1)
 
-        input_images = kwargs.get('input_image', [None] * frame_count)
-
-        images, masks = self.generate_images(start_font_size, font_size_increment, frame_text_dict, rotation_increment, x_offset_increment, y_offset_increment, font_file, font_color, background_color, image_width, image_height, text_alignment, line_spacing, frame_count, input_images)
-
-        # Invert masks if needed
-        if invert_mask:
-            masks = [1.0 - mask for mask in masks]
-
-        masks = [torch.from_numpy(mask).unsqueeze(0) for mask in masks]
+        input_images = kwargs.get('input_images', [None] * frame_count)
+        images= self.generate_images(start_font_size, font_size_increment, frame_text_dict, rotation_increment, x_offset_increment, y_offset_increment, start_x_offset, end_x_offset, start_y_offset, end_y_offset, font_file, font_color, background_color, image_width, image_height, text_alignment, line_spacing, frame_count, input_images, anchor_x, anchor_y, rotate_around_center)
 
         image_batch = torch.cat(images, dim=0)
-        mask_batch = torch.cat(masks, dim=0)
 
-        return (image_batch, mask_batch,)
-    
-    def generate_mask(self, image_width, image_height, text_position, text_size):
-        mask = np.zeros((image_height, image_width))
-        # Example: draw a simple rectangle where the text would be
-        x, y = text_position
-        mask[y:y+text_size[1], x:x+text_size[0]] = 1
-        return mask
+        return (image_batch,)
 
-    def calculate_text_position(self, image_width, image_height, text_width, text_height, text_alignment):
-        # Calculate text position based on text_alignment
+    def calculate_text_position(self, image_width, image_height, text_width, text_height, text_alignment, x_offset, y_offset):        # Calculate base position based on text_alignment
         if text_alignment == "left top":
-            return 0, 0
+            base_x, base_y = 0, 0
         elif text_alignment == "left center":
-            return 0, (image_height - text_height) // 2
+            base_x, base_y = 0, (image_height - text_height) // 2
         elif text_alignment == "left bottom":
-            return 0, image_height - text_height
+            base_x, base_y = 0, image_height - text_height
         elif text_alignment == "center top":
-            return (image_width - text_width) // 2, 0
+            base_x, base_y = (image_width - text_width) // 2, 0
         elif text_alignment == "center center":
-            return (image_width - text_width) // 2, (image_height - text_height) // 2
+            base_x, base_y = (image_width - text_width) // 2, (image_height - text_height) // 2
         elif text_alignment == "center bottom":
-            return (image_width - text_width) // 2, image_height - text_height
+            base_x, base_y = (image_width - text_width) // 2, image_height - text_height
         elif text_alignment == "right top":
-            return image_width - text_width, 0
+            base_x, base_y = image_width - text_width, 0
         elif text_alignment == "right center":
-            return image_width - text_width, (image_height - text_height) // 2
+            base_x, base_y = image_width - text_width, (image_height - text_height) // 2
         elif text_alignment == "right bottom":
-            return image_width - text_width, image_height - text_height
-        # Default to center center
-        return (image_width - text_width) // 2, (image_height - text_height) // 2
-    
+            base_x, base_y = image_width - text_width, image_height - text_height
+        else:  # Default to center center
+            base_x, base_y = (image_width - text_width) // 2, (image_height - text_height) // 2
+
+        # Apply offsets
+        final_x = base_x + x_offset
+        final_y = base_y + y_offset
+
+        return final_x, final_y
+
     def process_image_for_output(self, image):
         i = ImageOps.exif_transpose(image)
         if i.mode == 'I':
@@ -122,32 +115,6 @@ class font2img:
         image = i.convert("RGB")
         image_np = np.array(image).astype(np.float32) / 255.0
         return torch.from_numpy(image_np)[None,]
-    
-    def prepare_image(self, input_image, image_width, image_height, background_color):
-        if input_image is not None:
-            # Normalize if necessary (assuming the values are in range [0, 1])
-            if input_image.dtype == torch.float:
-                input_image = (input_image * 255).byte()
-
-            # Remove the batch dimension
-            tensor_image = input_image.squeeze(0)
-
-            # Permute the dimensions to match PIL format
-            tensor_image = tensor_image.permute(2, 0, 1)
-
-            # Convert to PIL Image
-            transform = transforms.ToPILImage()
-            try:
-                pil_image = transform(tensor_image)
-            except Exception as e:
-                print("Error during conversion:", e)
-                raise
-
-            # Resize image if necessary
-            return pil_image.resize((image_width, image_height))
-        else:
-            # Create a new image with specified dimensions and background color
-            return Image.new('RGB', (image_width, image_height), color=background_color)
     
     def get_font(self, font_file, font_size, script_dir):
         if font_file == "default":
@@ -276,62 +243,133 @@ class font2img:
             return self.cumulative_text(frame_text_dict, frame_count)
         return frame_text_dict
     
-    def generate_images(self, start_font_size, font_size_increment, frame_text_dict, rotation_increment, x_offset_increment, y_offset_increment, font_file, font_color, background_color, image_width, image_height, text_alignment, line_spacing, frame_count, input_images):
+    def prepare_image(self, input_image, image_width, image_height, background_color):
+        if not isinstance(input_image, list):
+            # Check if the input image is a tensor
+            if isinstance(input_image, torch.Tensor):
+                # Normalize tensor if necessary
+                if input_image.dtype == torch.float:
+                    input_image = (input_image * 255).byte()
+
+                # Handle different tensor shapes
+                if input_image.ndim == 4:
+                    # Batch of images: [Batch, Channels, Height, Width]
+                    processed_images = []
+                    for img in input_image:
+                        # Remove the batch dimension
+                        #tensor_image = input_image.squeeze(0)
+                        # Permute the dimensions to match PIL format
+                        tensor_image = img.permute(2, 0, 1)
+                            # Convert to PIL Image
+                        transform = transforms.ToPILImage()
+
+                        try:
+                            pil_image = transform(tensor_image)
+                        except Exception as e:
+                            print("Error during conversion:", e)
+                            raise
+
+                        processed_images.append(pil_image.resize((image_width, image_height), Image.ANTIALIAS))
+                    return processed_images
+                elif input_image.ndim == 3 and input_image.shape[0] in [3, 4]:
+                    # Single image: [Channels, Height, Width]
+                    tensor_image = input_image.permute(1, 2, 0)  # Permute to [Height, Width, Channels]
+                    pil_image = transforms.ToPILImage()(tensor_image)
+                    return pil_image.resize((image_width, image_height), Image.ANTIALIAS)
+                else:
+                    raise ValueError(f"Input image tensor has an invalid shape or number of channels: {input_image.shape}")
+            else:
+                # Assume input_image is already a PIL Image
+                return input_image.resize((image_width, image_height), Image.ANTIALIAS)
+        else:
+            # Create a new image with specified dimensions and background color
+            background_color_tuple = ImageColor.getrgb(background_color)
+            return Image.new('RGB', (image_width, image_height), color=background_color_tuple)
+
+    def generate_images(self, start_font_size, font_size_increment, frame_text_dict, rotation_increment, x_offset_increment, y_offset_increment, start_x_offset, end_x_offset, start_y_offset, end_y_offset, font_file, font_color, background_color, image_width, image_height, text_alignment, line_spacing, frame_count, input_images, anchor_x, anchor_y, rotate_around_center):        
         images = []
-        masks = []
+        prepared_images = self.prepare_image(input_images, image_width, image_height, background_color)
+
+        # Ensure prepared_images is a list, even for a single image
+        if not isinstance(prepared_images, list):
+            prepared_images = [prepared_images]
 
         for i in range(1, frame_count + 1):
             text = frame_text_dict.get(str(i), "")
             current_font_size = int(start_font_size + font_size_increment * (i - 1))
             font = self.get_font(font_file, current_font_size, os.path.dirname(__file__))
-            
-            # Prepare image and draw text
-            image = self.prepare_image(None, image_width, image_height, background_color)  # Assuming no input images for simplicity
-            draw = ImageDraw.Draw(image)
+
+            # Select image from prepared_images or the last image if index exceeds the list
+            image_index = min(i - 1, len(prepared_images) - 1)
+            selected_image = prepared_images[image_index]
+
+            draw = ImageDraw.Draw(selected_image)
             text_width, text_height = self.calculate_text_block_size(draw, text, font, line_spacing)
-            text_position = self.calculate_text_position(image_width, image_height, text_width, text_height, text_alignment)
-            
-            # Process image and generate mask
-            processed_image, mask = self.process_single_image(image, text, font, font_color, rotation_increment * i, x_offset_increment * i, y_offset_increment * i, text_alignment, line_spacing, image_width, image_height)            
+
+            x_offset = start_x_offset + x_offset_increment * (i - 1)
+            y_offset = start_y_offset + y_offset_increment * (i - 1)
+
+            text_position = self.calculate_text_position(image_width, image_height, text_width, text_height, text_alignment, x_offset, y_offset)
+
+            processed_image= self.process_single_image(selected_image, text, font, font_color, rotation_increment * i, x_offset, y_offset, text_alignment, line_spacing, text_position, anchor_x, anchor_y, rotate_around_center, background_color)
+
             images.append(processed_image)
-            masks.append(mask)
 
-        return images, masks
-
-    def process_single_image(self, image, text, font, font_color, rotation_angle, x_offset, y_offset, text_alignment, line_spacing, image_width, image_height):        
-        draw = ImageDraw.Draw(image)
-        text_block_width, text_block_height = self.calculate_text_block_size(draw, text, font, line_spacing)
-        
-        # Create an overlay for text drawing and a mask
-        overlay = Image.new('RGBA', (text_block_width, text_block_height), (255, 255, 255, 0))
-        mask = Image.new('L', (text_block_width, text_block_height), 0)  # L mode for mask
-        draw_overlay = ImageDraw.Draw(overlay)
-        draw_mask = ImageDraw.Draw(mask)
-
-        # Draw text on overlay and mask
-        self.draw_text_on_overlay(draw_overlay, draw_mask, text, font, font_color, line_spacing)
-        
-        # Rotate overlay and mask
-        rotated_overlay = overlay.rotate(rotation_angle, expand=1)
-        rotated_mask = mask.rotate(rotation_angle, expand=1)
-
-        # Calculate position
-        base_text_x, base_text_y = self.calculate_text_position(image_width, image_height, text_block_width, text_block_height, text_alignment)
-        text_x = base_text_x + x_offset + (text_block_width - rotated_overlay.width) // 2
-        text_y = base_text_y + y_offset + (text_block_height - rotated_overlay.height) // 2
-
-        # Paste overlay and mask onto the main image
-        image.paste(rotated_overlay, (int(text_x), int(text_y)), rotated_overlay)
-        final_mask = Image.new('L', (image_width, image_height), 0)
-        final_mask.paste(rotated_mask, (int(text_x), int(text_y)), rotated_mask)
-
-        return self.process_image_for_output(image), np.array(final_mask)
-
+        return images
     
-    def draw_text_on_overlay(self, draw_overlay, draw_mask, text, font, font_color, line_spacing):
+    def process_single_image(self, image, text, font, font_color, rotation_angle, x_offset, y_offset, text_alignment, line_spacing, text_position, anchor_x, anchor_y, rotate_around_center, background_color):        
+        orig_width, orig_height = image.size
+        # Create a larger canvas with the prepared image as the background
+        canvas_size = int(max(orig_width, orig_height) * 1.5)
+        canvas = Image.new('RGBA', (canvas_size, canvas_size), (0, 0, 0, 0))
+
+        # Calculate text size and position
+        draw = ImageDraw.Draw(canvas)
+        text_block_width, text_block_height = self.calculate_text_block_size(draw, text, font, line_spacing)
+        text_x, text_y = text_position
+        text_x += (canvas_size - orig_width) / 2 + x_offset
+        text_y += (canvas_size - orig_height) / 2 + y_offset
+
+        # Calculate the center of the text block
+        text_center_x = text_x + text_block_width / 2
+        text_center_y = text_y + text_block_height / 2
+
+        overlay = Image.new('RGBA', (text_block_width, text_block_height), (255, 255, 255, 0))
+        draw_overlay = ImageDraw.Draw(overlay)
+
+        # Draw text on overlays
+        self.draw_text_on_overlay(draw_overlay, text, font, font_color, line_spacing)
+
+        # Paste overlays onto the canvas
+        canvas.paste(overlay, (int(text_x), int(text_y)), overlay)
+
+
+        # Determine anchor point for rotation
+        anchor = (text_center_x, text_center_y) if rotate_around_center else (text_center_x + anchor_x, text_center_y + anchor_y)
+
+        # Rotate canvas 
+        rotated_canvas = canvas.rotate(rotation_angle, center=anchor, expand=0)
+
+        # Create a new canvas to fill the background of the rotated image
+        new_canvas = Image.new('RGBA', rotated_canvas.size, (0, 0, 0, 0))
+
+        # Paste the input image as the background of the new canvas
+        new_canvas.paste(image, (int((rotated_canvas.size[0] - orig_width) / 2), int((rotated_canvas.size[1] - orig_height) / 2)))
+
+        # Paste the rotated image onto the new canvas, keeping the background color
+        new_canvas.paste(rotated_canvas, (0, 0), rotated_canvas)
+
+        # Crop the canvas back to the original image dimensions
+        cropped_image = new_canvas.crop(((canvas_size - orig_width) / 2, (canvas_size - orig_height) / 2, (canvas_size + orig_width) / 2, (canvas_size + orig_height) / 2))
+
+        return self.process_image_for_output(cropped_image)
+
+
+    def draw_text_on_overlay(self, draw_overlay, text, font, font_color, line_spacing):
         y_text_overlay = 0
         for line in text.split('\n'):
             line_width, line_height = draw_overlay.textsize(line, font=font)
+            # Draw the text on the image overlay
             draw_overlay.text((0, y_text_overlay), line, font=font, fill=font_color)
-            draw_mask.text((0, y_text_overlay), line, font=font, fill="white")
+
             y_text_overlay += line_height + line_spacing
