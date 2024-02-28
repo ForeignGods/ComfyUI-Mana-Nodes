@@ -2,7 +2,6 @@
 Collection of custom nodes for ComfyUI.
 
 - [Installation](#installation)
-- [Demo](#demo)
 - [Nodes](#nodes)
   - [font2img Node](#font2img-node)
 - [Font Licences](#font-licences)
@@ -24,18 +23,27 @@ If you are using a venv, make sure you have it activated before installation and
 ```
 pip install -r requirements.txt
 ```
-## Demo
-
-<img src="https://github.com/ForeignGods/ComfyUI-Mana-Nodes/assets/78089013/5a35d2d6-ae15-4ee1-ba81-582975633a93" width="256" height="384" alt="gif_00008-ezgif com-optimize">
-<img src="https://github.com/ForeignGods/ComfyUI-Mana-Nodes/assets/78089013/ca8a5636-7d82-4f72-82a7-f21dacfb4d01" width="256" height="384" alt="gif_00008-ezgif com-optimize">
 
 ## Nodes
 
 ## font2img Node
 
-Configure the font2img node by setting the following parameters in ComfyUI:
+### Demo
+
+<div>
+  
+<img src="https://github.com/ForeignGods/ComfyUI-Mana-Nodes/assets/78089013/5a35d2d6-ae15-4ee1-ba81-582975633a93" width="256" height="384" alt="gif_00008-ezgif com-optimize">
+<img src="https://github.com/ForeignGods/ComfyUI-Mana-Nodes/assets/78089013/ca8a5636-7d82-4f72-82a7-f21dacfb4d01" width="256" height="384" alt="gif_00008-ezgif com-optimize">
+<img src="https://github.com/ForeignGods/ComfyUI-Mana-Nodes/assets/78089013/82e418bb-07d3-47a0-b329-d312c376dab3" width="256" height="384" alt="gif_00008-ezgif com-optimize">
+<img src="https://github.com/ForeignGods/ComfyUI-Mana-Nodes/assets/78089013/5fb74f2b-5b79-4b85-a0b6-e91aba9cab2" width="256" height="384" alt="gif_00008-ezgif com-optimize">
+<img src="https://github.com/ForeignGods/ComfyUI-Mana-Nodes/assets/78089013/b45ae2c0-60f7-4a32-87af-80b7a26783ab" width="256" height="384" alt="gif_00008-ezgif com-optimize">
+
+</div>
 
 ### Required Inputs
+
+Configure the font2img node by setting the following parameters in ComfyUI:
+
 - <b>font_file:</b> fonts located in the <b>custom_nodes\ComfyUI-Mana-Nodes\font\example_font.ttf</b> directory (supports .ttf, .otf, .woff, .woff2).
 - <b>font_color:</b> Color of the text. (https://www.w3.org/wiki/CSS3/Color/Extended_color_keywords)
 - <b>background_color:</b> Background color of the image.
@@ -44,21 +52,20 @@ Configure the font2img node by setting the following parameters in ComfyUI:
 - <b>frame_count:</b> Number of frames (images) to generate.
 - <b>image_width:</b> Width of the generated images.
 - <b>image_height:</b> Height of the generated images.
-- <b>invert_mask:</b> Inverts the generated mask if set to True.
 - <b>text:</b> The text to render in the images.
 - <b>text_interpolation_options:</b> Mode of text interpolation ('strict', 'interpolation', 'cumulative').
 - <b>start_font_size, end_font_size:</b> Starting and ending size of the font. 
 - <b>start_x_offset, end_x_offset, start_y_offset, end_y_offset:</b> Offsets for text positioning.
 - <b>start_rotation, end_rotation:</b> Rotation angles for the text.
+- <b>anchor_x, anchor_y:</b> offset of the rotation anchor point, relative to the text.
 
 ### Optional Inputs
 
-- <b>images:</b> Text will be overlayed on input_images instead of background_color.
+- <b>input_images:</b> Text will be overlayed on input_images instead of background_color.
 
 ### Outputs
 
 - images: The generated images with the specified text and configurations.
-- masks: Corresponding masks for the generated images. Masks represent the area occupied by the text in each image.
 
 ### Parameters Explanation
 
