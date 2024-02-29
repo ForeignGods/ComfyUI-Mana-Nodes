@@ -6,7 +6,6 @@ Collection of custom nodes for ComfyUI.
   - [font2img Node](#font2img-node)
     - [Example Workflow](#example-workflow)
     - [Font Licences](#font-licences)
-- [Font Licences](#font-licences)
 - [Contributing](#contributing)
   
 ## Installation
