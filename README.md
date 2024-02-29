@@ -2,6 +2,7 @@
 Collection of custom nodes for ComfyUI.
 
 - [Installation](#installation)
+- [To-Do](#to-do)
 - [Nodes](#nodes)
   - [font2img Node](#font2img-node)
     - [Example Workflow](#example-workflow)
