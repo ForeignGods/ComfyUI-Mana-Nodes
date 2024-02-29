@@ -24,6 +24,12 @@ If you are using a venv, make sure you have it activated before installation and
 ```
 pip install -r requirements.txt
 ```
+## To-Do
+
+- [x] Font to Image Batch Animation
+- [ ] Split Video to Frames and Audio
+- [ ] Speech-to-Text Conversion
+- [ ] SVG Loader/Animator 
 
 ## Nodes
 
