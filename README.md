@@ -45,6 +45,7 @@ Configure the font2img node by setting the following parameters in ComfyUI:
 - <b>background_color:</b> Background color of the image.
 - <b>text_alignment:</b> Alignment of the text in the image.
 - <b>line_spacing:</b> Spacing between lines of text.
+- <b>kerning:</b> Spacing between characters of font.
 - <b>frame_count:</b> Number of frames (images) to generate.
 - <b>image_width:</b> Width of the generated images.
 - <b>image_height:</b> Height of the generated images.
@@ -96,8 +97,6 @@ Configure the font2img node by setting the following parameters in ComfyUI:
 - Input as integers representing the font size in points. Example: `start_font_size = 12`, `end_font_size = 24` will gradually increase the text size from 12 to 24 points across the frames.
 
 ### Example Workflow
-
-The JSON of the example below is available in this repo: example_workflow.json
 
 ![workflow](https://github.com/ForeignGods/ComfyUI-Mana-Nodes/assets/78089013/38d91b00-01b5-4ab2-b874-5bf4753cbea3)
 
