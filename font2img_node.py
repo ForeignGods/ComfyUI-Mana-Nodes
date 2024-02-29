@@ -61,7 +61,7 @@ class font2img:
 
     FUNCTION = "run"
 
-    CATEGORY = "font2img"
+    CATEGORY = "Mana Nodes"
 
     def run(self, end_font_size, start_font_size, text_interpolation_options, line_spacing, start_x_offset, end_x_offset, start_y_offset, end_y_offset, start_rotation, end_rotation, font_file, frame_count, text, font_color, background_color, image_width, image_height, text_alignment, anchor_x, anchor_y, rotate_around_center, **kwargs):
         frame_text_dict, is_structured_input = self.parse_text_input(text, frame_count)
