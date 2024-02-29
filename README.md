@@ -4,6 +4,8 @@ Collection of custom nodes for ComfyUI.
 - [Installation](#installation)
 - [Nodes](#nodes)
   - [font2img Node](#font2img-node)
+    - [Example Workflow](#example-workflow)
+    - [Font Licences](#font-licences)
 - [Font Licences](#font-licences)
 - [Contributing](#contributing)
   
@@ -94,18 +96,16 @@ Configure the font2img node by setting the following parameters in ComfyUI:
 - Sets the starting and ending font sizes for the text, allowing the text size to dynamically change across frames.
 - Input as integers representing the font size in points. Example: `start_font_size = 12`, `end_font_size = 24` will gradually increase the text size from 12 to 24 points across the frames.
 
-### Font Licences
-- <b>Personal Use:</b> The included fonts are for personal, non-commercial use. Please refrain from using these fonts in any commercial project without obtaining the appropriate licenses.
-
-- <b>License Compliance:</b> Each font may come with its own license agreement. It is the responsibility of the user to review and comply with these agreements. Some fonts may require a license for commercial use, modification, or distribution.
-- <b>Checking Licenses:</b> For any font you wish to use beyond personal projects, especially for commercial purposes, please check the font's license. This often involves visiting the creator’s or distributor's website to obtain the correct licensing information.
-- <b>Removing Fonts:</b> If any font creator or copyright holder wishes their font to be removed from this repository, please contact us, and we will promptly comply with your request.
-
 ### Example Workflow
 
 The JSON of the example below is available in this repo: example_workflow.json
 
 ![workflow](https://github.com/ForeignGods/ComfyUI-Mana-Nodes/assets/78089013/38d91b00-01b5-4ab2-b874-5bf4753cbea3)
+
+### Font Licences
+- <b>Personal Use:</b> The included fonts are for personal, non-commercial use. Please refrain from using these fonts in any commercial project without obtaining the appropriate licenses.
+- <b>License Compliance:</b> Each font may come with its own license agreement. It is the responsibility of the user to review and comply with these agreements. Some fonts may require a license for commercial use, modification, or distribution.
+- <b>Removing Fonts:</b> If any font creator or copyright holder wishes their font to be removed from this repository, please contact us, and we will promptly comply with your request.
 
 ## Contributing
 Your contributions to improve Mana Nodes are welcome! If you have suggestions or enhancements, feel free to fork this repository, apply your changes, and create a pull request. For significant modifications or feature requests, please open an issue first to discuss what you'd like to change.
