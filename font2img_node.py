@@ -34,6 +34,7 @@ class font2img:
                 "background_color": ("STRING", {"default": "black", "display": "text"}),
                 "text_alignment": (alignment_options, {"default": "center center", "display": "dropdown"}),
                 "line_spacing": ("INT", {"default": 5, "step": 1, "display": "number"}),
+                "kerning": ("INT", {"default": 0, "step": 1, "display": "number"}),
                 "frame_count": ("INT", {"default": 1, "min": 1, "max": 1000, "step": 1}),
                 "image_width": ("INT", {"default": 100, "step": 1, "display": "number"}),
                 "image_height": ("INT", {"default": 100, "step": 1, "display": "number"}),
@@ -63,7 +64,7 @@ class font2img:
 
     CATEGORY = "Mana Nodes"
 
-    def run(self, end_font_size, start_font_size, text_interpolation_options, line_spacing, start_x_offset, end_x_offset, start_y_offset, end_y_offset, start_rotation, end_rotation, font_file, frame_count, text, font_color, background_color, image_width, image_height, text_alignment, anchor_x, anchor_y, rotate_around_center, **kwargs):
+    def run(self, end_font_size, start_font_size, text_interpolation_options, line_spacing, start_x_offset, end_x_offset, start_y_offset, end_y_offset, start_rotation, end_rotation, font_file, frame_count, text, font_color, background_color, image_width, image_height, text_alignment, anchor_x, anchor_y, rotate_around_center,kerning, **kwargs):
         frame_text_dict, is_structured_input = self.parse_text_input(text, frame_count)
         frame_text_dict = self.process_text_mode(frame_text_dict, text_interpolation_options, is_structured_input, frame_count)
 
@@ -73,7 +74,7 @@ class font2img:
         font_size_increment = (end_font_size - start_font_size) / max(frame_count - 1, 1)
 
         input_images = kwargs.get('input_images', [None] * frame_count)
-        images= self.generate_images(start_font_size, font_size_increment, frame_text_dict, rotation_increment, x_offset_increment, y_offset_increment, start_x_offset, end_x_offset, start_y_offset, end_y_offset, font_file, font_color, background_color, image_width, image_height, text_alignment, line_spacing, frame_count, input_images, anchor_x, anchor_y, rotate_around_center)
+        images= self.generate_images(start_font_size, font_size_increment, frame_text_dict, rotation_increment, x_offset_increment, y_offset_increment, start_x_offset, end_x_offset, start_y_offset, end_y_offset, font_file, font_color, background_color, image_width, image_height, text_alignment, line_spacing, frame_count, input_images, anchor_x, anchor_y, rotate_around_center, kerning)
 
         image_batch = torch.cat(images, dim=0)
 
@@ -122,26 +123,28 @@ class font2img:
             full_font_file = os.path.join(script_dir, 'font', font_file)
             return ImageFont.truetype(full_font_file, font_size)
         
-    def calculate_text_block_size(self, draw, text, font, line_spacing):
+    def calculate_text_block_size(self, draw, text, font, line_spacing, kerning):
         lines = text.split('\n')
 
-        # Initialize the maximum width and total height of the text block
         max_width = 0
         total_height = 0
 
         for line in lines:
-            # Get width and height of each line
-            line_width, line_height = draw.textsize(line, font=font)
+            line_width = 0
+            line_height = 0
+            for char in line:
+                char_width, char_height = draw.textsize(char, font=font)
+                line_width += char_width + kerning
+                line_height = max(line_height, char_height)
 
-            # Update the maximum width if this line is wider
+            # Remove the last kerning value as it's not needed after the last character
+            line_width -= kerning
+
             max_width = max(max_width, line_width)
+            total_height += line_height + line_spacing
 
-            # Add the height of this line to the total height
-            total_height += line_height
-
-            # Add line spacing after each line except the last one
-            if line != lines[-1]:
-                total_height += line_spacing
+        # Remove the last line spacing as it's not needed after the last line
+        total_height -= line_spacing
 
         return max_width, total_height
     
@@ -285,7 +288,7 @@ class font2img:
             background_color_tuple = ImageColor.getrgb(background_color)
             return Image.new('RGB', (image_width, image_height), color=background_color_tuple)
 
-    def generate_images(self, start_font_size, font_size_increment, frame_text_dict, rotation_increment, x_offset_increment, y_offset_increment, start_x_offset, end_x_offset, start_y_offset, end_y_offset, font_file, font_color, background_color, image_width, image_height, text_alignment, line_spacing, frame_count, input_images, anchor_x, anchor_y, rotate_around_center):        
+    def generate_images(self, start_font_size, font_size_increment, frame_text_dict, rotation_increment, x_offset_increment, y_offset_increment, start_x_offset, end_x_offset, start_y_offset, end_y_offset, font_file, font_color, background_color, image_width, image_height, text_alignment, line_spacing, frame_count, input_images, anchor_x, anchor_y, rotate_around_center, kerning):        
         images = []
         prepared_images = self.prepare_image(input_images, image_width, image_height, background_color)
 
@@ -303,20 +306,20 @@ class font2img:
             selected_image = prepared_images[image_index]
 
             draw = ImageDraw.Draw(selected_image)
-            text_width, text_height = self.calculate_text_block_size(draw, text, font, line_spacing)
+            text_width, text_height = self.calculate_text_block_size(draw, text, font, line_spacing, kerning)
 
             x_offset = start_x_offset + x_offset_increment * (i - 1)
             y_offset = start_y_offset + y_offset_increment * (i - 1)
 
             text_position = self.calculate_text_position(image_width, image_height, text_width, text_height, text_alignment, x_offset, y_offset)
 
-            processed_image= self.process_single_image(selected_image, text, font, font_color, rotation_increment * i, x_offset, y_offset, text_alignment, line_spacing, text_position, anchor_x, anchor_y, rotate_around_center, background_color)
+            processed_image= self.process_single_image(selected_image, text, font, font_color, rotation_increment * i, x_offset, y_offset, text_alignment, line_spacing, text_position, anchor_x, anchor_y, rotate_around_center, background_color, kerning)
 
             images.append(processed_image)
 
         return images
     
-    def process_single_image(self, image, text, font, font_color, rotation_angle, x_offset, y_offset, text_alignment, line_spacing, text_position, anchor_x, anchor_y, rotate_around_center, background_color):        
+    def process_single_image(self, image, text, font, font_color, rotation_angle, x_offset, y_offset, text_alignment, line_spacing, text_position, anchor_x, anchor_y, rotate_around_center, background_color, kerning):        
         orig_width, orig_height = image.size
         # Create a larger canvas with the prepared image as the background
         canvas_size = int(max(orig_width, orig_height) * 1.5)
@@ -324,7 +327,7 @@ class font2img:
 
         # Calculate text size and position
         draw = ImageDraw.Draw(canvas)
-        text_block_width, text_block_height = self.calculate_text_block_size(draw, text, font, line_spacing)
+        text_block_width, text_block_height = self.calculate_text_block_size(draw, text, font, line_spacing, kerning)
         text_x, text_y = text_position
         text_x += (canvas_size - orig_width) / 2 + x_offset
         text_y += (canvas_size - orig_height) / 2 + y_offset
@@ -337,7 +340,7 @@ class font2img:
         draw_overlay = ImageDraw.Draw(overlay)
 
         # Draw text on overlays
-        self.draw_text_on_overlay(draw_overlay, text, font, font_color, line_spacing)
+        self.draw_text_on_overlay(draw_overlay, text, font, font_color, line_spacing, kerning)
 
         # Paste overlays onto the canvas
         canvas.paste(overlay, (int(text_x), int(text_y)), overlay)
@@ -363,12 +366,15 @@ class font2img:
 
         return self.process_image_for_output(cropped_image)
 
-
-    def draw_text_on_overlay(self, draw_overlay, text, font, font_color, line_spacing):
+    def draw_text_on_overlay(self, draw_overlay, text, font, font_color, line_spacing, kerning):
         y_text_overlay = 0
+        x_text_overlay = 0
         for line in text.split('\n'):
-            line_width, line_height = draw_overlay.textsize(line, font=font)
-            # Draw the text on the image overlay
-            draw_overlay.text((0, y_text_overlay), line, font=font, fill=font_color)
+            for char in line:
+                draw_overlay.text((x_text_overlay, y_text_overlay), char, font=font, fill=font_color)
+                char_width, _ = draw_overlay.textsize(char, font=font)
+                x_text_overlay += char_width + kerning
 
+            x_text_overlay = 0
+            _, line_height = draw_overlay.textsize(line, font=font)
             y_text_overlay += line_height + line_spacing
