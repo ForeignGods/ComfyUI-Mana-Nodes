@@ -125,26 +125,15 @@ class font2img:
         
     def calculate_text_block_size(self, draw, text, font, line_spacing, kerning):
         lines = text.split('\n')
-
         max_width = 0
-        total_height = 0
+        font_size = int(font.size)  # Assuming PIL's ImageFont object with a size attribute
 
         for line in lines:
-            line_width = 0
-            line_height = 0
-            for char in line:
-                char_width, char_height = draw.textsize(char, font=font)
-                line_width += char_width + kerning
-                line_height = max(line_height, char_height)
-
-            # Remove the last kerning value as it's not needed after the last character
-            line_width -= kerning
-
+            line_width = sum(draw.textlength(char, font=font) + kerning for char in line)
+            line_width -= kerning  # Remove the last kerning value as it's not needed after the last character
             max_width = max(max_width, line_width)
-            total_height += line_height + line_spacing
 
-        # Remove the last line spacing as it's not needed after the last line
-        total_height -= line_spacing
+        total_height = font_size * len(lines) + line_spacing * (len(lines) - 1)
 
         return max_width, total_height
     
@@ -336,7 +325,7 @@ class font2img:
         text_center_x = text_x + text_block_width / 2
         text_center_y = text_y + text_block_height / 2
 
-        overlay = Image.new('RGBA', (text_block_width, text_block_height), (255, 255, 255, 0))
+        overlay = Image.new('RGBA', (int(text_block_width), int(text_block_height)), (255, 255, 255, 0))
         draw_overlay = ImageDraw.Draw(overlay)
 
         # Draw text on overlays
@@ -372,9 +361,10 @@ class font2img:
         for line in text.split('\n'):
             for char in line:
                 draw_overlay.text((x_text_overlay, y_text_overlay), char, font=font, fill=font_color)
-                char_width, _ = draw_overlay.textsize(char, font=font)
+
+                char_width = draw_overlay.textlength(char, font=font)
+
                 x_text_overlay += char_width + kerning
 
             x_text_overlay = 0
-            _, line_height = draw_overlay.textsize(line, font=font)
-            y_text_overlay += line_height + line_spacing
+            y_text_overlay += int(font.size) + line_spacing
