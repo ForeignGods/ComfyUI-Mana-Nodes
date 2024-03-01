@@ -30,7 +30,8 @@ pip install -r requirements.txt
 - [x] Font to Image Batch Animation
 - [ ] Split Video to Frames and Audio
 - [ ] Speech-to-Text Conversion
-- [ ] SVG Loader/Animator 
+- [ ] SVG Loader/Animator
+- [ ] Font to Image Alpha Channel
 
 ## Nodes
 
