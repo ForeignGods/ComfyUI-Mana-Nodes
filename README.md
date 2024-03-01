@@ -34,6 +34,7 @@ pip install -r requirements.txt
 - [ ] Font to Image Alpha Channel
 - [ ] keyframe model/lora switcher for animateDiff
 - [ ] animation process of transition from pictures to videos
+- [ ] add right2left font support
 
 ## Nodes
 
