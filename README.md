@@ -32,6 +32,8 @@ pip install -r requirements.txt
 - [ ] Speech-to-Text Conversion
 - [ ] SVG Loader/Animator
 - [ ] Font to Image Alpha Channel
+- [ ] keyframe model/lora switcher for animateDiff
+- [ ] animation process of transition from pictures to videos
 
 ## Nodes
 
