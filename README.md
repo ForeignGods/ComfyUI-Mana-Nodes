@@ -7,6 +7,7 @@ Collection of custom nodes for ComfyUI.
   - [font2img Node](#font2img-node)
     - [Example Workflow](#example-workflow)
     - [Font Licences](#font-licences)
+      - [Font Links](#font-links)
 - [Contributing](#contributing)
   
 ## Installation
@@ -117,6 +118,18 @@ The workflow is included in this repo: example_worflow.json
 - <b>Personal Use:</b> The included fonts are for personal, non-commercial use. Please refrain from using these fonts in any commercial project without obtaining the appropriate licenses.
 - <b>License Compliance:</b> Each font may come with its own license agreement. It is the responsibility of the user to review and comply with these agreements. Some fonts may require a license for commercial use, modification, or distribution.
 - <b>Removing Fonts:</b> If any font creator or copyright holder wishes their font to be removed from this repository, please contact us, and we will promptly comply with your request.
+
+#### Font Links
+- https://www.dafont.com/akira-expanded.font
+- https://www.dafont.com/aurora-pro.font
+- https://www.dafont.com/another-danger.font
+- https://www.dafont.com/doctor-glitch.font
+- https://www.dafont.com/ghastly-panic.font
+- https://www.dafont.com/metal-gothic.font
+- https://www.dafont.com/the-constellation.font
+- https://www.dafont.com/the-augusta.font
+- https://www.dafont.com/vogue.font
+- https://www.dafont.com/wreckside.font
 
 ## Contributing
 Your contributions to improve Mana Nodes are welcome! If you have suggestions or enhancements, feel free to fork this repository, apply your changes, and create a pull request. For significant modifications or feature requests, please open an issue first to discuss what you'd like to change.
