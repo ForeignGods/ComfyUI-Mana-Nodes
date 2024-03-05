@@ -45,8 +45,8 @@ pip install -r requirements.txt
 ## To-Do
 
 - [x] Font to Image Batch Animation
-- [ ] Split Video to Frames and Audio
-- [ ] Speech-to-Text Conversion
+- [x] Split Video to Frames and Audio
+- [x] Speech-to-Text Conversion
 - [ ] SVG Loader/Animator
 - [ ] Font to Image Alpha Channel
 - [ ] keyframe model/lora switcher for animateDiff
