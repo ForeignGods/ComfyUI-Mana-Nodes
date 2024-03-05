@@ -1,5 +1,5 @@
 import os
-from PIL import Image, ImageDraw, ImageFont, ImageOps, ImageColor, ImageChops
+from PIL import Image, ImageDraw, ImageFont, ImageOps, ImageColor
 import numpy as np
 import torch
 from torchvision import transforms
@@ -19,7 +19,15 @@ class font2img:
     def INPUT_TYPES(self):
 
         script_dir = os.path.dirname(__file__)
-        font_dir = os.path.join(script_dir, 'font')
+
+        font_dir1 = os.path.join(script_dir, 'font')
+        font_dir2 = os.path.join(script_dir, 'font_files')
+        # Check which directory exists and use it for the full font file path
+        if os.path.exists(font_dir1):
+            font_dir = os.path.join(script_dir, 'font')
+        elif os.path.exists(font_dir2):
+            font_dir = os.path.join(script_dir, 'font_files')
+
         font_files = self.get_font_files(self,font_dir)
 
         alignment_options = ["left top", "left center", "left bottom", 
@@ -32,39 +40,49 @@ class font2img:
                 "font_file": (font_files, {"default": font_files[0] if font_files else "default", "display": "dropdown"}),
                 "font_color": ("STRING", {"default": "white", "display": "text"}),
                 "background_color": ("STRING", {"default": "black", "display": "text"}),
-                "text_alignment": (alignment_options, {"default": "center center", "display": "dropdown"}),
                 "line_spacing": ("INT", {"default": 5, "step": 1, "display": "number"}),
                 "kerning": ("INT", {"default": 0, "step": 1, "display": "number"}),
-                "frame_count": ("INT", {"default": 1, "min": 1, "max": 1000, "step": 1}),
-                "image_width": ("INT", {"default": 100, "step": 1, "display": "number"}),
+                "padding": ("INT", {"default": 0, "min": 0, "step": 1, "display": "number"}),
+                "frame_count": ("INT", {"default": 1, "min": 1, "max": 10000, "step": 1}),
                 "image_height": ("INT", {"default": 100, "step": 1, "display": "number"}),
+                "image_width": ("INT", {"default": 100, "step": 1, "display": "number"}),
+                "text_alignment": (alignment_options, {"default": "center center", "display": "dropdown"}),
+                "text_interpolation_options": (text_interpolation_options, {"default": "cumulative", "display": "dropdown"}),
                 "text": ("STRING", {"multiline": True, "placeholder": "Text"}),
-                "text_interpolation_options": (text_interpolation_options, {"default": "strict", "display": "dropdown"}),
                 "start_font_size": ("INT", {"default": 20, "min": 1, "step": 1, "display": "number"}),
                 "end_font_size": ("INT", {"default": 20, "min": 1, "step": 1, "display": "number"}),
                 "start_x_offset": ("INT", {"default": 0, "step": 1, "display": "number"}),
                 "end_x_offset": ("INT", {"default": 0, "step": 1, "display": "number"}),
                 "start_y_offset": ("INT", {"default": 0, "step": 1, "display": "number"}),
                 "end_y_offset": ("INT", {"default": 0, "step": 1, "display": "number"}),
-                "rotate_around_center": ("BOOLEAN", {"default": True}),
-                "anchor_x": ("INT", {"default": 0, "step": 1}),
-                "anchor_y": ("INT", {"default": 0, "step": 1}),
                 "start_rotation": ("INT", {"default": 0, "min": -360, "max": 360, "step": 1}),
-                "end_rotation": ("INT", {"default": 0, "min": -360, "max": 360, "step": 1})        
+                "end_rotation": ("INT", {"default": 0, "min": -360, "max": 360, "step": 1}),
+                "rotation_anchor_x": ("INT", {"default": 0, "step": 1}),
+                "rotation_anchor_y": ("INT", {"default": 0, "step": 1})
+    
             },
             "optional": {
-                "input_images": ("IMAGE", {"default": None, "display": "input_images"})
+                "input_images": ("IMAGE", {"default": None, "display": "input_images"}),
+                "transcription": ("TRANSCRIPTION", {"default": None, "display": "transcription","forceInput": True})
             }
         }
 
-    RETURN_TYPES = ("IMAGE", )
-    RETURN_NAMES = ("images",)
+    RETURN_TYPES = ("IMAGE", "STRING",)
+    RETURN_NAMES = ("images", "transcription_framestamps",)
 
     FUNCTION = "run"
 
     CATEGORY = "Mana Nodes"
 
-    def run(self, end_font_size, start_font_size, text_interpolation_options, line_spacing, start_x_offset, end_x_offset, start_y_offset, end_y_offset, start_rotation, end_rotation, font_file, frame_count, text, font_color, background_color, image_width, image_height, text_alignment, anchor_x, anchor_y, rotate_around_center,kerning, **kwargs):
+    def run(self, end_font_size, start_font_size, text_interpolation_options, line_spacing, start_x_offset, end_x_offset, start_y_offset, end_y_offset, start_rotation, end_rotation, font_file, frame_count, text, font_color, background_color, image_width, image_height, text_alignment, rotation_anchor_x, rotation_anchor_y, kerning, padding, **kwargs):
+        transcription = kwargs.get('transcription')
+
+        if transcription != None:
+            formatted_transcription = self.format_transcription(transcription, image_width, font_file, start_font_size,padding)
+            text = formatted_transcription 
+        else:
+            formatted_transcription = None
+
         frame_text_dict, is_structured_input = self.parse_text_input(text, frame_count)
         frame_text_dict = self.process_text_mode(frame_text_dict, text_interpolation_options, is_structured_input, frame_count)
 
@@ -74,31 +92,73 @@ class font2img:
         font_size_increment = (end_font_size - start_font_size) / max(frame_count - 1, 1)
 
         input_images = kwargs.get('input_images', [None] * frame_count)
-        images= self.generate_images(start_font_size, font_size_increment, frame_text_dict, rotation_increment, x_offset_increment, y_offset_increment, start_x_offset, end_x_offset, start_y_offset, end_y_offset, font_file, font_color, background_color, image_width, image_height, text_alignment, line_spacing, frame_count, input_images, anchor_x, anchor_y, rotate_around_center, kerning)
+        images= self.generate_images(start_font_size, font_size_increment, frame_text_dict, rotation_increment, x_offset_increment, y_offset_increment, start_x_offset, end_x_offset, start_y_offset, end_y_offset, font_file, font_color, background_color, image_width, image_height, text_alignment, line_spacing, frame_count, input_images, rotation_anchor_x, rotation_anchor_y, kerning,padding)
 
         image_batch = torch.cat(images, dim=0)
 
-        return (image_batch,)
+        return (image_batch, formatted_transcription,)
 
-    def calculate_text_position(self, image_width, image_height, text_width, text_height, text_alignment, x_offset, y_offset):        # Calculate base position based on text_alignment
+    def format_transcription(self, transcription, image_width, font_file, font_size, padding):
+        if not transcription:
+            return ""
+
+        # Extract fps from the first element and then discard it from further processing
+        _, _, _, transcription_fps = transcription[0]
+
+        formatted_transcription = ""
+        current_sentence = ""
+
+        for i, (word, start_time, _, _) in enumerate(transcription):
+            frame_number = round(start_time * transcription_fps)
+
+            if not current_sentence:
+                current_sentence = word
+            else:
+                new_sentence = current_sentence + " " + word
+                width = self.get_text_width(new_sentence, font_file, font_size)
+                if width <= image_width - padding:
+                    current_sentence = new_sentence
+                else:
+                    formatted_transcription += f'"{frame_number}": "{current_sentence}",\n'
+                    current_sentence = word
+            
+            formatted_transcription += f'"{frame_number}": "{current_sentence}",\n'
+
+        # Add the final sentence
+        if current_sentence:
+            last_frame_number = round(transcription[-1][1] * transcription_fps)
+            formatted_transcription += f'"{last_frame_number}": "{current_sentence}",\n'
+
+        #print("Formatted transcription:", formatted_transcription)
+        return formatted_transcription
+    
+    def get_text_width(self,text, font_file, font_size):
+        # Load the font
+        font = self.get_font(font_file, font_size, os.path.dirname(__file__))
+        # Measure the size of the text rendered in the loaded font
+        text_width, _ = font.getsize(text)
+        return text_width
+    
+    def calculate_text_position(self, image_width, image_height, text_width, text_height, text_alignment, x_offset, y_offset, padding):        
+        # Adjust the base position based on text_alignment and margin
         if text_alignment == "left top":
-            base_x, base_y = 0, 0
+            base_x, base_y = padding, padding
         elif text_alignment == "left center":
-            base_x, base_y = 0, (image_height - text_height) // 2
+            base_x, base_y = padding, padding + (image_height - text_height) // 2
         elif text_alignment == "left bottom":
-            base_x, base_y = 0, image_height - text_height
+            base_x, base_y = padding, image_height - text_height - padding
         elif text_alignment == "center top":
-            base_x, base_y = (image_width - text_width) // 2, 0
+            base_x, base_y = (image_width - text_width) // 2, padding
         elif text_alignment == "center center":
             base_x, base_y = (image_width - text_width) // 2, (image_height - text_height) // 2
         elif text_alignment == "center bottom":
-            base_x, base_y = (image_width - text_width) // 2, image_height - text_height
+            base_x, base_y = (image_width - text_width) // 2, image_height - text_height - padding
         elif text_alignment == "right top":
-            base_x, base_y = image_width - text_width, 0
+            base_x, base_y = image_width - text_width - padding, padding
         elif text_alignment == "right center":
-            base_x, base_y = image_width - text_width, (image_height - text_height) // 2
+            base_x, base_y = image_width - text_width - padding, (image_height - text_height) // 2
         elif text_alignment == "right bottom":
-            base_x, base_y = image_width - text_width, image_height - text_height
+            base_x, base_y = image_width - text_width - padding, image_height - text_height - padding
         else:  # Default to center center
             base_x, base_y = (image_width - text_width) // 2, (image_height - text_height) // 2
 
@@ -120,7 +180,15 @@ class font2img:
         if font_file == "default":
             return ImageFont.load_default()
         else:
-            full_font_file = os.path.join(script_dir, 'font', font_file)
+            font_dir1 = os.path.join(script_dir, 'font')
+            font_dir2 = os.path.join(script_dir, 'font_files')
+                    # Check which directory exists and use it for the full font file path
+            if os.path.exists(os.path.join(font_dir1, font_file)):
+                full_font_file = os.path.join(font_dir1, font_file)
+            elif os.path.exists(os.path.join(font_dir2, font_file)):
+                full_font_file = os.path.join(font_dir2, font_file)
+            else:
+                raise FileNotFoundError(f"Font file '{font_file}' not found in 'font' or 'font_files' directories.")
             return ImageFont.truetype(full_font_file, font_size)
         
     def calculate_text_block_size(self, draw, text, font, line_spacing, kerning):
@@ -159,7 +227,6 @@ class font2img:
 
         return frame_text_dict, structured_format
 
-    
     def interpolate_text(self, frame_text_dict, frame_count):
         sorted_frames = sorted(int(k) for k in frame_text_dict.keys())
         
@@ -277,7 +344,7 @@ class font2img:
             background_color_tuple = ImageColor.getrgb(background_color)
             return Image.new('RGB', (image_width, image_height), color=background_color_tuple)
 
-    def generate_images(self, start_font_size, font_size_increment, frame_text_dict, rotation_increment, x_offset_increment, y_offset_increment, start_x_offset, end_x_offset, start_y_offset, end_y_offset, font_file, font_color, background_color, image_width, image_height, text_alignment, line_spacing, frame_count, input_images, anchor_x, anchor_y, rotate_around_center, kerning):        
+    def generate_images(self, start_font_size, font_size_increment, frame_text_dict, rotation_increment, x_offset_increment, y_offset_increment, start_x_offset, end_x_offset, start_y_offset, end_y_offset, font_file, font_color, background_color, image_width, image_height, text_alignment, line_spacing, frame_count, input_images, rotation_anchor_x, rotation_anchor_y, kerning,margin):        
         images = []
         prepared_images = self.prepare_image(input_images, image_width, image_height, background_color)
 
@@ -300,15 +367,15 @@ class font2img:
             x_offset = start_x_offset + x_offset_increment * (i - 1)
             y_offset = start_y_offset + y_offset_increment * (i - 1)
 
-            text_position = self.calculate_text_position(image_width, image_height, text_width, text_height, text_alignment, x_offset, y_offset)
+            text_position = self.calculate_text_position(image_width, image_height, text_width, text_height, text_alignment, x_offset, y_offset,margin)
 
-            processed_image= self.process_single_image(selected_image, text, font, font_color, rotation_increment * i, x_offset, y_offset, text_alignment, line_spacing, text_position, anchor_x, anchor_y, rotate_around_center, background_color, kerning)
+            processed_image= self.process_single_image(selected_image, text, font, font_color, rotation_increment * i, x_offset, y_offset, text_alignment, line_spacing, text_position, rotation_anchor_x, rotation_anchor_y, background_color, kerning)
 
             images.append(processed_image)
 
         return images
     
-    def process_single_image(self, image, text, font, font_color, rotation_angle, x_offset, y_offset, text_alignment, line_spacing, text_position, anchor_x, anchor_y, rotate_around_center, background_color, kerning):        
+    def process_single_image(self, image, text, font, font_color, rotation_angle, x_offset, y_offset, text_alignment, line_spacing, text_position, rotation_anchor_x, rotation_anchor_y, background_color, kerning):        
         orig_width, orig_height = image.size
         # Create a larger canvas with the prepared image as the background
         canvas_size = int(max(orig_width, orig_height) * 1.5)
@@ -330,15 +397,9 @@ class font2img:
 
         # Draw text on overlays
         self.draw_text_on_overlay(draw_overlay, text, font, font_color, line_spacing, kerning)
-
-        # Paste overlays onto the canvas
         canvas.paste(overlay, (int(text_x), int(text_y)), overlay)
+        anchor = (text_center_x + rotation_anchor_x, text_center_y + rotation_anchor_y)
 
-
-        # Determine anchor point for rotation
-        anchor = (text_center_x, text_center_y) if rotate_around_center else (text_center_x + anchor_x, text_center_y + anchor_y)
-
-        # Rotate canvas 
         rotated_canvas = canvas.rotate(rotation_angle, center=anchor, expand=0)
 
         # Create a new canvas to fill the background of the rotated image

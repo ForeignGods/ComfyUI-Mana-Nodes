@@ -1,4 +1,9 @@
-Pillow
 numpy
 torch
 torchvision
+Pillow
+moviepy
+librosa
+transformers
+opencv-python-headless
+requests
