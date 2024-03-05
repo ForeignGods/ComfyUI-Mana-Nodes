@@ -20,7 +20,7 @@ class video2audio:
         files = [f"video/{f}" for f in os.listdir(input_dir) if os.path.isfile(os.path.join(input_dir, f))]
         return {
             "required": {
-                "video": (sorted(files), {"video_upload": True}),
+                "video": (sorted(files), {"mana_video_upload": True}),
                 "frame_limit": ("INT", {"default": 16, "min": 1, "max": 10240, "step": 1}),
                 "frame_start": ("INT", {"default": 0, "min": 0, "max": 0xFFFFFFFF, "step": 1}),
                 "filename_prefix": ("STRING", {"default": "audio_files\\audio"})

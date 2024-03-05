@@ -20,7 +20,7 @@ async function uploadFile(file) {
       method: "POST",
       body,
     });
-
+ 
     if (resp.status === 200 || resp.status === 201) {
       return resp.json();
     } else {
@@ -67,7 +67,7 @@ function addUploadWidget(nodeType, widgetName) {
     document.body.append(fileInput);
     let uploadWidget = this.addWidget(
       "button",
-      "choose video to upload",
+      "choose video to split",
       "image",
       () => {
         app.canvas.node_widget = null;
@@ -80,9 +80,9 @@ function addUploadWidget(nodeType, widgetName) {
 
 // Adds an upload button to the nodes
 app.registerExtension({
-  name: "AnimateDiff.UploadVideo",
+  name: "mana.video2audio",
   async beforeRegisterNodeDef(nodeType, nodeData, app) {
-    if (nodeData?.input?.required?.video?.[1]?.video_upload === true) {
+    if (nodeData?.input?.required?.video?.[1]?.mana_video_upload === true) {
       addUploadWidget(nodeType, 'video');
       addVideoPreview(nodeType, { comboWidget: 'video' });
     }

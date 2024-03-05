@@ -4,7 +4,7 @@ import { $el } from '../../../scripts/ui.js';
 import { createImageHost } from "../../../scripts/ui/imagePreview.js"
 
 const URL_REGEX = /^(https?:\/\/|\/view\?|data:image\/)/;
-
+ 
 const style = `
 .comfy-img-preview video {
   object-fit: contain;
@@ -228,18 +228,29 @@ export function addVideoPreview(nodeType, options = {}) {
 }
 
 app.registerExtension({
-  name: "AnimateDiff.VideoPreview",
+  name: "video2audio",
   init() {
-    $el('style', {
+    console.log("[video2audio] Initializing extension...");
+
+    // Inserting custom style into the document head
+    const styleElement = $el('style', {
       textContent: style,
       parent: document.head,
     });
+
+    console.log("[video2audio] Style element added to document head:", styleElement);
   },
   async beforeRegisterNodeDef(nodeType, nodeData) {
-    if (nodeData.name !== "AnimateDiffCombine") {
+
+    // Apply customization only if it's the correct node type
+    if (nodeData.name !== "video2audio") {
       return;
     }
 
+    console.log("[video2audio] Adding video preview to node type:", nodeType);
     addVideoPreview(nodeType);
+
+    console.log("[video2audio] Video preview added to node type");
   },
 });
+
