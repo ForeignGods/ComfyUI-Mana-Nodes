@@ -110,9 +110,15 @@ Configure the font2img node by setting the following parameters in ComfyUI:
 
 ### Example Workflow
 
-The workflow is included in this repo: example_worflow.json 
+These workflows are included in the example_workflows directory: 
 
-![Screenshot 2024-02-29 232601](https://github.com/ForeignGods/ComfyUI-Mana-Nodes/assets/78089013/16cfff02-1970-4490-bb13-e48cdff0ee36)
+#### workflow1.json 
+
+![Screenshot 2024-03-05 at 15-54-43 ComfyUI](https://github.com/ForeignGods/ComfyUI-Mana-Nodes/assets/78089013/91c8c306-761e-4fa9-a9a8-c0c0e3cc3c96)
+
+#### workflow2.json 
+
+![Screenshot 2024-03-05 at 15-52-01 ComfyUI](https://github.com/ForeignGods/ComfyUI-Mana-Nodes/assets/78089013/0cb4488c-8cd0-4f54-97cc-4fb642a7c147)
 
 ### Font Licences
 - <b>Personal Use:</b> The included fonts are for personal, non-commercial use. Please refrain from using these fonts in any commercial project without obtaining the appropriate licenses.
