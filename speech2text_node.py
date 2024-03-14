@@ -20,8 +20,8 @@ class speech2text:
         return {
             "required": {
                 "audio": ("STRING", {"display": "text","forceInput": True}),
-                "wav2vec_model": (cls.get_wav2vec2_models(), {"display": "dropdown", "default": "ailegends/xlsr-jonatasgrosman-wav2vec2-large-xlsr-53-english"}),
-                "spell_check_language": (spell_check_options, {"default": "English", "display": "dropdown"}),#
+                "wav2vec2_model": (cls.get_wav2vec2_models(), {"display": "dropdown", "default": "ailegends/xlsr-jonatasgrosman-wav2vec2-large-xlsr-53-english"}),
+                "spell_check_language": (spell_check_options, {"default": "English", "display": "dropdown"}),
                 "framestamps_max_chars": ("INT", {"default": 25, "step": 1, "display": "number"})
             },            
             "optional": {
@@ -35,18 +35,19 @@ class speech2text:
     FUNCTION = "run"
     OUTPUT_NODE = True
 
-    def run(self, audio, wav2vec_model, spell_check_language,framestamps_max_chars, **kwargs):
+    def run(self, audio, wav2vec2_model, spell_check_language,framestamps_max_chars,**kwargs):
        
         fps = kwargs.get('fps',30)
         # Load and process with Wav2Vec2 model
         audio_array = self.audiofile_to_numpy(audio)
-        raw_transcription = self.transcribe_with_timestamps(audio_array, wav2vec_model)
+        raw_transcription = self.transcribe_with_timestamps(audio_array, wav2vec2_model)
         #print("raw_transcription", raw_transcription)
 
         # Correct with spell checker
         corrected_transcription = self.correct_transcription_with_language_model(raw_transcription, spell_check_language)
         #print("corrected_transcription", corrected_transcription)
         
+
         # Generate string formatted like JSON for transcription with timestamps
         frame_structure_transcription = self.transcription_to_frame_structure_string(corrected_transcription,fps,framestamps_max_chars)
         #print("frame_structure_transcription", frame_structure_transcription)
@@ -54,7 +55,7 @@ class speech2text:
         # Convert raw transcription to string format
         raw_transcription_string = self.transcription_to_string(corrected_transcription)
         #print("raw_transcription_string", raw_transcription_string)
-
+        
         # Convert raw transcription to string format
         json = self.transcription_to_json_string(corrected_transcription)
         #print("json", json)

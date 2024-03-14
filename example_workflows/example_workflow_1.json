@@ -1,6 +1,6 @@
 {
-  "last_node_id": 129,
-  "last_link_id": 238,
+  "last_node_id": 130,
+  "last_link_id": 243,
   "nodes": [
     {
       "id": 8,
@@ -395,7 +395,7 @@
       ],
       "size": {
         "0": 210,
-        "1": 82
+        "1": 80
       },
       "flags": {},
       "order": 2,
@@ -418,7 +418,7 @@
         "Run widget replace on values": false
       },
       "widgets_values": [
-        47230502573386,
+        889469954073768,
         "randomize"
       ],
       "color": "#223",
@@ -545,7 +545,7 @@
         "Node name for S&R": "KSampler"
       },
       "widgets_values": [
-        47230502573386,
+        889469954073768,
         "randomize",
         30,
         4.5,
@@ -731,117 +731,6 @@
       "bgcolor": "#535"
     },
     {
-      "id": 92,
-      "type": "PrimitiveNode",
-      "pos": [
-        -1837,
-        1238
-      ],
-      "size": {
-        "0": 210,
-        "1": 82
-      },
-      "flags": {},
-      "order": 5,
-      "mode": 0,
-      "outputs": [
-        {
-          "name": "INT",
-          "type": "INT",
-          "links": [
-            231,
-            236
-          ],
-          "slot_index": 0,
-          "widget": {
-            "name": "batch_size"
-          }
-        }
-      ],
-      "title": "Frame Count",
-      "properties": {
-        "Run widget replace on values": false
-      },
-      "widgets_values": [
-        30,
-        "fixed"
-      ],
-      "color": "#223",
-      "bgcolor": "#335"
-    },
-    {
-      "id": 128,
-      "type": "Integer",
-      "pos": [
-        -1584,
-        1229
-      ],
-      "size": {
-        "0": 210,
-        "1": 58
-      },
-      "flags": {},
-      "order": 6,
-      "mode": 0,
-      "outputs": [
-        {
-          "name": "INT",
-          "type": "INT",
-          "links": [
-            230,
-            237
-          ],
-          "shape": 3,
-          "slot_index": 0
-        }
-      ],
-      "title": "Height",
-      "properties": {
-        "Node name for S&R": "Integer"
-      },
-      "widgets_values": [
-        768
-      ],
-      "color": "#223",
-      "bgcolor": "#335"
-    },
-    {
-      "id": 127,
-      "type": "Integer",
-      "pos": [
-        -1587,
-        1118
-      ],
-      "size": {
-        "0": 210,
-        "1": 58
-      },
-      "flags": {},
-      "order": 7,
-      "mode": 0,
-      "outputs": [
-        {
-          "name": "INT",
-          "type": "INT",
-          "links": [
-            226,
-            238
-          ],
-          "shape": 3,
-          "slot_index": 0
-        }
-      ],
-      "title": "Width",
-      "properties": {
-        "Node name for S&R": "Integer"
-      },
-      "widgets_values": [
-        512
-      ],
-      "color": "#223",
-      "bgcolor": "#335"
-    },
-    {
       "id": 97,
       "type": "SaveImage",
       "pos": [
@@ -868,33 +757,6 @@
       ],
       "color": "#232",
       "bgcolor": "#353"
-    },
-    {
-      "id": 76,
-      "type": "PreviewImage",
-      "pos": [
-        -209,
-        764
-      ],
-      "size": {
-        "0": 316.69671630859375,
-        "1": 719.47021484375
-      },
-      "flags": {},
-      "order": 13,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "images",
-          "type": "IMAGE",
-          "link": 235
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "PreviewImage"
-      },
-      "color": "#233",
-      "bgcolor": "#355"
     },
     {
       "id": 94,
@@ -929,7 +791,7 @@
         {
           "name": "image",
           "type": "IMAGE",
-          "link": 234
+          "link": 240
         }
       ],
       "outputs": [
@@ -964,104 +826,6 @@
       "bgcolor": "#355"
     },
     {
-      "id": 129,
-      "type": "font2img",
-      "pos": [
-        -594,
-        552
-      ],
-      "size": [
-        349.468017578125,
-        600
-      ],
-      "flags": {},
-      "order": 11,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "input_images",
-          "type": "IMAGE",
-          "link": null
-        },
-        {
-          "name": "transcription",
-          "type": "TRANSCRIPTION",
-          "link": null
-        },
-        {
-          "name": "frame_count",
-          "type": "INT",
-          "link": 236,
-          "widget": {
-            "name": "frame_count"
-          }
-        },
-        {
-          "name": "image_height",
-          "type": "INT",
-          "link": 237,
-          "widget": {
-            "name": "image_height"
-          }
-        },
-        {
-          "name": "image_width",
-          "type": "INT",
-          "link": 238,
-          "widget": {
-            "name": "image_width"
-          }
-        }
-      ],
-      "outputs": [
-        {
-          "name": "images",
-          "type": "IMAGE",
-          "links": [
-            234,
-            235
-          ],
-          "shape": 3,
-          "slot_index": 0
-        },
-        {
-          "name": "transcription_framestamps",
-          "type": "STRING",
-          "links": null,
-          "shape": 3
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "font2img"
-      },
-      "widgets_values": [
-        "AURORA-PRO.otf",
-        "white",
-        "black",
-        5,
-        0,
-        0,
-        30,
-        512,
-        768,
-        "center center",
-        "strict",
-        "MANA",
-        100,
-        200,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0
-      ],
-      "color": "#233",
-      "bgcolor": "#355"
-    },
-    {
       "id": 38,
       "type": "ControlNetLoaderAdvanced",
       "pos": [
@@ -1073,7 +837,7 @@
         "1": 58
       },
       "flags": {},
-      "order": 8,
+      "order": 5,
       "mode": 0,
       "inputs": [
         {
@@ -1110,8 +874,8 @@
         863
       ],
       "size": [
-        280.0887145996094,
-        622.1330718994141
+        280,
+        622
       ],
       "flags": {},
       "order": 22,
@@ -1156,7 +920,7 @@
           "paused": false,
           "params": {
             "filename": "gif_00001.gif",
-            "subfolder": "mana_gifs\\154654",
+            "subfolder": "mana_gifs\\152652",
             "type": "output",
             "format": "image/gif"
           }
@@ -1164,6 +928,251 @@
       },
       "color": "#232",
       "bgcolor": "#353"
+    },
+    {
+      "id": 92,
+      "type": "PrimitiveNode",
+      "pos": [
+        -1837,
+        1238
+      ],
+      "size": {
+        "0": 210,
+        "1": 82
+      },
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "outputs": [
+        {
+          "name": "INT",
+          "type": "INT",
+          "links": [
+            231,
+            241
+          ],
+          "slot_index": 0,
+          "widget": {
+            "name": "batch_size"
+          }
+        }
+      ],
+      "title": "Frame Count",
+      "properties": {
+        "Run widget replace on values": false
+      },
+      "widgets_values": [
+        30,
+        "fixed"
+      ],
+      "color": "#223",
+      "bgcolor": "#335"
+    },
+    {
+      "id": 127,
+      "type": "Integer",
+      "pos": [
+        -1587,
+        1118
+      ],
+      "size": {
+        "0": 210,
+        "1": 58
+      },
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "outputs": [
+        {
+          "name": "INT",
+          "type": "INT",
+          "links": [
+            226,
+            242
+          ],
+          "shape": 3,
+          "slot_index": 0
+        }
+      ],
+      "title": "Width",
+      "properties": {
+        "Node name for S&R": "Integer"
+      },
+      "widgets_values": [
+        512
+      ],
+      "color": "#223",
+      "bgcolor": "#335"
+    },
+    {
+      "id": 128,
+      "type": "Integer",
+      "pos": [
+        -1584,
+        1229
+      ],
+      "size": {
+        "0": 210,
+        "1": 58
+      },
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "outputs": [
+        {
+          "name": "INT",
+          "type": "INT",
+          "links": [
+            230,
+            243
+          ],
+          "shape": 3,
+          "slot_index": 0
+        }
+      ],
+      "title": "Height",
+      "properties": {
+        "Node name for S&R": "Integer"
+      },
+      "widgets_values": [
+        768
+      ],
+      "color": "#223",
+      "bgcolor": "#335"
+    },
+    {
+      "id": 130,
+      "type": "font2img",
+      "pos": [
+        -606,
+        551
+      ],
+      "size": [
+        370.6826904296868,
+        816
+      ],
+      "flags": {},
+      "order": 11,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": null
+        },
+        {
+          "name": "transcription",
+          "type": "TRANSCRIPTION",
+          "link": null
+        },
+        {
+          "name": "frame_count",
+          "type": "INT",
+          "link": 241,
+          "widget": {
+            "name": "frame_count"
+          }
+        },
+        {
+          "name": "image_height",
+          "type": "INT",
+          "link": 243,
+          "widget": {
+            "name": "image_height"
+          }
+        },
+        {
+          "name": "image_width",
+          "type": "INT",
+          "link": 242,
+          "widget": {
+            "name": "image_width"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "links": [
+            239,
+            240
+          ],
+          "shape": 3,
+          "slot_index": 0
+        },
+        {
+          "name": "transcription_framestamps",
+          "type": "STRING",
+          "links": null,
+          "shape": 3
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "font2img"
+      },
+      "widgets_values": [
+        "Akira Expanded Demo.otf",
+        "white",
+        "black",
+        "grey",
+        0,
+        "grey",
+        0,
+        0,
+        5,
+        0,
+        0,
+        30,
+        512,
+        512,
+        0,
+        0,
+        "fill",
+        "center center",
+        "cumulative",
+        "MANA",
+        "word",
+        "linear",
+        10,
+        75,
+        125,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "color": "#233",
+      "bgcolor": "#355"
+    },
+    {
+      "id": 76,
+      "type": "PreviewImage",
+      "pos": [
+        -209,
+        764
+      ],
+      "size": {
+        "0": 316.69671630859375,
+        "1": 719.47021484375
+      },
+      "flags": {},
+      "order": 13,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 239
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "PreviewImage"
+      },
+      "color": "#233",
+      "bgcolor": "#355"
     }
   ],
   "links": [
@@ -1368,43 +1377,43 @@
       "INT"
     ],
     [
-      234,
-      129,
-      0,
-      94,
-      3,
-      "IMAGE"
-    ],
-    [
-      235,
-      129,
+      239,
+      130,
       0,
       76,
       0,
       "IMAGE"
     ],
     [
-      236,
+      240,
+      130,
+      0,
+      94,
+      3,
+      "IMAGE"
+    ],
+    [
+      241,
       92,
       0,
-      129,
+      130,
       2,
       "INT"
     ],
     [
-      237,
-      128,
+      242,
+      127,
       0,
-      129,
-      3,
+      130,
+      4,
       "INT"
     ],
     [
-      238,
-      127,
+      243,
+      128,
       0,
-      129,
-      4,
+      130,
+      3,
       "INT"
     ]
   ],

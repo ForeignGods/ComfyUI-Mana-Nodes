@@ -230,27 +230,25 @@ export function addVideoPreview(nodeType, options = {}) {
 app.registerExtension({
   name: "video2audio",
   init() {
-    console.log("[video2audio] Initializing extension...");
-
+    console.log("heloo");
     // Inserting custom style into the document head
     const styleElement = $el('style', {
       textContent: style,
       parent: document.head,
     });
 
-    console.log("[video2audio] Style element added to document head:", styleElement);
   },
   async beforeRegisterNodeDef(nodeType, nodeData) {
+    console.log("heloo1");
 
     // Apply customization only if it's the correct node type
-    if (nodeData.name !== "video2audio") {
+    if (nodeData.name !== "video2audio" || nodeData.name !== "audio2video") {
       return;
     }
 
-    console.log("[video2audio] Adding video preview to node type:", nodeType);
+    console.log(nodeType);
     addVideoPreview(nodeType);
 
-    console.log("[video2audio] Video preview added to node type");
   },
 });
 

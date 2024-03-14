@@ -29,8 +29,8 @@ class video2audio:
         }
 
     CATEGORY = "Mana Nodes"
-    RETURN_TYPES = ("IMAGE", "INT", "STRING", "INT", "INT","INT",) 
-    RETURN_NAMES = ("frames", "frame_count", "audio","fps", "height", "width",)
+    RETURN_TYPES = ("IMAGE", "STRING","INT", "INT", "INT","INT",) 
+    RETURN_NAMES = ("frames", "audio","fps","frame_count", "height", "width",)
     FUNCTION = "run"
 
     def run(self, video, frame_start, frame_limit, filename_prefix):
@@ -42,7 +42,7 @@ class video2audio:
             raise ValueError("No frames could be extracted from the video.")
         if not audio:
             raise ValueError("No audio could be extracted from the video.")
-        return (torch.cat(frames, dim=0), len(frames), audio, fps, height, width,)
+        return (torch.cat(frames, dim=0), audio, fps, len(frames), height, width,)
 
     def extract_audio_with_moviepy(self, video_file_path, frame_start, frame_limit, filename_prefix):
 

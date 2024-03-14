@@ -1,13 +1,109 @@
 {
-  "last_node_id": 91,
-  "last_link_id": 194,
+  "last_node_id": 116,
+  "last_link_id": 295,
   "nodes": [
     {
-      "id": 88,
+      "id": 84,
+      "type": "string2file",
+      "pos": [
+        522,
+        83
+      ],
+      "size": {
+        "0": 315,
+        "1": 82
+      },
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "string",
+          "type": "STRING",
+          "link": 287,
+          "widget": {
+            "name": "string"
+          }
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "string2file"
+      },
+      "widgets_values": [
+        "",
+        "text_files\\raw"
+      ]
+    },
+    {
+      "id": 85,
+      "type": "string2file",
+      "pos": [
+        522,
+        228
+      ],
+      "size": {
+        "0": 315,
+        "1": 82
+      },
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "string",
+          "type": "STRING",
+          "link": 288,
+          "widget": {
+            "name": "string"
+          }
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "string2file"
+      },
+      "widgets_values": [
+        "",
+        "text_files\\framestamps"
+      ]
+    },
+    {
+      "id": 86,
+      "type": "string2file",
+      "pos": [
+        524,
+        381
+      ],
+      "size": {
+        "0": 315,
+        "1": 82
+      },
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "string",
+          "type": "STRING",
+          "link": 289,
+          "widget": {
+            "name": "string"
+          }
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "string2file"
+      },
+      "widgets_values": [
+        "",
+        "text_files\\timestamps"
+      ]
+    },
+    {
+      "id": 114,
       "type": "audio2video",
       "pos": [
-        1487,
-        -132
+        1560,
+        -235
       ],
       "size": {
         "0": 315,
@@ -20,12 +116,12 @@
         {
           "name": "frames",
           "type": "IMAGE",
-          "link": 166
+          "link": 293
         },
         {
           "name": "audio",
           "type": "STRING",
-          "link": 185,
+          "link": 283,
           "widget": {
             "name": "audio"
           }
@@ -33,7 +129,7 @@
         {
           "name": "fps",
           "type": "INT",
-          "link": 186,
+          "link": 284,
           "widget": {
             "name": "fps"
           }
@@ -57,24 +153,24 @@
       ]
     },
     {
-      "id": 89,
+      "id": 115,
       "type": "string2file",
       "pos": [
-        1492,
-        25
+        1566,
+        -74
       ],
       "size": {
         "0": 315,
         "1": 82
       },
       "flags": {},
-      "order": 7,
+      "order": 8,
       "mode": 0,
       "inputs": [
         {
           "name": "string",
           "type": "STRING",
-          "link": 164,
+          "link": 295,
           "widget": {
             "name": "string"
           }
@@ -85,19 +181,236 @@
       },
       "widgets_values": [
         "",
-        "text_files\\text4"
+        "text_files\\text"
       ]
     },
     {
-      "id": 91,
-      "type": "speech2text",
+      "id": 111,
+      "type": "video2audio",
       "pos": [
-        303,
-        -110
+        11,
+        -236
+      ],
+      "size": [
+        210,
+        466
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "outputs": [
+        {
+          "name": "frames",
+          "type": "IMAGE",
+          "links": [
+            281
+          ],
+          "shape": 3,
+          "slot_index": 0
+        },
+        {
+          "name": "audio",
+          "type": "STRING",
+          "links": [
+            282,
+            283
+          ],
+          "shape": 3,
+          "slot_index": 1
+        },
+        {
+          "name": "fps",
+          "type": "INT",
+          "links": [
+            284,
+            290
+          ],
+          "shape": 3,
+          "slot_index": 2
+        },
+        {
+          "name": "frame_count",
+          "type": "INT",
+          "links": [
+            285
+          ],
+          "shape": 3,
+          "slot_index": 3
+        },
+        {
+          "name": "height",
+          "type": "INT",
+          "links": [
+            291
+          ],
+          "shape": 3,
+          "slot_index": 4
+        },
+        {
+          "name": "width",
+          "type": "INT",
+          "links": [
+            292
+          ],
+          "shape": 3,
+          "slot_index": 5
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "video2audio"
+      },
+      "widgets_values": [
+        "video/test (1).mp4",
+        250,
+        0,
+        "audio_files\\audio",
+        "image",
+        null
+      ]
+    },
+    {
+      "id": 113,
+      "type": "font2img",
+      "pos": [
+        937,
+        -235
       ],
       "size": {
-        "0": 559.950927734375,
-        "1": 222.74815368652344
+        "0": 493.8000183105469,
+        "1": 816
+      },
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 281
+        },
+        {
+          "name": "transcription",
+          "type": "TRANSCRIPTION",
+          "link": 286
+        },
+        {
+          "name": "frame_count",
+          "type": "INT",
+          "link": 285,
+          "widget": {
+            "name": "frame_count"
+          }
+        },
+        {
+          "name": "image_height",
+          "type": "INT",
+          "link": 291,
+          "widget": {
+            "name": "image_height"
+          }
+        },
+        {
+          "name": "image_width",
+          "type": "INT",
+          "link": 292,
+          "widget": {
+            "name": "image_width"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "links": [
+            293,
+            294
+          ],
+          "shape": 3,
+          "slot_index": 0
+        },
+        {
+          "name": "transcription_framestamps",
+          "type": "STRING",
+          "links": [
+            295
+          ],
+          "shape": 3,
+          "slot_index": 1
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "font2img"
+      },
+      "widgets_values": [
+        "Akira Expanded Demo.otf",
+        "yellow",
+        "black",
+        "grey",
+        0,
+        "grey",
+        0,
+        0,
+        5,
+        0,
+        0,
+        1,
+        512,
+        512,
+        0,
+        0,
+        "fill",
+        "left bottom",
+        "cumulative",
+        "",
+        "line",
+        "ease_out_back",
+        10,
+        75,
+        75,
+        0,
+        0,
+        0,
+        -100,
+        0,
+        0
+      ]
+    },
+    {
+      "id": 116,
+      "type": "PreviewImage",
+      "pos": [
+        1570,
+        66
+      ],
+      "size": {
+        "0": 210,
+        "1": 246
+      },
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 294
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "PreviewImage"
+      }
+    },
+    {
+      "id": 112,
+      "type": "speech2text",
+      "pos": [
+        319,
+        -216
+      ],
+      "size": {
+        "0": 526.7802734375,
+        "1": 236.49148559570312
       },
       "flags": {},
       "order": 1,
@@ -106,7 +419,7 @@
         {
           "name": "audio",
           "type": "STRING",
-          "link": 189,
+          "link": 282,
           "widget": {
             "name": "audio"
           }
@@ -114,7 +427,7 @@
         {
           "name": "fps",
           "type": "INT",
-          "link": 190,
+          "link": 290,
           "widget": {
             "name": "fps"
           }
@@ -125,7 +438,7 @@
           "name": "transcription",
           "type": "TRANSCRIPTION",
           "links": [
-            191
+            286
           ],
           "shape": 3,
           "slot_index": 0
@@ -134,7 +447,7 @@
           "name": "raw_string",
           "type": "STRING",
           "links": [
-            192
+            287
           ],
           "shape": 3,
           "slot_index": 1
@@ -143,7 +456,7 @@
           "name": "framestamps_string",
           "type": "STRING",
           "links": [
-            193
+            288
           ],
           "shape": 3,
           "slot_index": 2
@@ -152,7 +465,7 @@
           "name": "timestamps_string",
           "type": "STRING",
           "links": [
-            194
+            289
           ],
           "shape": 3,
           "slot_index": 3
@@ -166,398 +479,128 @@
         "ailegends/xlsr-jonatasgrosman-wav2vec2-large-xlsr-53-english",
         "English",
         25,
-        0
-      ]
-    },
-    {
-      "id": 84,
-      "type": "string2file",
-      "pos": [
-        545,
-        169
-      ],
-      "size": {
-        "0": 315,
-        "1": 82
-      },
-      "flags": {},
-      "order": 3,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "string",
-          "type": "STRING",
-          "link": 192,
-          "widget": {
-            "name": "string"
-          }
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "string2file"
-      },
-      "widgets_values": [
-        "",
-        "text_files\\text1"
-      ]
-    },
-    {
-      "id": 85,
-      "type": "string2file",
-      "pos": [
-        542,
-        310
-      ],
-      "size": {
-        "0": 315,
-        "1": 82
-      },
-      "flags": {},
-      "order": 4,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "string",
-          "type": "STRING",
-          "link": 193,
-          "widget": {
-            "name": "string"
-          }
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "string2file"
-      },
-      "widgets_values": [
-        "",
-        "text_files\\text2"
-      ]
-    },
-    {
-      "id": 86,
-      "type": "string2file",
-      "pos": [
-        542,
-        450
-      ],
-      "size": {
-        "0": 315,
-        "1": 82
-      },
-      "flags": {},
-      "order": 5,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "string",
-          "type": "STRING",
-          "link": 194,
-          "widget": {
-            "name": "string"
-          }
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "string2file"
-      },
-      "widgets_values": [
-        "",
-        "text_files\\text3"
-      ]
-    },
-    {
-      "id": 82,
-      "type": "video2audio",
-      "pos": [
-        40,
-        -151
-      ],
-      "size": {
-        "0": 210,
-        "1": 466
-      },
-      "flags": {},
-      "order": 0,
-      "mode": 0,
-      "outputs": [
-        {
-          "name": "frames",
-          "type": "IMAGE",
-          "links": [
-            171
-          ],
-          "shape": 3,
-          "slot_index": 0
-        },
-        {
-          "name": "frame_count",
-          "type": "INT",
-          "links": [
-            172
-          ],
-          "shape": 3,
-          "slot_index": 1
-        },
-        {
-          "name": "audio",
-          "type": "STRING",
-          "links": [
-            185,
-            189
-          ],
-          "shape": 3,
-          "slot_index": 2
-        },
-        {
-          "name": "fps",
-          "type": "INT",
-          "links": [
-            186,
-            190
-          ],
-          "shape": 3,
-          "slot_index": 3
-        },
-        {
-          "name": "height",
-          "type": "INT",
-          "links": [
-            175
-          ],
-          "shape": 3,
-          "slot_index": 4
-        },
-        {
-          "name": "width",
-          "type": "INT",
-          "links": [
-            176
-          ],
-          "shape": 3,
-          "slot_index": 5
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "video2audio"
-      },
-      "widgets_values": [
-        "video/test.mp4",
-        250,
-        0,
-        "audio_files\\audio",
-        "image",
-        null
-      ]
-    },
-    {
-      "id": 87,
-      "type": "font2img",
-      "pos": [
-        918,
-        -132
-      ],
-      "size": {
-        "0": 493.8000183105469,
-        "1": 600
-      },
-      "flags": {},
-      "order": 2,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "input_images",
-          "type": "IMAGE",
-          "link": 171
-        },
-        {
-          "name": "transcription",
-          "type": "TRANSCRIPTION",
-          "link": 191
-        },
-        {
-          "name": "frame_count",
-          "type": "INT",
-          "link": 172,
-          "widget": {
-            "name": "frame_count"
-          }
-        },
-        {
-          "name": "image_height",
-          "type": "INT",
-          "link": 175,
-          "widget": {
-            "name": "image_height"
-          }
-        },
-        {
-          "name": "image_width",
-          "type": "INT",
-          "link": 176,
-          "widget": {
-            "name": "image_width"
-          }
-        }
-      ],
-      "outputs": [
-        {
-          "name": "images",
-          "type": "IMAGE",
-          "links": [
-            166
-          ],
-          "shape": 3,
-          "slot_index": 0
-        },
-        {
-          "name": "transcription_framestamps",
-          "type": "STRING",
-          "links": [
-            164
-          ],
-          "shape": 3,
-          "slot_index": 1
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "font2img"
-      },
-      "widgets_values": [
-        "Akira Expanded Demo.otf",
-        "yellow",
-        "black",
-        5,
-        0,
-        25,
-        1,
-        100,
-        100,
-        "left bottom",
-        "cumulative",
-        "",
-        80,
-        80,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0
+        25
       ]
     }
   ],
   "links": [
     [
-      164,
-      87,
-      1,
-      89,
+      281,
+      111,
       0,
-      "STRING"
-    ],
-    [
-      166,
-      87,
-      0,
-      88,
+      113,
       0,
       "IMAGE"
     ],
     [
-      171,
-      82,
-      0,
-      87,
-      0,
-      "IMAGE"
-    ],
-    [
-      172,
-      82,
+      282,
+      111,
       1,
-      87,
-      2,
-      "INT"
-    ],
-    [
-      175,
-      82,
-      4,
-      87,
-      3,
-      "INT"
-    ],
-    [
-      176,
-      82,
-      5,
-      87,
-      4,
-      "INT"
-    ],
-    [
-      185,
-      82,
-      2,
-      88,
-      1,
-      "STRING"
-    ],
-    [
-      186,
-      82,
-      3,
-      88,
-      2,
-      "INT"
-    ],
-    [
-      189,
-      82,
-      2,
-      91,
+      112,
       0,
       "STRING"
     ],
     [
-      190,
-      82,
-      3,
-      91,
+      283,
+      111,
       1,
+      114,
+      1,
+      "STRING"
+    ],
+    [
+      284,
+      111,
+      2,
+      114,
+      2,
       "INT"
     ],
     [
-      191,
-      91,
+      285,
+      111,
+      3,
+      113,
+      2,
+      "INT"
+    ],
+    [
+      286,
+      112,
       0,
-      87,
+      113,
       1,
       "TRANSCRIPTION"
     ],
     [
-      192,
-      91,
+      287,
+      112,
       1,
       84,
       0,
       "STRING"
     ],
     [
-      193,
-      91,
+      288,
+      112,
       2,
       85,
       0,
       "STRING"
     ],
     [
-      194,
-      91,
+      289,
+      112,
       3,
       86,
+      0,
+      "STRING"
+    ],
+    [
+      290,
+      111,
+      2,
+      112,
+      1,
+      "INT"
+    ],
+    [
+      291,
+      111,
+      4,
+      113,
+      3,
+      "INT"
+    ],
+    [
+      292,
+      111,
+      5,
+      113,
+      4,
+      "INT"
+    ],
+    [
+      293,
+      113,
+      0,
+      114,
+      0,
+      "IMAGE"
+    ],
+    [
+      294,
+      113,
+      0,
+      116,
+      0,
+      "IMAGE"
+    ],
+    [
+      295,
+      113,
+      1,
+      115,
       0,
       "STRING"
     ]
