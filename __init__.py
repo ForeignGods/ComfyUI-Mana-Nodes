@@ -5,7 +5,8 @@ from .string2file_node import string2file
 from .audio2video_node import audio2video
 from .logger import logger
 
-logger.error(f"Mana Web")
+my_logger = logger()
+my_logger.error("Mana Web")
 
 WEB_DIRECTORY = "./web"
 
