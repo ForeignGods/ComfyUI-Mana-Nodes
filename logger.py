@@ -22,15 +22,15 @@ class ColoredFormatter(logging.Formatter):
 
 
 # Create a new logger
-logger = logging.getLogger("Mana")
-logger.propagate = False
+#logger = logging.getLogger("Mana")
+#logger.propagate = False
 
 # Add handler if we don't have one.
-if not logger.handlers:
-    handler = logging.StreamHandler(sys.stdout)
-    handler.setFormatter(ColoredFormatter("[%(name)s] - %(levelname)s - %(message)s"))
-    logger.addHandler(handler)
+#if not logger.handlers:
+#    handler = logging.StreamHandler(sys.stdout)
+#    handler.setFormatter(ColoredFormatter("[%(name)s] - %(levelname)s - %(message)s"))
+#    logger.addHandler(handler)
 
 # Configure logger
-loglevel = logging.INFO
-logger.setLevel(loglevel)
+#loglevel = logging.INFO
+#logger.setLevel(loglevel)
