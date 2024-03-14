@@ -7,3 +7,4 @@ librosa
 transformers
 opencv-python-headless
 requests
+logging
