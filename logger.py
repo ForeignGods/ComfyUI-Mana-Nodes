@@ -20,7 +20,11 @@ class ColoredFormatter(logging.Formatter):
         colored_record.levelname = f"{seq}{levelname}{self.COLORS['RESET']}"
         return super().format(colored_record)
 
+def logger():
+    def error(*args, **kwargs):
+        pass
 
+    return type("Logger", (), {"error": error})()
 # Create a new logger
 #logger = logging.getLogger("Mana")
 #logger.propagate = False
