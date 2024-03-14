@@ -64,15 +64,24 @@ Configure the font2img node by setting the following parameters in ComfyUI:
 - <b>font_file:</b> fonts located in the <b>custom_nodes\ComfyUI-Mana-Nodes\font\example_font.ttf</b> directory (supports .ttf, .otf, .woff, .woff2).
 - <b>font_color:</b> Color of the text. (https://www.w3.org/wiki/CSS3/Color/Extended_color_keywords)
 - <b>background_color:</b> Background color of the image.
+- <b>border_color:</b> Color of the border around the text.
+- <b>border_width:</b> Width of the text border.
+- <b>shadow_color:</b> Width of the text border.
+- <b>shadow_offset_x:</b> Horizontal offset of the shadow.
+- <b>shadow_offset_y:</b> Vertical offset of the shadow.
 - <b>line_spacing:</b> Spacing between lines of text.
 - <b>kerning:</b> Spacing between characters of font.
 - <b>padding:</b> Padding between image border and font.
 - <b>frame_count:</b> Number of frames (images) to generate.
 - <b>image_width:</b> Width of the generated images.
 - <b>image_height:</b> Height of the generated images.
+- <b>transcription_mode:</b> Mode of text transcription ('word', 'line', 'fill').
 - <b>text_alignment:</b> Alignment of the text in the image.
 - <b>text_interpolation_options:</b> Mode of text interpolation ('strict', 'interpolation', 'cumulative').
 - <b>text:</b> The text to render in the images. (is ignored when optional input transcription is given)
+- <b>animation_reset:</b> Defines when the animation resets ('word', 'line', 'never').
+- <b>animation_easing:</b> Easing function for animation (e.g., 'linear', 'exponential').
+- <b>animation_duration:</b> Duration of the animation.
 - <b>start_font_size, end_font_size:</b> Starting and ending size of the font. 
 - <b>start_x_offset, end_x_offset, start_y_offset, end_y_offset:</b> Offsets for text positioning.
 - <b>start_rotation, end_rotation:</b> Rotation angles for the text.
@@ -121,6 +130,32 @@ Configure the font2img node by setting the following parameters in ComfyUI:
 - Sets the starting and ending font sizes for the text, allowing the text size to dynamically change across frames.
 - Input as integers representing the font size in points. Example: `start_font_size = 12`, `end_font_size = 24` will gradually increase the text size from 12 to 24 points across the frames.
 
+
+#### `animation_reset`
+
+- Dictates when the animation effect resets to its starting conditions.
+  - word: Resets animation with each new word.
+  - line: Resets animation at the beginning of each new line of text.
+  - never: The animation does not reset, but continues throughout.
+
+#### `animation_easing`
+
+- Controls the pacing of the animation.
+  - Examples include linear, exponential, quadratic, cubic, elastic, bounce, back, ease_in_out_sine, ease_out_back, ease_in_out_expo.
+  - Each option provides a different acceleration curve for the animation, affecting how the text transitions and rotates.
+
+#### `animation_duration`
+
+- The length of time each animation takes to complete, measured in frames.
+- A larger value means a slower, more gradual transition, while a smaller value results in a quicker animation.
+
+#### `transcription_mode`
+
+- Determines how the transcribed text is applied across frames.
+  - word: Each word appears on its corresponding frame based on the transcription timestamps.
+  - line: Similar to word, but text is added line by line.
+  - fill: Continuously fills the frame with text, adding new words at their specific timestamps.
+
 ## video2audio Node
 
 Extracts frames and audio from a video file.
@@ -147,7 +182,7 @@ Converts spoken words in an audio file to text using a deep learning model.
 ### Required Inputs
 
 - <b>audio:</b> Audio file path or URL.
-- <b>wav2vec_model:</b> The Wav2Vec2 model used for speech recognition. (https://huggingface.co/models?search=wav2vec2)
+- <b>wav2vec2_model:</b> The Wav2Vec2 model used for speech recognition. (https://huggingface.co/models?search=wav2vec2)
 - <b>spell_check_language:</b> Language for the spell checker.
 - <b>framestamps_max_chars:</b> Maximum characters allowed until new framestamp lines created.
 
@@ -297,13 +332,13 @@ Combines a sequence of images (frames) with an audio file to create a video.
 
 These workflows are included in the example_workflows directory: 
 
-#### workflow1.json 
+#### example_workflow_1.json 
 
 ![Screenshot 2024-03-05 at 15-54-43 ComfyUI](https://github.com/ForeignGods/ComfyUI-Mana-Nodes/assets/78089013/91c8c306-761e-4fa9-a9a8-c0c0e3cc3c96)
 
-#### workflow2.json 
+#### example_workflow_2.json 
 
-![Screenshot 2024-03-05 at 15-52-01 ComfyUI](https://github.com/ForeignGods/ComfyUI-Mana-Nodes/assets/78089013/0cb4488c-8cd0-4f54-97cc-4fb642a7c147)
+![Screenshot 2024-03-14 at 15-24-36 ComfyUI](https://github.com/ForeignGods/ComfyUI-Mana-Nodes/assets/78089013/8caba06f-e24e-4096-96a4-21a91fdb6c5b)
 
 ### Speech Recognition 
 
