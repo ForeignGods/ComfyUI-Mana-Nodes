@@ -1,5 +1,6 @@
 import os
 from PIL import Image, ImageDraw, ImageFont, ImageOps, ImageColor
+import PIL
 import numpy as np
 import torch
 from torchvision import transforms
@@ -646,22 +647,14 @@ class font2img:
     
     def prepare_image(self, input_image, image_width, image_height, background_color, easing):
         if not isinstance(input_image, list):
-            # Check if the input image is a tensor
             if isinstance(input_image, torch.Tensor):
-                # Normalize tensor if necessary
                 if input_image.dtype == torch.float:
                     input_image = (input_image * 255).byte()
 
-                # Handle different tensor shapes
                 if input_image.ndim == 4:
-                    # Batch of images: [Batch, Channels, Height, Width]
                     processed_images = []
                     for img in input_image:
-                        # Remove the batch dimension
-                        #tensor_image = input_image.squeeze(0)
-                        # Permute the dimensions to match PIL format
                         tensor_image = img.permute(2, 0, 1)
-                            # Convert to PIL Image
                         transform = transforms.ToPILImage()
 
                         try:
@@ -670,19 +663,23 @@ class font2img:
                             print("Error during conversion:", e)
                             raise
 
-                        processed_images.append(pil_image.resize((image_width, image_height), Image.ANTIALIAS))
+                        if float(PIL.__version__.split('.')[0]) < 10:
+                            processed_images.append(pil_image.resize((image_width, image_height), Image.ANTIALIAS))
+                        else:
+                            processed_images.append(pil_image.resize((image_width, image_height), Image.LANCZOS))
                     return processed_images
                 elif input_image.ndim == 3 and input_image.shape[0] in [3, 4]:
-                    # Single image: [Channels, Height, Width]
-                    tensor_image = input_image.permute(1, 2, 0)  # Permute to [Height, Width, Channels]
+                    tensor_image = input_image.permute(1, 2, 0)
                     pil_image = transforms.ToPILImage()(tensor_image)
-                    return pil_image.resize((image_width, image_height), Image.ANTIALIAS)
+
+                    if float(PIL.__version__.split('.')[0]) < 10:
+                        return pil_image.resize((image_width, image_height), Image.ANTIALIAS)
+                    else:
+                        return pil_image.resize((image_width, image_height), Image.LANCZOS)
                 else:
                     raise ValueError(f"Input image tensor has an invalid shape or number of channels: {input_image.shape}")
             else:
-                # Assume input_image is already a PIL Image
                 return input_image.resize((image_width, image_height), Image.ANTIALIAS)
         else:
-            # Create a new image with specified dimensions and background color
             background_color_tuple = ImageColor.getrgb(background_color)
             return Image.new('RGB', (image_width, image_height), color=background_color_tuple)
