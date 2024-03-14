@@ -42,9 +42,7 @@ pip install -r requirements.txt
 <img src="https://github.com/ForeignGods/ComfyUI-Mana-Nodes/assets/78089013/82e418bb-07d3-47a0-b329-d312c376dab3" width="200" height="300" alt="gif_00008-ezgif com-optimize">
 <img src="https://github.com/ForeignGods/ComfyUI-Mana-Nodes/assets/78089013/b45ae2c0-60f7-4a32-87af-80b7a26783ab" width="200" height="300" alt="gif_00008-ezgif com-optimize">
 
-
-https://github.com/ForeignGods/ComfyUI-Mana-Nodes/assets/78089013/53b8e7f8-4b85-432f-9288-cfa13ea004cd
-
+https://github.com/ForeignGods/ComfyUI-Mana-Nodes/assets/78089013/657330d9-4745-4acf-b1cc-de9336104f3d
 
 ## To-Do
 
