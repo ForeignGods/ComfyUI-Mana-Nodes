@@ -8,3 +8,4 @@ transformers
 opencv-python-headless
 requests
 logging
+matplotlib
