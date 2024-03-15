@@ -3,3 +3,6 @@ audio_temp.wav
 video_files
 audio_files
 text_files
+.env
+*.code-workspace
+.vscode/*

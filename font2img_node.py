@@ -6,34 +6,22 @@ import torch
 from torchvision import transforms
 import random
 import math
+from matplotlib import font_manager
+
+def font_names() -> list[str]:
+    mgr = font_manager.FontManager()
+    return {font.name: font.fname for font in mgr.ttflist}
 
 class font2img:
-
+    FONTS = font_names()
+    FONT_NAMES = sorted(FONTS.keys())
     def __init__(self):
         pass
-    
-    def get_font_files(self,font_dir):
-        extensions = ['.ttf', '.otf', '.woff', '.woff2']
-        return [f for f in os.listdir(font_dir) 
-                if os.path.isfile(os.path.join(font_dir, f)) and f.endswith(tuple(extensions))]
 
     @classmethod
     def INPUT_TYPES(self):
-
-        script_dir = os.path.dirname(__file__)
-
-        font_dir1 = os.path.join(script_dir, 'font')
-        font_dir2 = os.path.join(script_dir, 'font_files')
-        # Check which directory exists and use it for the full font file path
-        if os.path.exists(font_dir1):
-            font_dir = os.path.join(script_dir, 'font')
-        elif os.path.exists(font_dir2):
-            font_dir = os.path.join(script_dir, 'font_files')
-
-        font_files = self.get_font_files(self,font_dir)
-
-        alignment_options = ["left top", "left center", "left bottom", 
-                             "center top", "center center", "center bottom", 
+        alignment_options = ["left top", "left center", "left bottom",
+                             "center top", "center center", "center bottom",
                              "right top", "right center", "right bottom"]
         text_interpolation_options = ["strict","interpolation","cumulative"]
         transcription_mode = ["word","line","fill"]
@@ -42,7 +30,8 @@ class font2img:
 
         return {
             "required": {
-                "font_file": (font_files, {"default": font_files[0] if font_files else "default", "display": "dropdown"}),
+                # "font_file": (font_files, {"default": font_files[0] if font_files else "default", "display": "dropdown"}),
+                "font_file": (self.FONT_NAMES, {"default": self.FONT_NAMES[0]}),
                 "font_color": ("STRING", {"default": "white", "display": "text"}),
                 "background_color": ("STRING", {"default": "black", "display": "text"}),
                 "border_color": ("STRING", {"default": "grey", "display": "text"}),
@@ -87,45 +76,45 @@ class font2img:
 
     CATEGORY = "Mana Nodes"
 
-    def run(self, 
-            end_font_size, 
-            start_font_size, 
-            text_interpolation_options, 
-            line_spacing, 
-            start_x_offset, 
-            end_x_offset, 
-            start_y_offset, 
-            end_y_offset, 
-            start_rotation, 
-            end_rotation, 
-            font_file, 
-            frame_count, 
-            text, 
-            font_color, 
-            background_color, 
-            image_width, 
-            image_height, 
-            text_alignment, 
-            rotation_anchor_x, 
-            rotation_anchor_y, 
-            kerning, 
+    def run(self,
+            end_font_size,
+            start_font_size,
+            text_interpolation_options,
+            line_spacing,
+            start_x_offset,
+            end_x_offset,
+            start_y_offset,
+            end_y_offset,
+            start_rotation,
+            end_rotation,
+            font_file,
+            frame_count,
+            text,
+            font_color,
+            background_color,
+            image_width,
+            image_height,
+            text_alignment,
+            rotation_anchor_x,
+            rotation_anchor_y,
+            kerning,
             padding,
             transcription_mode,
             animation_duration,
             animation_reset,
             border_width,
             border_color,
-            shadow_color, 
-            shadow_offset_x, 
+            shadow_color,
+            shadow_offset_x,
             shadow_offset_y,
             animation_easing,
             **kwargs):
-        
+
         transcription = kwargs.get('transcription')
 
         if transcription != None:
             formatted_transcription = self.format_transcription(transcription, image_width, font_file, start_font_size,padding,transcription_mode)
-            text = formatted_transcription 
+            text = formatted_transcription
         else:
             formatted_transcription = None
 
@@ -133,42 +122,42 @@ class font2img:
         frame_text_dict = self.process_text_mode(frame_text_dict, text_interpolation_options, is_structured_input, frame_count)
 
         input_images = kwargs.get('images', [None] * frame_count)
-        images= self.generate_images(start_font_size, 
-                                     frame_text_dict, 
-                                     start_x_offset, 
-                                     end_x_offset, 
-                                     start_y_offset, 
-                                     end_y_offset, 
-                                     font_file, 
-                                     font_color, 
-                                     background_color, 
-                                     image_width, 
-                                     image_height, 
-                                     text_alignment, 
-                                     line_spacing, 
+        images= self.generate_images(start_font_size,
+                                     frame_text_dict,
+                                     start_x_offset,
+                                     end_x_offset,
+                                     start_y_offset,
+                                     end_y_offset,
+                                     font_file,
+                                     font_color,
+                                     background_color,
+                                     image_width,
+                                     image_height,
+                                     text_alignment,
+                                     line_spacing,
                                      frame_count,
-                                     input_images, 
-                                     rotation_anchor_x, 
-                                     rotation_anchor_y, 
+                                     input_images,
+                                     rotation_anchor_x,
+                                     rotation_anchor_y,
                                      kerning,
-                                     padding, 
-                                     end_font_size, 
-                                     end_rotation, 
+                                     padding,
+                                     end_font_size,
+                                     end_rotation,
                                      start_rotation,
                                      animation_duration,
                                      animation_reset,
                                      transcription_mode,
                                      border_width,
                                      border_color,
-                                     shadow_color, 
-                                     shadow_offset_x, 
+                                     shadow_color,
+                                     shadow_offset_x,
                                      shadow_offset_y,
                                      animation_easing)
 
         image_batch = torch.cat(images, dim=0)
 
         return (image_batch, formatted_transcription,)
-    
+
     # maybe make this line per line instead of all at once in the beginning
     # this way the dynamicaly changing font-size could be used in this method for more accurate formatting
     def format_transcription(self, transcription, image_width, font_file, font_size, padding, transcription_mode):
@@ -216,38 +205,38 @@ class font2img:
 
         return formatted_transcription
 
-    def generate_images(self, 
-                        start_font_size, 
-                        frame_text_dict, 
-                        start_x_offset, 
-                        end_x_offset, 
-                        start_y_offset, 
-                        end_y_offset, 
-                        font_file, 
-                        font_color, 
-                        background_color, 
-                        image_width, 
-                        image_height, 
-                        text_alignment, 
-                        line_spacing, 
-                        frame_count, 
-                        input_images, 
-                        rotation_anchor_x, 
-                        rotation_anchor_y, 
-                        kerning, 
-                        padding, 
-                        end_font_size, 
-                        end_rotation, 
+    def generate_images(self,
+                        start_font_size,
+                        frame_text_dict,
+                        start_x_offset,
+                        end_x_offset,
+                        start_y_offset,
+                        end_y_offset,
+                        font_file,
+                        font_color,
+                        background_color,
+                        image_width,
+                        image_height,
+                        text_alignment,
+                        line_spacing,
+                        frame_count,
+                        input_images,
+                        rotation_anchor_x,
+                        rotation_anchor_y,
+                        kerning,
+                        padding,
+                        end_font_size,
+                        end_rotation,
                         start_rotation,
                         animation_duration,
                         animation_reset,
                         transcription_mode,
                         border_width,
-                        border_color, 
-                        shadow_color, 
-                        shadow_offset_x, 
-                        shadow_offset_y,  
-                        easing):        
+                        border_color,
+                        shadow_color,
+                        shadow_offset_x,
+                        shadow_offset_y,
+                        easing):
         images = []
         prepared_images = self.prepare_image(input_images, image_width, image_height, background_color, easing)
 
@@ -267,7 +256,7 @@ class font2img:
 
         def exponential_ease(current_frame, total_frames):
             return (2**(10 * (current_frame / total_frames - 1)) - 0.001) if current_frame > 0 else 0
-        
+
         def quadratic_ease_in(current_frame, total_frames):
             t = current_frame / total_frames
             return t * t
@@ -302,7 +291,7 @@ class font2img:
             t = current_frame / total_frames
             s = 1.70158
             return t * t * ((s + 1) * t - s)
-        
+
         def ease_in_out_sine(current_frame, total_frames):
             return -(math.cos(math.pi * current_frame / total_frames) - 1) / 2
 
@@ -320,7 +309,7 @@ class font2img:
             if current_frame < total_frames / 2:
                 return math.pow(2, 10 * (current_frame / total_frames - 0.5)) / 2
             return (2 - math.pow(2, -10 * (current_frame / total_frames - 0.5))) / 2
-        
+
         # Easing function selection
         if easing == 'linear':
             ease_function = linear_ease
@@ -345,19 +334,19 @@ class font2img:
 
         for i in range(1, frame_count + 1):
             text = frame_text_dict.get(str(i), "")
-            current_text_length = len(text.split())  
+            current_text_length = len(text.split())
 
             if text != last_text:
                 last_text = text
-                
-                if animation_reset == 'word': 
-                    animation_started_frame = i 
+
+                if animation_reset == 'word':
+                    animation_started_frame = i
 
                 if animation_reset == 'line':
-                    if current_text_length < last_text_length or first_pass == True or transcription_mode == 'line': 
+                    if current_text_length < last_text_length or first_pass == True or transcription_mode == 'line':
                         animation_started_frame = i
                         first_pass = False
-                    last_text_length = current_text_length  
+                    last_text_length = current_text_length
 
             if animation_reset == 'never':
                 is_animation_active = True
@@ -382,7 +371,7 @@ class font2img:
                 rotation = end_rotation
 
             # Common processing for both animation modes
-            font = self.get_font(font_file, current_font_size, os.path.dirname(__file__))
+            font = self.get_font(font_file, current_font_size)
             image_index = min(i - 1, len(prepared_images) - 1)
             selected_image = prepared_images[image_index]
 
@@ -397,7 +386,7 @@ class font2img:
 
 # Add more easing functions as needed
 
-    def process_single_image(self, image, text, font, font_color, rotation_angle, x_offset, y_offset, text_alignment, line_spacing, text_position, rotation_anchor_x, rotation_anchor_y, background_color, kerning, border_width, border_color, shadow_color, shadow_offset_x, shadow_offset_y):        
+    def process_single_image(self, image, text, font, font_color, rotation_angle, x_offset, y_offset, text_alignment, line_spacing, text_position, rotation_anchor_x, rotation_anchor_y, background_color, kerning, border_width, border_color, shadow_color, shadow_offset_x, shadow_offset_y):
         orig_width, orig_height = image.size
         # Create a larger canvas with the prepared image as the background
         canvas_size = int(max(orig_width, orig_height) * 1.5)
@@ -478,12 +467,12 @@ class font2img:
 
     def get_text_width(self,text, font_file, font_size):
         # Load the font
-        font = self.get_font(font_file, font_size, os.path.dirname(__file__))
+        font = self.get_font(font_file, font_size)
         # Measure the size of the text rendered in the loaded font
         text_width = font.getlength(text)
         return text_width
-    
-    def calculate_text_position(self, image_width, image_height, text_width, text_height, text_alignment, x_offset, y_offset, padding):        
+
+    def calculate_text_position(self, image_width, image_height, text_width, text_height, text_alignment, x_offset, y_offset, padding):
         # Adjust the base position based on text_alignment and margin
         if text_alignment == "left top":
             base_x, base_y = padding, padding
@@ -512,29 +501,18 @@ class font2img:
 
         return final_x, final_y
 
-    def process_image_for_output(self, image):
+    def process_image_for_output(self, image) -> torch.Tensor:
         i = ImageOps.exif_transpose(image)
         if i.mode == 'I':
             i = i.point(lambda i: i * (1 / 255))
         image = i.convert("RGB")
         image_np = np.array(image).astype(np.float32) / 255.0
         return torch.from_numpy(image_np)[None,]
-    
-    def get_font(self, font_file, font_size, script_dir):
-        if font_file == "default":
-            return ImageFont.load_default()
-        else:
-            font_dir1 = os.path.join(script_dir, 'font')
-            font_dir2 = os.path.join(script_dir, 'font_files')
-                    # Check which directory exists and use it for the full font file path
-            if os.path.exists(os.path.join(font_dir1, font_file)):
-                full_font_file = os.path.join(font_dir1, font_file)
-            elif os.path.exists(os.path.join(font_dir2, font_file)):
-                full_font_file = os.path.join(font_dir2, font_file)
-            else:
-                raise FileNotFoundError(f"Font file '{font_file}' not found in 'font' or 'font_files' directories.")
-            return ImageFont.truetype(full_font_file, font_size)
-        
+
+    def get_font(self, font_name, font_size) -> ImageFont.FreeTypeFont:
+        font_file = self.FONTS[font_name]
+        return ImageFont.truetype(font_file, font_size)
+
     def calculate_text_block_size(self, draw, text, font, line_spacing, kerning):
         lines = text.split('\n')
         max_width = 0
@@ -548,7 +526,7 @@ class font2img:
         total_height = font_size * len(lines) + line_spacing * (len(lines) - 1)
 
         return max_width, total_height
-    
+
     def parse_text_input(self, text_input, frame_count):
         structured_format = False
         frame_text_dict = {}
@@ -573,7 +551,7 @@ class font2img:
 
     def interpolate_text(self, frame_text_dict, frame_count):
         sorted_frames = sorted(int(k) for k in frame_text_dict.keys())
-        
+
         # If only one frame is specified, use its text for all frames
         if len(sorted_frames) == 1:
             single_frame_text = frame_text_dict[str(sorted_frames[0])]
@@ -626,7 +604,7 @@ class font2img:
             return start_char
         else:
             return end_char
-        
+
     def cumulative_text(self, frame_text_dict, frame_count):
         cumulative_text_dict = {}
         last_text = ""
@@ -637,14 +615,14 @@ class font2img:
             cumulative_text_dict[str(i)] = last_text
 
         return cumulative_text_dict
-    
+
     def process_text_mode(self, frame_text_dict, mode, is_structured_input, frame_count):
         if mode == "interpolation" and is_structured_input:
             return self.interpolate_text(frame_text_dict, frame_count)
         elif mode == "cumulative" and is_structured_input:
             return self.cumulative_text(frame_text_dict, frame_count)
         return frame_text_dict
-    
+
     def prepare_image(self, input_image, image_width, image_height, background_color, easing):
         if not isinstance(input_image, list):
             if isinstance(input_image, torch.Tensor):
