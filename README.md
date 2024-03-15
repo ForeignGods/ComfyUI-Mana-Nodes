@@ -46,14 +46,13 @@ https://github.com/ForeignGods/ComfyUI-Mana-Nodes/assets/78089013/657330d9-4745-
 
 ## To-Do
 
-- [x] Font to Image Batch Animation
+- [x] font2image Batch Animation
 - [x] Split Video to Frames and Audio
-- [x] Speech-to-Text Conversion
+- [x] speech2text 
 - [ ] SVG Loader/Animator
-- [ ] Font to Image Alpha Channel
-- [ ] keyframe model/lora switcher for animateDiff
-- [ ] animation process of transition from pictures to videos
+- [ ] font2image Alpha Channel
 - [ ] add font support for other languages
+- [ ] 3d effect for text, bevel/emboss, inner shading, fade in/out effect 
 
 ## Nodes
 
