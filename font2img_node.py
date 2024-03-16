@@ -8,15 +8,50 @@ import random
 import math
 from matplotlib import font_manager
 
-def font_names() -> list[str]:
-    mgr = font_manager.FontManager()
-    return {font.name: font.fname for font in mgr.ttflist}
-
 class font2img:
-    FONTS = font_names()
-    FONT_NAMES = sorted(FONTS.keys())
+
+    FONTS = {}
+    FONT_NAMES = []
+
     def __init__(self):
         pass
+
+    @classmethod
+    def system_font_names(self):
+        mgr = font_manager.FontManager()
+        return {font.name: font.fname for font in mgr.ttflist}
+
+    @classmethod
+    def get_font_files(self, font_dir):
+        extensions = ['.ttf', '.otf', '.woff', '.woff2']
+        return [os.path.join(font_dir, f) for f in os.listdir(font_dir)
+                if os.path.isfile(os.path.join(font_dir, f)) and f.endswith(tuple(extensions))]
+    
+    @classmethod
+    def setup_font_directories(self):
+        script_dir = os.path.dirname(__file__)
+        custom_font_files = []
+        for dir_name in ['font', 'font_files']:
+            font_dir = os.path.join(script_dir, dir_name)
+            if os.path.exists(font_dir):
+                custom_font_files.extend(self.get_font_files(font_dir))
+        return custom_font_files
+    
+    @classmethod
+    def combined_font_list(self):
+        system_fonts = self.system_font_names()
+        custom_font_files = self.setup_font_directories()
+
+        # Create a dictionary for custom fonts mapping font file base names to their paths
+        custom_fonts = {os.path.splitext(os.path.basename(f))[0]: f for f in custom_font_files}
+
+        # Merge system_fonts and custom_fonts dictionaries
+        all_fonts = {**system_fonts, **custom_fonts}
+        return all_fonts
+    
+    def get_font(self, font_name, font_size) -> ImageFont.FreeTypeFont:
+        font_file = self.FONTS[font_name]
+        return ImageFont.truetype(font_file, font_size)
 
     @classmethod
     def INPUT_TYPES(self):
@@ -27,6 +62,8 @@ class font2img:
         transcription_mode = ["word","line","fill"]
         animation_reset = ["word", "line", "never"]
         animation_easing = ["linear", "exponential", "quadratic","cubic", "elastic", "bounce","back","ease_in_out_sine","ease_out_back","ease_in_out_expo"]
+        self.FONTS = self.combined_font_list()
+        self.FONT_NAMES = sorted(self.FONTS.keys())
 
         return {
             "required": {
@@ -508,10 +545,6 @@ class font2img:
         image = i.convert("RGB")
         image_np = np.array(image).astype(np.float32) / 255.0
         return torch.from_numpy(image_np)[None,]
-
-    def get_font(self, font_name, font_size) -> ImageFont.FreeTypeFont:
-        font_file = self.FONTS[font_name]
-        return ImageFont.truetype(font_file, font_size)
 
     def calculate_text_block_size(self, draw, text, font, line_spacing, kerning):
         lines = text.split('\n')

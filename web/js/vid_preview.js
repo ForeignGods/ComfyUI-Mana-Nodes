@@ -230,7 +230,6 @@ export function addVideoPreview(nodeType, options = {}) {
 app.registerExtension({
   name: "video2audio",
   init() {
-    console.log("heloo");
     // Inserting custom style into the document head
     const styleElement = $el('style', {
       textContent: style,
@@ -239,8 +238,6 @@ app.registerExtension({
 
   },
   async beforeRegisterNodeDef(nodeType, nodeData) {
-    console.log("heloo1");
-
     // Apply customization only if it's the correct node type
     if (nodeData.name !== "video2audio" || nodeData.name !== "audio2video") {
       return;
