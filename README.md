@@ -50,7 +50,7 @@ https://github.com/ForeignGods/ComfyUI-Mana-Nodes/assets/78089013/657330d9-4745-
 - [x] font2image Batch Animation
 - [x] Split Video to Frames and Audio
 - [x] speech2text
-- [ ] text2speech
+- [x] text2speech
 - [ ] SVG Loader/Animator
 - [ ] font2image Alpha Channel
 - [ ] add font support for other languages
