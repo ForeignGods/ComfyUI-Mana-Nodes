@@ -119,11 +119,11 @@
           "link": 293
         },
         {
-          "name": "audio",
+          "name": "audio_file",
           "type": "STRING",
           "link": 283,
           "widget": {
-            "name": "audio"
+            "name": "audio_file"
           }
         },
         {
@@ -137,7 +137,7 @@
       ],
       "outputs": [
         {
-          "name": "video_file_path",
+          "name": "video_file",
           "type": "STRING",
           "links": null,
           "shape": 3
@@ -209,7 +209,7 @@
           "slot_index": 0
         },
         {
-          "name": "audio",
+          "name": "audio_file",
           "type": "STRING",
           "links": [
             282,
@@ -417,11 +417,11 @@
       "mode": 0,
       "inputs": [
         {
-          "name": "audio",
+          "name": "audio_file",
           "type": "STRING",
           "link": 282,
           "widget": {
-            "name": "audio"
+            "name": "audio_file"
           }
         },
         {

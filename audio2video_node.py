@@ -15,7 +15,7 @@ class audio2video:
     def INPUT_TYPES(cls):
         return {
             "required": {
-                "audio": ("STRING", {"display": "text", "forceInput": True}),
+                "audio_file": ("STRING", {"display": "text", "forceInput": True}),
                 "frames": ("IMAGE", {"display": "text", "forceInput": True}),
                 "filename_prefix": ("STRING", {"default": "video_files\\video"}),
                 "fps": ("INT", {"default": 30, "min": 1, "max": 60, "step": 1, "forceInput": True})
@@ -25,11 +25,11 @@ class audio2video:
 
     CATEGORY = "Mana Nodes"
     RETURN_TYPES = ("STRING",) 
-    RETURN_NAMES = ("video_file_path",)
+    RETURN_NAMES = ("video_file",)
     FUNCTION = "run"
     OUTPUT_NODE = True
 
-    def run(self, audio, frames, filename_prefix, fps):
+    def run(self, audio_file, frames, filename_prefix, fps):
         # Ensure output filename has .mp4 extension
         if not filename_prefix.endswith('.mp4'):
             filename_prefix += '.mp4'
@@ -66,7 +66,7 @@ class audio2video:
         video_clip = ImageSequenceClip(numpy_frames, fps=fps)
 
         # Add audio to video
-        audio_clip = AudioFileClip(audio)
+        audio_clip = AudioFileClip(audio_file)
         video_clip = video_clip.set_audio(audio_clip)
 
         output_path = os.path.join(script_dir, filename_prefix)

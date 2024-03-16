@@ -19,7 +19,7 @@ class speech2text:
     
         return {
             "required": {
-                "audio": ("STRING", {"display": "text","forceInput": True}),
+                "audio_file": ("STRING", {"display": "text","forceInput": True}),
                 "wav2vec2_model": (cls.get_wav2vec2_models(), {"display": "dropdown", "default": "ailegends/xlsr-jonatasgrosman-wav2vec2-large-xlsr-53-english"}),
                 "spell_check_language": (spell_check_options, {"default": "English", "display": "dropdown"}),
                 "framestamps_max_chars": ("INT", {"default": 25, "step": 1, "display": "number"})
@@ -35,11 +35,11 @@ class speech2text:
     FUNCTION = "run"
     OUTPUT_NODE = True
 
-    def run(self, audio, wav2vec2_model, spell_check_language,framestamps_max_chars,**kwargs):
+    def run(self, audio_file, wav2vec2_model, spell_check_language,framestamps_max_chars,**kwargs):
        
         fps = kwargs.get('fps',30)
         # Load and process with Wav2Vec2 model
-        audio_array = self.audiofile_to_numpy(audio)
+        audio_array = self.audiofile_to_numpy(audio_file)
         raw_transcription = self.transcribe_with_timestamps(audio_array, wav2vec2_model)
         #print("raw_transcription", raw_transcription)
 
