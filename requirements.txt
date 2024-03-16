@@ -9,3 +9,5 @@ opencv-python-headless
 requests
 logging
 matplotlib
+scipy
+

@@ -10,7 +10,6 @@ class speech2text:
         pass
 
     @classmethod
-
     def INPUT_TYPES(cls):
 
         spell_check_options = ["English", "Spanish", "French", 
