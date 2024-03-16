@@ -52,7 +52,8 @@ https://github.com/ForeignGods/ComfyUI-Mana-Nodes/assets/78089013/657330d9-4745-
 - [ ] SVG Loader/Animator
 - [ ] font2image Alpha Channel
 - [ ] add font support for other languages
-- [ ] 3d effect for text, bevel/emboss, inner shading, fade in/out effect 
+- [ ] 3d effect for text, bevel/emboss, inner shading, fade in/out effect
+- [ ] input scheduled values for the animation
 
 ## Nodes
 
