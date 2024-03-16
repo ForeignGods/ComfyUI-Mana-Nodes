@@ -122,6 +122,7 @@ Configure the font2img node by setting the following parameters in ComfyUI:
 #### `start_x_offset`, `end_x_offset`, `start_y_offset`, `end_y_offset`
 - Sets the starting and ending offsets for text positioning on the X and Y axes, allowing for text transition across the image.
 - Input as integers. Example: `start_x_offset = 10`, `end_x_offset = 50` moves the text from 10 pixels from the left to 50 pixels from the left across frames.
+- Negative values can be used to offset in opposite direction `start_x_offset = -100`, `end_x_offset = 0`
 
 #### `start_rotation`, `end_rotation`
 - Defines the starting and ending rotation angles for the text, enabling it to rotate between these angles.
