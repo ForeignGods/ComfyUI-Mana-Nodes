@@ -63,41 +63,41 @@ https://github.com/ForeignGods/ComfyUI-Mana-Nodes/assets/78089013/657330d9-4745-
 
 Configure the font2img node by setting the following parameters in ComfyUI:
 
-- <b>font_file:</b> fonts located in the <b>custom_nodes\ComfyUI-Mana-Nodes\font\example_font.ttf</b> directory (supports .ttf, .otf, .woff, .woff2).
-- <b>font_color:</b> Color of the text. (https://www.w3.org/wiki/CSS3/Color/Extended_color_keywords)
-- <b>background_color:</b> Background color of the image.
-- <b>border_color:</b> Color of the border around the text.
-- <b>border_width:</b> Width of the text border.
-- <b>shadow_color:</b> Width of the text border.
-- <b>shadow_offset_x:</b> Horizontal offset of the shadow.
-- <b>shadow_offset_y:</b> Vertical offset of the shadow.
-- <b>line_spacing:</b> Spacing between lines of text.
-- <b>kerning:</b> Spacing between characters of font.
-- <b>padding:</b> Padding between image border and font.
-- <b>frame_count:</b> Number of frames (images) to generate.
-- <b>image_width:</b> Width of the generated images.
-- <b>image_height:</b> Height of the generated images.
-- <b>transcription_mode:</b> Mode of text transcription ('word', 'line', 'fill').
-- <b>text_alignment:</b> Alignment of the text in the image.
-- <b>text_interpolation_options:</b> Mode of text interpolation ('strict', 'interpolation', 'cumulative').
-- <b>text:</b> The text to render in the images. (is ignored when optional input transcription is given)
-- <b>animation_reset:</b> Defines when the animation resets ('word', 'line', 'never').
-- <b>animation_easing:</b> Easing function for animation (e.g., 'linear', 'exponential').
-- <b>animation_duration:</b> Duration of the animation.
-- <b>start_font_size, end_font_size:</b> Starting and ending size of the font. 
-- <b>start_x_offset, end_x_offset, start_y_offset, end_y_offset:</b> Offsets for text positioning.
-- <b>start_rotation, end_rotation:</b> Rotation angles for the text.
-- <b>rotation_anchor_x, rotation_anchor_y:</b> offset of the rotation anchor point, relative to the texts initial position.
+- `font_file` fonts located in the <b>custom_nodes\ComfyUI-Mana-Nodes\font\example_font.ttf</b> directory (supports .ttf, .otf, .woff, .woff2).
+- `font_color` Color of the text. (https://www.w3.org/wiki/CSS3/Color/Extended_color_keywords)
+- `background_color` Background color of the image.
+- `border_color` Color of the border around the text.
+- `border_width` Width of the text border.
+- `shadow_color` Width of the text border.
+- `shadow_offset_x` Horizontal offset of the shadow.
+- `shadow_offset_y` Vertical offset of the shadow.
+- `line_spacing` Spacing between lines of text.
+- `kerning` Spacing between characters of font.
+- `padding` Padding between image border and font.
+- `frame_count` Number of frames (images) to generate.
+- `image_width` Width of the generated images.
+- `image_height` Height of the generated images.
+- `transcription_mode` Mode of text transcription ('word', 'line', 'fill').
+- `text_alignment` Alignment of the text in the image.
+- `text_interpolation_options` Mode of text interpolation ('strict', 'interpolation', 'cumulative').
+- `text` The text to render in the images. (is ignored when optional input transcription is given)
+- `animation_reset` Defines when the animation resets ('word', 'line', 'never').
+- `animation_easing` Easing function for animation (e.g., 'linear', 'exponential').
+- `animation_duration` Duration of the animation.
+- `start_font_size`, `end_font_size` Starting and ending size of the font. 
+- `start_x_offset`, `end_x_offset`, `start_y_offset`, `end_y_offset` Offsets for text positioning.
+- `start_rotation`, `end_rotation` Rotation angles for the text.
+- `rotation_anchor_x`, `rotation_anchor_y` offset of the rotation anchor point, relative to the texts initial position.
 
 ### Optional Inputs
 
-- <b>input_images:</b> Text will be overlayed on input_images instead of background_color.
-- <b>transcription:</b> Transcription from the speech2text node, contains dict with timestamps, framerate and transcribed words.
+- `input_images` Text will be overlayed on input_images instead of background_color.
+- `transcription` Transcription from the speech2text node, contains dict with timestamps, framerate and transcribed words.
 
 ### Outputs
 
-- <b>images:</b> The generated images with the specified text and configurations.
-- <b>transcription_framestamps:</b> Outputs a string containing the framestamps, new line calculated based on image width. (Can be useful to manually correct mistakes by speech recognition)
+- `images` The generated images with the specified text and configurations.
+- `transcription_framestamps` Outputs a string containing the framestamps, new line calculated based on image width. (Can be useful to manually correct mistakes by speech recognition)
   - <b>Example:</b> Save this output with string2file -> correct mistakes -> remove transcription input from font2img -> paste corrected framestamps into text input field of font2img node.
 
 ### Parameters Explanation
@@ -165,18 +165,18 @@ Extracts frames and audio from a video file.
 
 ### Required Inputs
 
-- <b>video:</b> Path the video file.
-- <b>frame_limit:</b> Maximum number of frames to extract from the video.
-- <b>frame_start:</b> Starting frame number for extraction.
-- <b>filename_prefix:</b> Prefix for naming the extracted audio file. (relative to .\ComfyUI-Mana-Nodes)
+- `video` Path the video file.
+- `frame_limit` Maximum number of frames to extract from the video.
+- `frame_start` Starting frame number for extraction.
+- `filename_prefix` Prefix for naming the extracted audio file. (relative to .\ComfyUI-Mana-Nodes)
 
 ### Outputs
 
-- <b>frames:</b> Extracted frames as image tensors.
-- <b>frame_count:</b> Total number of frames extracted.
-- <b>audio:</b> Path of the extracted audio file.
-- <b>fps:</b> Frames per second of the video.
-- <b>height, width:</b> Dimensions of the extracted frames.
+- `frames` Extracted frames as image tensors.
+- `frame_count` Total number of frames extracted.
+- `audio` Path of the extracted audio file.
+- `fps` Frames per second of the video.
+- `height`, `width:` Dimensions of the extracted frames.
 
 ## speech2text Node
 
@@ -184,31 +184,31 @@ Converts spoken words in an audio file to text using a deep learning model.
 
 ### Required Inputs
 
-- <b>audio:</b> Audio file path or URL.
-- <b>wav2vec2_model:</b> The Wav2Vec2 model used for speech recognition. (https://huggingface.co/models?search=wav2vec2)
-- <b>spell_check_language:</b> Language for the spell checker.
-- <b>framestamps_max_chars:</b> Maximum characters allowed until new framestamp lines created.
+- `audio` Audio file path or URL.
+- `wav2vec2_model` The Wav2Vec2 model used for speech recognition. (https://huggingface.co/models?search=wav2vec2)
+- `spell_check_language` Language for the spell checker.
+- `framestamps_max_chars` Maximum characters allowed until new framestamp lines created.
 
 ### Optional Inputs
 
-- <b>fps:</b> Frames per second, used for synchronizing with video. (Default set to 30)
+- `fps` Frames per second, used for synchronizing with video. (Default set to 30)
 
 ### Outputs
 
-- <b>transcription:</b> Text transcription of the audio. (Should only be used as font2img transcription input)
-- <b>raw_string:</b> Raw string of the transcription without timestamps.
-- <b>framestamps_string:</b> Frame-stamped transcription.
-- <b>timestamps_string:</b> Transcription with timestamps.
+- `transcription` Text transcription of the audio. (Should only be used as font2img transcription input)
+- `raw_string` Raw string of the transcription without timestamps.
+- `framestamps_string` Frame-stamped transcription.
+- `timestamps_string` Transcription with timestamps.
 
 ### Example Outputs
 
-- <b>raw_string:</b> Returns the transcribed text as one line.
+- `raw_string` Returns the transcribed text as one line.
 
 ```
 THE GREATEST TRICK THE DEVIL EVER PULLED WAS CONVINCING THE WORLD HE DIDN'T EXIST
 ```
 
-- <b>framestamps_string:</b> Depending on the <b>framestamps_max_chars</b> parameter the sentece will be cleared and starts to build up again until max_chars is reached again. 
+- `framestamps_string` Depending on the <b>framestamps_max_chars</b> parameter the sentece will be cleared and starts to build up again until max_chars is reached again. 
   - In this example <b>framestamps_max_chars</b> is set to <b>25</b>.
 
 ```
@@ -228,7 +228,7 @@ THE GREATEST TRICK THE DEVIL EVER PULLED WAS CONVINCING THE WORLD HE DIDN'T EXIS
 "178": "DIDN'T EXIST",
 ```
 
-<b>timestamps_string:</b> Returns all transcribed words, their start_time and end_time in json format as a string.
+`timestamps_string` Returns all transcribed words, their start_time and end_time in json format as a string.
 
 ```
 [
@@ -258,8 +258,8 @@ Converts text to speech and saves the output as an audio file.
 
 ### Required Inputs
 
-- <b>text:</b> The text to be converted into speech.
-- <b>filename_prefix:</b> Prefix for naming the audio file. (relative to .\ComfyUI-Mana-Nodes)
+- `text` The text to be converted into speech.
+- `filename_prefix` Prefix for naming the audio file. (relative to .\ComfyUI-Mana-Nodes)
 
 This node uses a text-to-speech pipeline to convert input text into spoken words, saving the result as a WAV file. The generated audio file is named using the provided filename prefix and is stored relative to the .\ComfyUI-Mana-Nodes directory.
 
@@ -312,8 +312,8 @@ Writes a given string to a text file.
 
 ### Required Inputs
 
-- <b>string:</b> The string to be written to the file.
-- <b>filename_prefix:</b> Prefix for naming the text file. (relative to .\ComfyUI-Mana-Nodes)
+- `string` The string to be written to the file.
+- `filename_prefix` Prefix for naming the text file. (relative to .\ComfyUI-Mana-Nodes)
 
 ## audio2video Node
 
@@ -321,14 +321,14 @@ Combines a sequence of images (frames) with an audio file to create a video.
 
 ### Required Inputs
 
-- <b>audio:</b> Audio file path or URL.
-- <b>frames:</b> Sequence of images to be used as video frames.
-- <b>filename_prefix:</b> Prefix for naming the video file. (relative to .\ComfyUI-Mana-Nodes)
-- <b>fps:</b> Frames per second for the video.
+- `audio` Audio file path or URL.
+- `frames` Sequence of images to be used as video frames.
+- `filename_prefix` Prefix for naming the video file. (relative to .\ComfyUI-Mana-Nodes)
+- `fps` Frames per second for the video.
 
 ### Outputs
 
-- <b>video_file_path:</b> Path to the created video file.
+- `video_file_path` Path to the created video file.
 
 ## Example Workflows
 
