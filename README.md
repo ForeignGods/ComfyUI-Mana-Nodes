@@ -263,47 +263,48 @@ Converts text to speech and saves the output as an audio file.
 
 This node uses a text-to-speech pipeline to convert input text into spoken words, saving the result as a WAV file. The generated audio file is named using the provided filename prefix and is stored relative to the .\ComfyUI-Mana-Nodes directory.
 
-Model: https://huggingface.co/spaces/suno/bark
+Model: [https://huggingface.co/spaces/suno/bark](https://huggingface.co/suno/bark)
 
 ### Foreign Language
 
 Bark supports various languages out-of-the-box and automatically determines language from input text. When prompted with code-switched text, Bark will even attempt to employ the native accent for the respective languages in the same voice.
 
 Example:
-- <pre>Buenos días Miguel. Tu colega piensa que tu alemán es extremadamente malo. But I suppose your english isn't terrible.</pre>
+<pre>Buenos días Miguel. Tu colega piensa que tu alemán es extremadamente malo. But I suppose your english isn't terrible.</pre>
 
 ### Non-Speech Sounds
 
-Below is a list of some known non-speech sounds, but we are finding more every day. Please let us know if you find patterns that work particularly well on Discord!
-- [laughter]
-- [laughs]
-- [sighs]
-- [music]
-- [gasps]
-- [clears throat]
-- — or … for hesitations
-- ♪ for song lyrics
-- capitalization for emphasis of a word
-- MAN/WOMAN: for bias towards speaker
+Below is a list of some known non-speech sounds, but we are finding more every day.
+<pre>
+[laughter]
+[laughs]
+[sighs]
+[music]
+[gasps]
+[clears throat]
+— or … for hesitations
+♪ for song lyrics
+capitalization for emphasis of a word
+MAN/WOMAN: for bias towards speaker
+</pre>
 
 Example:
-- <pre>" [clears throat] Hello, my name is Suno. And, uh — and I like pizza. [laughs] But I also have other interests such as... ♪ singing ♪."</pre>
+<pre>" [clears throat] Hello, my name is Suno. And, uh — and I like pizza. [laughs] But I also have other interests such as... ♪ singing ♪."</pre>
 
 ### Music
 
 Bark can generate all types of audio, and, in principle, doesn’t see a difference between speech and music. Sometimes Bark chooses to generate text as music, but you can help it out by adding music notes around your lyrics.
 
 Example:
-- <pre>♪ In the jungle, the mighty jungle, the lion barks tonight ♪</pre>
+<pre>♪ In the jungle, the mighty jungle, the lion barks tonight ♪</pre>
 
 ### Speaker Prompts
 
 You can provide certain speaker prompts such as NARRATOR, MAN, WOMAN, etc. Please note that these are not always respected, especially if a conflicting audio history prompt is given.
 
 Example:
-- <pre>WOMAN: I would like an oatmilk latte please.</pre>
-- <pre>MAN: Wow, that's expensive!</pre>
-
+<pre>WOMAN: I would like an oatmilk latte please.
+MAN: Wow, that's expensive!</pre>
 
 ## string2file Node
 
