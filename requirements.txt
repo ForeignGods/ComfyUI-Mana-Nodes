@@ -10,4 +10,4 @@ requests
 logging
 matplotlib
 scipy
-
+pyspellchecker
