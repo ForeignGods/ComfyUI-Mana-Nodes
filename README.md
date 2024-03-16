@@ -9,6 +9,7 @@ Collection of custom nodes for ComfyUI.
   - [font2img Node](#font2img-node)
   - [video2audio Node](#video2audio-node)
   - [speech2text Node](#speech2text-node)
+  - [text2speech Node](#text2speech-node)
   - [string2file Node](#string2file-node)
   - [audio2video Node](#audio2video-node)
 - [Example Workflows](#example-workflows)
@@ -304,6 +305,20 @@ THE GREATEST TRICK THE DEVIL EVER PULLED WAS CONVINCING THE WORLD HE DIDN'T EXIS
   }
 ]
 ```
+
+
+## text2speech Node
+
+Converts text to speech and saves the output as an audio file.
+
+### Required Inputs
+
+- <b>text:</b> The text to be converted into speech.
+- <b>filename_prefix:</b> Prefix for naming the audio file. (relative to .\ComfyUI-Mana-Nodes)
+
+This node uses a text-to-speech pipeline to convert input text into spoken words, saving the result as a WAV file. The generated audio file is named using the provided filename prefix and is stored relative to the .\ComfyUI-Mana-Nodes directory.
+
+Model: https://huggingface.co/spaces/suno/bark
 
 ## string2file Node
 
