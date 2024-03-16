@@ -1,7 +1,5 @@
 # ComfyUI-Mana-Nodes
 
-Collection of custom nodes for ComfyUI.
-
 - [Installation](#installation)
 - [Demo](#demo)
 - [To-Do](#to-do)
