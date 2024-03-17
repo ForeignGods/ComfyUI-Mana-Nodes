@@ -1,10 +1,10 @@
-from .font2img_node import font2img
-from .speech2text_node import speech2text
-from .video2audio_node import video2audio
-from .string2file_node import string2file
-from .audio2video_node import audio2video
-from .text2speech_node import text2speech
-from .logger import logger
+from .nodes.font2img_node import font2img
+from .nodes.speech2text_node import speech2text
+from .nodes.video2audio_node import video2audio
+from .nodes.string2file_node import string2file
+from .nodes.audio2video_node import audio2video
+from .nodes.text2speech_node import text2speech
+from .helpers.logger import logger
 
 my_logger = logger()
 my_logger.error("Mana Web")

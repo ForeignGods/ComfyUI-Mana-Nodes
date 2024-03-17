@@ -3,7 +3,7 @@ import cv2
 import torch
 import hashlib
 import folder_paths
-from .utils import ensure_opencv, pil2tensor
+from ..helpers.utils import ensure_opencv, pil2tensor
 from PIL import Image
 from pathlib import Path
 from moviepy.editor import VideoFileClip
@@ -57,17 +57,10 @@ class video2audio:
         start_time = frame_start / fps
         end_time = (frame_start + frame_limit) / fps
 
-        # Get the current working directory
-        script_dir = os.path.dirname(__file__)
-
-        # Normalize and construct full path
+        script_dir = os.path.dirname(os.path.dirname(__file__))
         normalized_path = os.path.normpath(filename_prefix)
         full_path = os.path.join(script_dir, normalized_path)
-
-        # Create directory if it doesn't exist
         Path(os.path.dirname(full_path)).mkdir(parents=True, exist_ok=True)
-
-        # Ensure the filename has a .wav extension
         if not full_path.endswith('.wav'):
             full_path += '.wav'
 

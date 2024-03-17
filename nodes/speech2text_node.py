@@ -46,7 +46,6 @@ class speech2text:
         corrected_transcription = self.correct_transcription_with_language_model(raw_transcription, spell_check_language)
         #print("corrected_transcription", corrected_transcription)
         
-
         # Generate string formatted like JSON for transcription with timestamps
         frame_structure_transcription = self.transcription_to_frame_structure_string(corrected_transcription,fps,framestamps_max_chars)
         #print("frame_structure_transcription", frame_structure_transcription)

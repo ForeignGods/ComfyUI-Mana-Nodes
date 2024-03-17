@@ -22,7 +22,7 @@ class string2file:
 
     def run(self, string, filename_prefix):
         try:
-            script_dir = os.path.dirname(__file__)
+            script_dir = os.path.dirname(os.path.dirname(__file__))
 
             # Check if filename_prefix contains directory information
             if "\\" in filename_prefix or "/" in filename_prefix:
