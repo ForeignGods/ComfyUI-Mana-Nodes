@@ -24,7 +24,7 @@ class speech2text:
                 "framestamps_max_chars": ("INT", {"default": 25, "step": 1, "display": "number"})
             },            
             "optional": {
-                "fps": ("INT", {"forceInput": True})
+                "fps": ("INT", {"default": 30, "min": 1, "max": 60, "step": 1})
             }
         }
 

@@ -107,180 +107,83 @@ class font2img:
         }
 
     RETURN_TYPES = ("IMAGE", "STRING",)
-    RETURN_NAMES = ("images", "transcription_framestamps",)
+    RETURN_NAMES = ("images", "framestamps_string",)
 
     FUNCTION = "run"
 
     CATEGORY = "Mana Nodes"
 
-    def run(self,
-            end_font_size,
-            start_font_size,
-            text_interpolation_options,
-            line_spacing,
-            start_x_offset,
-            end_x_offset,
-            start_y_offset,
-            end_y_offset,
-            start_rotation,
-            end_rotation,
-            font_file,
-            frame_count,
-            text,
-            font_color,
-            background_color,
-            image_width,
-            image_height,
-            text_alignment,
-            rotation_anchor_x,
-            rotation_anchor_y,
-            kerning,
-            padding,
-            transcription_mode,
-            animation_duration,
-            animation_reset,
-            border_width,
-            border_color,
-            shadow_color,
-            shadow_offset_x,
-            shadow_offset_y,
-            animation_easing,
-            **kwargs):
-
-        transcription = kwargs.get('transcription')
-
-        if transcription != None:
-            formatted_transcription = self.format_transcription(transcription, image_width, font_file, start_font_size,padding,transcription_mode)
+    def run(self, **kwargs):
+        if kwargs.get('transcription', None) != None:
+            formatted_transcription = self.format_transcription(kwargs)
             text = formatted_transcription
         else:
             formatted_transcription = None
+            text = kwargs.get('text')
 
-        frame_text_dict, is_structured_input = self.parse_text_input(text, frame_count)
-        frame_text_dict = self.process_text_mode(frame_text_dict, text_interpolation_options, is_structured_input, frame_count)
+        frame_text_dict, is_structured_input = self.parse_text_input(text, kwargs)
+        frame_text_dict = self.process_text_mode(frame_text_dict, kwargs['text_interpolation_options'], is_structured_input, kwargs['frame_count'])
 
-        input_images = kwargs.get('images', [None] * frame_count)
-        images= self.generate_images(start_font_size,
-                                     frame_text_dict,
-                                     start_x_offset,
-                                     end_x_offset,
-                                     start_y_offset,
-                                     end_y_offset,
-                                     font_file,
-                                     font_color,
-                                     background_color,
-                                     image_width,
-                                     image_height,
-                                     text_alignment,
-                                     line_spacing,
-                                     frame_count,
-                                     input_images,
-                                     rotation_anchor_x,
-                                     rotation_anchor_y,
-                                     kerning,
-                                     padding,
-                                     end_font_size,
-                                     end_rotation,
-                                     start_rotation,
-                                     animation_duration,
-                                     animation_reset,
-                                     transcription_mode,
-                                     border_width,
-                                     border_color,
-                                     shadow_color,
-                                     shadow_offset_x,
-                                     shadow_offset_y,
-                                     animation_easing)
-
+        images = self.generate_images(frame_text_dict, kwargs.get('images', [None] * kwargs['frame_count']), kwargs)
         image_batch = torch.cat(images, dim=0)
 
         return (image_batch, formatted_transcription,)
 
     # maybe make this line per line instead of all at once in the beginning
     # this way the dynamicaly changing font-size could be used in this method for more accurate formatting
-    def format_transcription(self, transcription, image_width, font_file, font_size, padding, transcription_mode):
-        if not transcription:
+    def format_transcription(self, kwargs):
+        if not kwargs['transcription']:
             return ""
 
         # Extract fps from the first element and then discard it from further processing
-        _, _, _, transcription_fps = transcription[0]
+        _, _, _, transcription_fps = kwargs['transcription'][0]
 
         formatted_transcription = ""
         current_sentence = ""
         first_transcribed_frame_number = None
 
-        for i, (word, start_time, _, _) in enumerate(transcription):
+        for i, (word, start_time, _, _) in enumerate(kwargs['transcription']):
             frame_number = round(start_time * transcription_fps)
 
             if not current_sentence:
                 current_sentence = word
-                if transcription_mode == "line":
+                if kwargs['transcription_mode'] == "line":
                     first_transcribed_frame_number = frame_number
             else:
                 new_sentence = current_sentence + " " + word
-                width = self.get_text_width(new_sentence, font_file, font_size)
-                if width <= image_width - padding:
+                width = self.get_text_width(new_sentence, kwargs)
+                if width <= kwargs['image_width'] - kwargs['padding']:
                     current_sentence = new_sentence
                 else:
-                    if transcription_mode == "line":
+                    if kwargs['transcription_mode'] == "line":
                         formatted_transcription += f'"{first_transcribed_frame_number}": "{current_sentence}",\n'
                         first_transcribed_frame_number = frame_number
                     current_sentence = word
 
-            if transcription_mode == "fill":
+            if kwargs['transcription_mode'] == "fill":
                 formatted_transcription += f'"{frame_number}": "{current_sentence}",\n'
 
-            if transcription_mode == "word":
+            if kwargs['transcription_mode'] == "word":
                 formatted_transcription += f'"{frame_number}": "{word}",\n'
 
         # Add the final sentence for 'line' and 'fill' modes
         if current_sentence:
-            if transcription_mode in ["fill"]:
-                last_frame_number = round(transcription[-1][1] * transcription_fps)
+            if kwargs['transcription_mode'] in ["fill"]:
+                last_frame_number = round(kwargs['transcription'][-1][1] * transcription_fps)
                 formatted_transcription += f'"{last_frame_number}": "{current_sentence}",\n'
-            if transcription_mode in ["line"]:
+            if kwargs['transcription_mode'] in ["line"]:
                 formatted_transcription += f'"{first_transcribed_frame_number}": "{current_sentence}",\n'
 
         return formatted_transcription
 
-    def generate_images(self,
-                        start_font_size,
-                        frame_text_dict,
-                        start_x_offset,
-                        end_x_offset,
-                        start_y_offset,
-                        end_y_offset,
-                        font_file,
-                        font_color,
-                        background_color,
-                        image_width,
-                        image_height,
-                        text_alignment,
-                        line_spacing,
-                        frame_count,
-                        input_images,
-                        rotation_anchor_x,
-                        rotation_anchor_y,
-                        kerning,
-                        padding,
-                        end_font_size,
-                        end_rotation,
-                        start_rotation,
-                        animation_duration,
-                        animation_reset,
-                        transcription_mode,
-                        border_width,
-                        border_color,
-                        shadow_color,
-                        shadow_offset_x,
-                        shadow_offset_y,
-                        animation_easing):
+    def generate_images(self,frame_text_dict,input_images, kwargs):
         images = []
-        prepared_images = self.prepare_image(input_images, image_width, image_height, background_color)
+        prepared_images = self.prepare_image(input_images, kwargs)
 
         # Initialize variables
         last_text = ""
         animation_started_frame = 1
-        last_text_length = 0  # Initialize last_text_length outside the loop
+        last_text_length = 0  
         is_animation_active = True
         first_pass = True
 
@@ -348,80 +251,80 @@ class font2img:
             return (2 - math.pow(2, -10 * (current_frame / total_frames - 0.5))) / 2
 
         # Easing function selection
-        if animation_easing == 'linear':
+        if kwargs['animation_easing'] == 'linear':
             ease_function = linear_ease
-        elif animation_easing == 'exponential':
+        elif kwargs['animation_easing'] == 'exponential':
             ease_function = exponential_ease
-        elif animation_easing == 'quadratic':
+        elif kwargs['animation_easing'] == 'quadratic':
             ease_function = quadratic_ease_in
-        elif animation_easing == 'cubic':
+        elif kwargs['animation_easing'] == 'cubic':
             ease_function = cubic_ease_in
-        elif animation_easing == 'elastic':
+        elif kwargs['animation_easing'] == 'elastic':
             ease_function = elastic_ease_in
-        elif animation_easing == 'bounce':
+        elif kwargs['animation_easing'] == 'bounce':
             ease_function = bounce_ease_out
-        elif animation_easing == 'back':
+        elif kwargs['animation_easing'] == 'back':
             ease_function = back_ease_in
-        elif animation_easing == 'ease_in_out_sine':
+        elif kwargs['animation_easing'] == 'ease_in_out_sine':
             ease_function = ease_in_out_sine
-        elif animation_easing == 'ease_out_back':
+        elif kwargs['animation_easing'] == 'ease_out_back':
             ease_function = ease_out_back
-        elif animation_easing == 'ease_in_out_expo':
+        elif kwargs['animation_easing'] == 'ease_in_out_expo':
             ease_function = ease_in_out_expo
 
-        for i in range(1, frame_count + 1):
+        for i in range(1, kwargs['frame_count'] + 1):
             text = frame_text_dict.get(str(i), "")
             current_text_length = len(text.split())
 
             if text != last_text:
                 last_text = text
 
-                if animation_reset == 'word':
+                if kwargs['animation_reset'] == 'word':
                     animation_started_frame = i
 
-                if animation_reset == 'line':
-                    if current_text_length < last_text_length or first_pass == True or transcription_mode == 'line':
+                if kwargs['animation_reset'] == 'line':
+                    if current_text_length < last_text_length or first_pass == True or kwargs['transcription_mode'] == 'line':
                         animation_started_frame = i
                         first_pass = False
                     last_text_length = current_text_length
 
-            if animation_reset == 'never':
+            if kwargs['animation_reset'] == 'never':
                 is_animation_active = True
                 # Reset animation if the length of the current text is less than the length of the previous text
 
-            is_animation_active = (i - animation_started_frame) < animation_duration
+            is_animation_active = (i - animation_started_frame) < kwargs['animation_duration']
 
             # Timed animation logic
             if is_animation_active:
                 # Use easing function for animations
-                animation_progress = ease_function(i - animation_started_frame, animation_duration)
+                animation_progress = ease_function(i - animation_started_frame, kwargs['animation_duration'])
 
-                rotation = start_rotation + (end_rotation - start_rotation) * animation_progress
-                current_font_size = int(start_font_size + (end_font_size - start_font_size) * animation_progress)
-                x_offset = start_x_offset + (end_x_offset - start_x_offset) * animation_progress
-                y_offset = start_y_offset + (end_y_offset - start_y_offset) * animation_progress
+                rotation = kwargs['start_rotation'] + (kwargs['end_rotation'] - kwargs['start_rotation']) * animation_progress
+                current_font_size = int(kwargs['start_font_size'] + (kwargs['end_font_size'] - kwargs['start_font_size']) * animation_progress)
+                x_offset = kwargs['start_x_offset'] + (kwargs['end_x_offset'] - kwargs['start_x_offset']) * animation_progress
+                y_offset = kwargs['start_y_offset'] + (kwargs['end_y_offset'] - kwargs['start_y_offset']) * animation_progress
             else:
                 # Maintain end values after animation
-                current_font_size = end_font_size
-                x_offset = end_x_offset
-                y_offset = end_y_offset
-                rotation = end_rotation
+                current_font_size = kwargs['end_font_size']
+                x_offset = kwargs['end_x_offset']
+                y_offset = kwargs['end_y_offset']
+                rotation = kwargs['end_rotation']
 
             # Common processing for both animation modes
-            font = self.get_font(font_file, current_font_size)
+            font = self.get_font(kwargs['font_file'], current_font_size)
             image_index = min(i - 1, len(prepared_images) - 1)
             selected_image = prepared_images[image_index]
 
             draw = ImageDraw.Draw(selected_image)
-            text_width, text_height = self.calculate_text_block_size(draw, text, font, line_spacing, kerning)
-            text_position = self.calculate_text_position(image_width, image_height, text_width, text_height, text_alignment, x_offset, y_offset, padding)
+            text_width, text_height = self.calculate_text_block_size(draw, text, font, kwargs)
+            text_position = self.calculate_text_position(text_width, text_height, x_offset, y_offset, kwargs)
 
-            processed_image = self.process_single_image(selected_image, text, font, font_color, rotation, x_offset, y_offset, text_alignment, line_spacing, text_position, rotation_anchor_x, rotation_anchor_y, background_color, kerning, border_width, border_color, shadow_color, shadow_offset_x, shadow_offset_y)
+            processed_image = self.process_single_image(selected_image, text, font, rotation, x_offset, y_offset, text_position, kwargs)
             images.append(processed_image)
 
         return images
 
-    def process_single_image(self, image, text, font, font_color, rotation_angle, x_offset, y_offset, text_alignment, line_spacing, text_position, rotation_anchor_x, rotation_anchor_y, background_color, kerning, border_width, border_color, shadow_color, shadow_offset_x, shadow_offset_y):
+    def process_single_image(self, image, text, font, rotation_angle, x_offset, y_offset, text_position,kwargs ):
         orig_width, orig_height = image.size
         # Create a larger canvas with the prepared image as the background
         canvas_size = int(max(orig_width, orig_height) * 1.5)
@@ -429,7 +332,7 @@ class font2img:
 
         # Calculate text size and position
         draw = ImageDraw.Draw(canvas)
-        text_block_width, text_block_height = self.calculate_text_block_size(draw, text, font, line_spacing, kerning)
+        text_block_width, text_block_height = self.calculate_text_block_size(draw, text, font, kwargs)
         text_x, text_y = text_position
         text_x += (canvas_size - orig_width) / 2 + x_offset
         text_y += (canvas_size - orig_height) / 2 + y_offset
@@ -438,13 +341,13 @@ class font2img:
         text_center_x = text_x + text_block_width / 2
         text_center_y = text_y + text_block_height / 2
 
-        overlay = Image.new('RGBA', (int(text_block_width + border_width * 2 + shadow_offset_x), int(text_block_height + border_width * 2 + shadow_offset_y)), (255, 255, 255, 0))
+        overlay = Image.new('RGBA', (int(text_block_width + kwargs['border_width'] * 2 + kwargs['shadow_offset_x']), int(text_block_height + kwargs['border_width'] * 2 + kwargs['shadow_offset_y'])), (255, 255, 255, 0))
         draw_overlay = ImageDraw.Draw(overlay)
 
         # Draw text on overlays
-        self.draw_text_on_overlay(draw_overlay, text, font, font_color, line_spacing, kerning, border_color, border_width, shadow_color, shadow_offset_x, shadow_offset_y)
+        self.draw_text_on_overlay(draw_overlay, text, font, kwargs)
         canvas.paste(overlay, (int(text_x), int(text_y)), overlay)
-        anchor = (text_center_x + rotation_anchor_x, text_center_y + rotation_anchor_y)
+        anchor = (text_center_x + kwargs['rotation_anchor_x'], text_center_y + kwargs['rotation_anchor_y'])
 
         rotated_canvas = canvas.rotate(rotation_angle, center=anchor, expand=0)
 
@@ -462,73 +365,73 @@ class font2img:
 
         return self.process_image_for_output(cropped_image)
 
-    def draw_text_on_overlay(self, draw_overlay, text, font, font_color, line_spacing, kerning, border_color, border_width, shadow_color, shadow_offset_x, shadow_offset_y):
+    def draw_text_on_overlay(self, draw_overlay, text, font, kwargs):
         y_text_overlay = 0
-        x_text_overlay = border_width  # Start drawing from the border width to accommodate border
+        x_text_overlay = kwargs['border_width'] 
 
         for line in text.split('\n'):
             for char in line:
                 # Draw the shadow
                 draw_overlay.text(
-                    (x_text_overlay + shadow_offset_x, y_text_overlay + shadow_offset_y),
-                    char, font=font, fill=shadow_color
+                    (x_text_overlay + kwargs['shadow_offset_x'], y_text_overlay + kwargs['shadow_offset_y']),
+                    char, font=font, fill=kwargs['shadow_color']
                 )
 
                 # Draw the border/stroke
-                for dx in range(-border_width, border_width + 1):
-                    for dy in range(-border_width, border_width + 1):
+                for dx in range(-kwargs['border_width'], kwargs['border_width'] + 1):
+                    for dy in range(-kwargs['border_width'], kwargs['border_width'] + 1):
                         if dx == 0 and dy == 0:
                             continue  # Skip the character itself
                         draw_overlay.text(
                             (x_text_overlay + dx, y_text_overlay + dy),
-                            char, font=font, fill=border_color
+                            char, font=font, fill=kwargs['border_color']
                         )
 
                 # Draw the character
                 draw_overlay.text(
                     (x_text_overlay, y_text_overlay),
-                    char, font=font, fill=font_color
+                    char, font=font, fill=kwargs['font_color']
                 )
 
                 char_width = draw_overlay.textlength(char, font=font)
-                x_text_overlay += char_width + kerning
+                x_text_overlay += char_width + kwargs['kerning']
 
             # Reset x position and increase y for next line, account for the border width
-            x_text_overlay = border_width
-            y_text_overlay += int(font.size) + line_spacing
+            x_text_overlay = kwargs['border_width']
+            y_text_overlay += int(font.size) + kwargs['line_spacing']
 
         # Consider adding padding for the right border
-        draw_overlay.text((x_text_overlay, y_text_overlay), '', font=font, fill=border_color)
+        draw_overlay.text((x_text_overlay, y_text_overlay), '', font=font, fill=kwargs['border_color'])
 
-    def get_text_width(self,text, font_file, font_size):
+    def get_text_width(self, text, kwargs):
         # Load the font
-        font = self.get_font(font_file, font_size)
+        font = self.get_font(kwargs['font_file'], kwargs['end_font_size'])
         # Measure the size of the text rendered in the loaded font
         text_width = font.getlength(text)
         return text_width
 
-    def calculate_text_position(self, image_width, image_height, text_width, text_height, text_alignment, x_offset, y_offset, padding):
+    def calculate_text_position(self, text_width, text_height, x_offset, y_offset, kwargs):
         # Adjust the base position based on text_alignment and margin
-        if text_alignment == "left top":
-            base_x, base_y = padding, padding
-        elif text_alignment == "left center":
-            base_x, base_y = padding, padding + (image_height - text_height) // 2
-        elif text_alignment == "left bottom":
-            base_x, base_y = padding, image_height - text_height - padding
-        elif text_alignment == "center top":
-            base_x, base_y = (image_width - text_width) // 2, padding
-        elif text_alignment == "center center":
-            base_x, base_y = (image_width - text_width) // 2, (image_height - text_height) // 2
-        elif text_alignment == "center bottom":
-            base_x, base_y = (image_width - text_width) // 2, image_height - text_height - padding
-        elif text_alignment == "right top":
-            base_x, base_y = image_width - text_width - padding, padding
-        elif text_alignment == "right center":
-            base_x, base_y = image_width - text_width - padding, (image_height - text_height) // 2
-        elif text_alignment == "right bottom":
-            base_x, base_y = image_width - text_width - padding, image_height - text_height - padding
+        if kwargs['text_alignment'] == "left top":
+            base_x, base_y = kwargs['padding'], kwargs['padding']
+        elif kwargs['text_alignment'] == "left center":
+            base_x, base_y = kwargs['padding'], kwargs['padding'] + (kwargs['image_height'] - text_height) // 2
+        elif kwargs['text_alignment'] == "left bottom":
+            base_x, base_y = kwargs['padding'], kwargs['image_height'] - text_height - kwargs['padding']
+        elif kwargs['text_alignment'] == "center top":
+            base_x, base_y = (kwargs['image_width'] - text_width) // 2, kwargs['padding']
+        elif kwargs['text_alignment'] == "center center":
+            base_x, base_y = (kwargs['image_width'] - text_width) // 2, (kwargs['image_height'] - text_height) // 2
+        elif kwargs['text_alignment'] == "center bottom":
+            base_x, base_y = (kwargs['image_width'] - text_width) // 2, kwargs['image_height'] - text_height - kwargs['padding']
+        elif kwargs['text_alignment'] == "right top":
+            base_x, base_y = kwargs['image_width'] - text_width - kwargs['padding'], kwargs['padding']
+        elif kwargs['text_alignment'] == "right center":
+            base_x, base_y = kwargs['image_width'] - text_width - kwargs['padding'], (kwargs['image_height'] - text_height) // 2
+        elif kwargs['text_alignment'] == "right bottom":
+            base_x, base_y = kwargs['image_width'] - text_width - kwargs['padding'], kwargs['image_height'] - text_height - kwargs['padding']
         else:  # Default to center center
-            base_x, base_y = (image_width - text_width) // 2, (image_height - text_height) // 2
+            base_x, base_y = (kwargs['image_width'] - text_width) // 2, (kwargs['image_height'] - text_height) // 2
 
         # Apply offsets
         final_x = base_x + x_offset
@@ -544,26 +447,26 @@ class font2img:
         image_np = np.array(image).astype(np.float32) / 255.0
         return torch.from_numpy(image_np)[None,]
 
-    def calculate_text_block_size(self, draw, text, font, line_spacing, kerning):
+    def calculate_text_block_size(self, draw, text, font, kwargs):
         lines = text.split('\n')
         max_width = 0
         font_size = int(font.size)  # Assuming PIL's ImageFont object with a size attribute
 
         for line in lines:
-            line_width = sum(draw.textlength(char, font=font) + kerning for char in line)
-            line_width -= kerning  # Remove the last kerning value as it's not needed after the last character
+            line_width = sum(draw.textlength(char, font=font) + kwargs['kerning'] for char in line)
+            line_width -= kwargs['kerning']  # Remove the last kerning value as it's not needed after the last character
             max_width = max(max_width, line_width)
 
-        total_height = font_size * len(lines) + line_spacing * (len(lines) - 1)
+        total_height = font_size * len(lines) + kwargs['line_spacing'] * (len(lines) - 1)
 
         return max_width, total_height
 
-    def parse_text_input(self, text_input, frame_count):
+    def parse_text_input(self, text, kwargs):
         structured_format = False
         frame_text_dict = {}
 
         # Filter out empty lines
-        lines = [line for line in text_input.split('\n') if line.strip()]
+        lines = [line for line in text.split('\n') if line.strip()]
 
         # Check if the input is in the structured format
         if all(':' in line and line.split(':')[0].strip().replace('"', '').isdigit() for line in lines):
@@ -576,7 +479,7 @@ class font2img:
                     frame_text_dict[frame_number] = text
         else:
             # If not in structured format, use the input text for all frames
-            frame_text_dict = {str(i): text_input for i in range(1, frame_count + 1)}
+            frame_text_dict = {str(i): text for i in range(1, kwargs['frame_count'] + 1)}
 
         return frame_text_dict, structured_format
 
@@ -654,7 +557,7 @@ class font2img:
             return self.cumulative_text(frame_text_dict, frame_count)
         return frame_text_dict
 
-    def prepare_image(self, input_image, image_width, image_height, background_color):
+    def prepare_image(self, input_image, kwargs):
         if not isinstance(input_image, list):
             if isinstance(input_image, torch.Tensor):
                 if input_image.dtype == torch.float:
@@ -673,22 +576,22 @@ class font2img:
                             raise
 
                         if float(PIL.__version__.split('.')[0]) < 10:
-                            processed_images.append(pil_image.resize((image_width, image_height), Image.ANTIALIAS))
+                            processed_images.append(pil_image.resize((kwargs['image_width'], kwargs['image_height']), Image.ANTIALIAS))
                         else:
-                            processed_images.append(pil_image.resize((image_width, image_height), Image.LANCZOS))
+                            processed_images.append(pil_image.resize((kwargs['image_width'], kwargs['image_height']), Image.LANCZOS))
                     return processed_images
                 elif input_image.ndim == 3 and input_image.shape[0] in [3, 4]:
                     tensor_image = input_image.permute(1, 2, 0)
                     pil_image = transforms.ToPILImage()(tensor_image)
 
                     if float(PIL.__version__.split('.')[0]) < 10:
-                        return pil_image.resize((image_width, image_height), Image.ANTIALIAS)
+                        return pil_image.resize((kwargs['image_width'], kwargs['image_height']), Image.ANTIALIAS)
                     else:
-                        return pil_image.resize((image_width, image_height), Image.LANCZOS)
+                        return pil_image.resize((kwargs['image_width'], kwargs['image_height']), Image.LANCZOS)
                 else:
                     raise ValueError(f"Input image tensor has an invalid shape or number of channels: {input_image.shape}")
             else:
-                return input_image.resize((image_width, image_height), Image.ANTIALIAS)
+                return input_image.resize((kwargs['image_width'], kwargs['image_height']), Image.ANTIALIAS)
         else:
-            background_color_tuple = ImageColor.getrgb(background_color)
-            return Image.new('RGB', (image_width, image_height), color=background_color_tuple)
+            background_color_tuple = ImageColor.getrgb(kwargs['background_color'])
+            return Image.new('RGB', (kwargs['image_width'], kwargs['image_height']), color=background_color_tuple)
