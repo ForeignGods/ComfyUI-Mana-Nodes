@@ -1,7 +1,5 @@
 import copy
 import logging
-import sys
-
 
 class ColoredFormatter(logging.Formatter):
     COLORS = {
@@ -25,6 +23,7 @@ def logger():
         pass
 
     return type("Logger", (), {"error": error})()
+    
 # Create a new logger
 #logger = logging.getLogger("Mana")
 #logger.propagate = False

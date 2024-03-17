@@ -29,7 +29,7 @@ class font2img:
     
     @classmethod
     def setup_font_directories(self):
-        script_dir = os.path.dirname(__file__)
+        script_dir = os.path.dirname(os.path.dirname(__file__))
         custom_font_files = []
         for dir_name in ['font', 'font_files']:
             font_dir = os.path.join(script_dir, dir_name)
@@ -273,9 +273,9 @@ class font2img:
                         shadow_color,
                         shadow_offset_x,
                         shadow_offset_y,
-                        easing):
+                        animation_easing):
         images = []
-        prepared_images = self.prepare_image(input_images, image_width, image_height, background_color, easing)
+        prepared_images = self.prepare_image(input_images, image_width, image_height, background_color)
 
         # Initialize variables
         last_text = ""
@@ -348,25 +348,25 @@ class font2img:
             return (2 - math.pow(2, -10 * (current_frame / total_frames - 0.5))) / 2
 
         # Easing function selection
-        if easing == 'linear':
+        if animation_easing == 'linear':
             ease_function = linear_ease
-        elif easing == 'exponential':
+        elif animation_easing == 'exponential':
             ease_function = exponential_ease
-        elif easing == 'quadratic':
+        elif animation_easing == 'quadratic':
             ease_function = quadratic_ease_in
-        elif easing == 'cubic':
+        elif animation_easing == 'cubic':
             ease_function = cubic_ease_in
-        elif easing == 'elastic':
+        elif animation_easing == 'elastic':
             ease_function = elastic_ease_in
-        elif easing == 'bounce':
+        elif animation_easing == 'bounce':
             ease_function = bounce_ease_out
-        elif easing == 'back':
+        elif animation_easing == 'back':
             ease_function = back_ease_in
-        elif easing == 'ease_in_out_sine':
+        elif animation_easing == 'ease_in_out_sine':
             ease_function = ease_in_out_sine
-        elif easing == 'ease_out_back':
+        elif animation_easing == 'ease_out_back':
             ease_function = ease_out_back
-        elif easing == 'ease_in_out_expo':
+        elif animation_easing == 'ease_in_out_expo':
             ease_function = ease_in_out_expo
 
         for i in range(1, frame_count + 1):
@@ -420,8 +420,6 @@ class font2img:
             images.append(processed_image)
 
         return images
-
-# Add more easing functions as needed
 
     def process_single_image(self, image, text, font, font_color, rotation_angle, x_offset, y_offset, text_alignment, line_spacing, text_position, rotation_anchor_x, rotation_anchor_y, background_color, kerning, border_width, border_color, shadow_color, shadow_offset_x, shadow_offset_y):
         orig_width, orig_height = image.size
@@ -656,7 +654,7 @@ class font2img:
             return self.cumulative_text(frame_text_dict, frame_count)
         return frame_text_dict
 
-    def prepare_image(self, input_image, image_width, image_height, background_color, easing):
+    def prepare_image(self, input_image, image_width, image_height, background_color):
         if not isinstance(input_image, list):
             if isinstance(input_image, torch.Tensor):
                 if input_image.dtype == torch.float:

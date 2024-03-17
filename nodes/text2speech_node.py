@@ -24,18 +24,12 @@ class text2speech:
     OUTPUT_NODE = True
 
     def run(self, text, filename_prefix):
-        # Get the current working directory
-        script_dir = os.path.dirname(__file__)
 
-        # Normalize and construct full path
+        script_dir = os.path.dirname(os.path.dirname(__file__))
         normalized_path = os.path.normpath(filename_prefix)
         full_path = os.path.join(script_dir, normalized_path)
-        
-        # Ensure the filename has a .wav extension
         if not full_path.endswith('.wav'):
-            full_path += '.wav'
-            
-        # Create directory if it doesn't exist
+            full_path += '.wav'  
         Path(os.path.dirname(full_path)).mkdir(parents=True, exist_ok=True)
 
         synthesizer = pipeline("text-to-speech", "suno/bark")
@@ -45,10 +39,6 @@ class text2speech:
         if audio_waveform.ndim == 2:
             # Transpose if it's in the wrong shape (num_channels, num_samples)
             audio_waveform = audio_waveform.T
-            # Convert to 16-bit integer if it's not already
-            #if audio_waveform.dtype != np.int16:
-            #    audio_waveform = np.int16(audio_waveform / np.max(np.abs(audio_waveform)) * 32767)
-            #sampling_rate = speech.get('sampling_rate', 16000)
 
         scipy.io.wavfile.write(full_path, rate=speech['sampling_rate'], data=audio_waveform)
 
