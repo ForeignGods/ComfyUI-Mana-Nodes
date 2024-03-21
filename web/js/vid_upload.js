@@ -80,9 +80,25 @@ function addUploadWidget(nodeType, widgetName) {
 
 // Adds an upload button to the nodes
 app.registerExtension({
-  name: "mana.video2audio",
+  name: "mana.video",
   async beforeRegisterNodeDef(nodeType, nodeData, app) {
+    
+    //if(nodeData?.input?.optional?.mana_video_preview === true){
+    //if(nodeData?.input?.optional?.video?.[1]?.mana_video_preview === true){
+      //console.log('nodeData.name',nodeData.name);
+      //console.log('nodeData',nodeData);
+      //console.log('nodeType',nodeType);
+    //}
+    //if (nodeData.name === "audio2video") {
+    //  console.log('addedVideoPreview, vid_upload.js')
+    //  addVideoPreview(nodeType);
+    //}
+
     if (nodeData?.input?.required?.video?.[1]?.mana_video_upload === true) {
+      //console.log('nodeData.name',nodeData.name);
+      //console.log('nodeData?.input?.required?.video?.[1]?.mana_video_upload',nodeData?.input?.required?.video?.[1]?.mana_video_upload);
+      //console.log('nodeData',nodeData);
+      //console.log('nodeType',nodeType);
       addUploadWidget(nodeType, 'video');
       addVideoPreview(nodeType, { comboWidget: 'video' });
     }

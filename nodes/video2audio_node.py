@@ -23,7 +23,7 @@ class video2audio:
                 "video": (sorted(files), {"mana_video_upload": True}),
                 "frame_limit": ("INT", {"default": 16, "min": 1, "max": 10240, "step": 1}),
                 "frame_start": ("INT", {"default": 0, "min": 0, "max": 0xFFFFFFFF, "step": 1}),
-                "filename_prefix": ("STRING", {"default": "audio_files\\audio"})
+                "filename_prefix": ("STRING", {"default": "audio\\audio"})
             },
             "optional": {}
         }
@@ -57,21 +57,19 @@ class video2audio:
         start_time = kwargs['frame_start'] / fps
         end_time = (kwargs['frame_start'] + kwargs['frame_limit']) / fps
 
-        script_dir = os.path.dirname(os.path.dirname(__file__))
-        normalized_path = os.path.normpath(kwargs['filename_prefix'])
-        full_path = os.path.join(script_dir, normalized_path)
-        Path(os.path.dirname(full_path)).mkdir(parents=True, exist_ok=True)
+        full_path = os.path.join(folder_paths.get_output_directory(), os.path.normpath(kwargs['filename_prefix']))
         if not full_path.endswith('.wav'):
             full_path += '.wav'
+        Path(os.path.dirname(full_path)).mkdir(parents=True, exist_ok=True)
 
         # Extract the specific audio segment
         audio = video.subclip(start_time, end_time).audio
         audio.write_audiofile(full_path)
-        print("Audio file saved:", full_path)
+        #print("Audio file saved:", full_path)
 
         # Get full path to the audio file
         full_path_to_audio = os.path.abspath(full_path)
-        print("Full path to the audio file:", full_path_to_audio)
+        #print("Full path to the audio file:", full_path_to_audio)
         fps = video.fps
 
         return full_path_to_audio, fps

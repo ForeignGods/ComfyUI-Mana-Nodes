@@ -2,6 +2,7 @@ from transformers import pipeline
 import scipy.io.wavfile
 from pathlib import Path
 import os
+import folder_paths
 
 class text2speech:
 
@@ -13,7 +14,7 @@ class text2speech:
         return {
             "required": {
                 "text": ("STRING", {"display": "text","placeholder": "Text","multiline": True}),
-                "filename_prefix": ("STRING", {"display": "text", "default": "audio_files\\audio"})
+                "filename_prefix": ("STRING", {"display": "text", "default": "audio\\audio"})
             },
         }
 
@@ -23,11 +24,9 @@ class text2speech:
     FUNCTION = "run"
     OUTPUT_NODE = True
 
-    def run(self, text, filename_prefix):
+    def run(self, text, **kwargs):
 
-        script_dir = os.path.dirname(os.path.dirname(__file__))
-        normalized_path = os.path.normpath(filename_prefix)
-        full_path = os.path.join(script_dir, normalized_path)
+        full_path = os.path.join(folder_paths.get_output_directory(), os.path.normpath(kwargs['filename_prefix']))
         if not full_path.endswith('.wav'):
             full_path += '.wav'  
         Path(os.path.dirname(full_path)).mkdir(parents=True, exist_ok=True)
