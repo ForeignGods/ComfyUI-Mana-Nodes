@@ -23,8 +23,8 @@ class string2file:
     
     INPUT_IS_LIST = True
     CATEGORY = "Mana Nodes"
-    RETURN_TYPES = ("STRING",)
-    RETURN_NAMES = ("text_file",)
+    RETURN_TYPES = ()
+    RETURN_NAMES = ()
     FUNCTION = "run"
     OUTPUT_NODE = True
 

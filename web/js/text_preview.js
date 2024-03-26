@@ -15,7 +15,6 @@ app.registerExtension({
 					// If the function is called during configuration, use the third index
 					previewText = values[2];
 				}
-							
 				let previewWidget = this.widgets.find(w => w.name === "preview");
 				if (!previewWidget) {
 					// Create preview widget if it does not exist
@@ -25,7 +24,6 @@ app.registerExtension({
 				}
 				previewWidget.value = previewText; // Set or update the value
 			
-
 				requestAnimationFrame(() => {
 					const sz = this.computeSize();
 					if (sz[0] < this.size[0]) {
