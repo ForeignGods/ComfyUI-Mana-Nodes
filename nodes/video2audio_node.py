@@ -45,7 +45,6 @@ class video2audio:
         return (torch.cat(frames, dim=0), audio, fps, len(frames), height, width,)
 
     def extract_audio_with_moviepy(self, video_path, kwargs):
-
         # Convert WindowsPath object to string
         video_file_path_str = str(video_path)
 
@@ -61,15 +60,11 @@ class video2audio:
         if not full_path.endswith('.wav'):
             full_path += '.wav'
         Path(os.path.dirname(full_path)).mkdir(parents=True, exist_ok=True)
+        full_path_to_audio = os.path.abspath(full_path)
 
         # Extract the specific audio segment
         audio = video.subclip(start_time, end_time).audio
         audio.write_audiofile(full_path)
-        #print("Audio file saved:", full_path)
-
-        # Get full path to the audio file
-        full_path_to_audio = os.path.abspath(full_path)
-        #print("Full path to the audio file:", full_path_to_audio)
         fps = video.fps
 
         return full_path_to_audio, fps

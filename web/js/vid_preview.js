@@ -15,20 +15,16 @@ const style = `
 
 export function chainCallback(object, property, callback) {
   if (object == undefined) {
-    console.error("Tried to add callback to non-existant object"); // Error logging
     return;
   }
   if (property in object) {
     const callback_orig = object[property];
     object[property] = function () {
-      console.log(`Calling original ${property}`); // Log before calling original callback
       const r = callback_orig.apply(this, arguments);
-      console.log(`Calling new ${property}`); // Log before calling new callback
       callback.apply(this, arguments);
       return r;
     };
   } else {
-    console.log(`Creating new property ${property}`); // Log new property creation
     object[property] = callback;
   }
 };
@@ -45,7 +41,6 @@ export function formatUploadedUrl(params) {
     delete params.name;
   }
   const url = api.apiURL("/view?" + new URLSearchParams(params));
-  console.log("Constructed video URL:", url);
   return url;
 };
 
@@ -90,7 +85,6 @@ export function addVideoPreview(nodeType, options = {}) {
   };
 
   nodeType.prototype.onDrawBackground = function (ctx) {
-    console.log("onDrawBackground called"); // Log when onDrawBackground is called
     if (this.flags.collapsed) return;
 
     let imageURLs = (this.images ?? []).map((i) =>
@@ -129,7 +123,6 @@ export function addVideoPreview(nodeType, options = {}) {
 
     Promise.all(promises)
       .then((imgs) => {
-        console.log("Images loaded", imgs); // Log loaded images
         this.imgs = imgs.filter(Boolean);
       })
       .then(() => {
@@ -138,7 +131,6 @@ export function addVideoPreview(nodeType, options = {}) {
         this.animatedImages = true;
         const widgetIdx = this.widgets?.findIndex((w) => w.name === ANIM_PREVIEW_WIDGET);
 
-        // Instead of using the canvas we'll use a IMG
         if (widgetIdx > -1) {
           // Replace content
           const widget = this.widgets[widgetIdx];
@@ -155,7 +147,6 @@ export function addVideoPreview(nodeType, options = {}) {
           widget.serializeValue = () => ({
             height: host.el.clientHeight,
           });
-          // widget.computeSize = (w) => ([w, 220]);
 
           widget.options.host.updateImages(this.imgs);
         }
@@ -174,7 +165,6 @@ export function addVideoPreview(nodeType, options = {}) {
 
   if (textWidget) {
     chainCallback(nodeType.prototype, 'onNodeCreated', function () {
-      console.log("onNodeCreated with textWidget called"); // Log when called with textWidget
       const pathWidget = this.widgets.find((w) => w.name === textWidget);
       pathWidget._value = pathWidget.value;
       Object.defineProperty(pathWidget, 'value', {
@@ -200,7 +190,6 @@ export function addVideoPreview(nodeType, options = {}) {
 
   if (comboWidget) {
     chainCallback(nodeType.prototype, 'onNodeCreated', function () {
-      console.log("onNodeCreated with comboWidget called"); // Log when called with comboWidget
       const pathWidget = this.widgets.find((w) => w.name === comboWidget);
       pathWidget._value = pathWidget.value;
       Object.defineProperty(pathWidget, 'value', {
@@ -228,15 +217,29 @@ export function addVideoPreview(nodeType, options = {}) {
   }
 
   chainCallback(nodeType.prototype, "onExecuted", function (message) {
-    console.log("onExecuted called with message", message); // Log when onExecuted is called
     if (message?.videos) {
       this.images = message?.videos.map(formatUploadedUrl);
+      if(nodeType.comfyClass === 'audio2video') {
+        localStorage.setItem('savedVideoUrls', JSON.stringify(this.images));
+      }
     }
   });
+
+  // Restoring state in onConfigure
+  chainCallback(nodeType.prototype, "onConfigure", function () {
+    if(nodeType.comfyClass === 'audio2video') {
+      const savedVideoUrls = JSON.parse(localStorage.getItem('savedVideoUrls'));
+      if (savedVideoUrls) {
+          this.images = savedVideoUrls;
+      } 
+    }
+
+  });
+
 }
 
 app.registerExtension({
-  name: "ManaNodes.VideoPreview",
+  name: "ManaNodes.audio2video",
   init() {
     $el('style', {
       textContent: style,
