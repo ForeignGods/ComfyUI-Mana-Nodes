@@ -73,6 +73,8 @@ class font2img:
                 "background_color": ("STRING", {"default": "black", "display": "text"}),
                 "border_color": ("STRING", {"default": "grey", "display": "text"}),
                 "border_width": ("INT", {"default": 0, "min": 0, "step": 1, "display": "number"}),
+                "tagged_word_color": ("STRING", {"default": "red", "display": "text"}),
+                "tagged_word_font_size": ("INT", {"default": 75, "min": 1, "step": 1, "display": "number"}),
                 "shadow_color": ("STRING", {"default": "grey", "display": "text"}),
                 "shadow_offset_x": ("INT", {"default": 0, "min": 0, "step": 1, "display": "number"}),
                 "shadow_offset_y": ("INT", {"default": 0, "min": 0, "step": 1, "display": "number"}),
@@ -123,11 +125,37 @@ class font2img:
 
         frame_text_dict, is_structured_input = self.parse_text_input(text, kwargs)
         frame_text_dict = self.process_text_mode(frame_text_dict, kwargs['text_interpolation_options'], is_structured_input, kwargs['frame_count'])
+        #print('frame_text_dict:',frame_text_dict,'type:',type(frame_text_dict)) 
+        
+        change_last_word = True
+
+        if change_last_word:
+            frame_text_dict = self.add_tag_to_last_word(frame_text_dict)
+
+        print('frame_text_dict:',frame_text_dict,'type:',type(frame_text_dict)) 
+
 
         images = self.generate_images(frame_text_dict, kwargs.get('images', [None] * kwargs['frame_count']), kwargs)
         image_batch = torch.cat(images, dim=0)
 
         return (image_batch, formatted_transcription,)
+
+    def add_tag_to_last_word(self, text_dict):
+        tagged_dict = {}
+        tag_start = "<tag>"
+        tag_end = "</tag>"
+
+        for key, sentence in text_dict.items():
+            words = sentence.split()
+            if words:  # Check if the sentence is not empty
+                # Wrap the last word with tags
+                words[-1] = f"{tag_start}{words[-1]}{tag_end}"
+                # Join the words back into a sentence
+                tagged_dict[key] = ' '.join(words)
+            else:
+                tagged_dict[key] = sentence  # In case of an empty sentence
+
+        return tagged_dict
 
     # maybe make this line per line instead of all at once in the beginning
     # this way the dynamicaly changing font-size could be used in this method for more accurate formatting
@@ -315,15 +343,35 @@ class font2img:
             image_index = min(i - 1, len(prepared_images) - 1)
             selected_image = prepared_images[image_index]
 
+            font_tagged = self.get_font(kwargs['font_file'], kwargs['tagged_word_font_size'])
+
+
             draw = ImageDraw.Draw(selected_image)
-            text_width, text_height = self.calculate_text_block_size(draw, text, font, kwargs)
+            text_width, text_height = self.calculate_text_block_size(draw, text, font_tagged, kwargs)
             text_position = self.calculate_text_position(text_width, text_height, x_offset, y_offset, kwargs)
 
             processed_image = self.process_single_image(selected_image, text, font, rotation, x_offset, y_offset, text_position, kwargs)
             images.append(processed_image)
 
         return images
-
+    
+    def separate_text(self, text):
+        tag_start = "<tag>"
+        tag_end = "</tag>"
+        tagged_parts = []
+        non_tagged_parts = []
+        while text:
+            start_index = text.find(tag_start)
+            end_index = text.find(tag_end)
+            if start_index != -1 and end_index != -1:
+                non_tagged_parts.append(text[:start_index])
+                tagged_parts.append(text[start_index + len(tag_start):end_index])
+                text = text[end_index + len(tag_end):]
+            else:
+                non_tagged_parts.append(text)
+                break
+        return ' '.join(non_tagged_parts), ' '.join(tagged_parts)  
+      
     def process_single_image(self, image, text, font, rotation_angle, x_offset, y_offset, text_position,kwargs ):
         orig_width, orig_height = image.size
         # Create a larger canvas with the prepared image as the background
@@ -347,6 +395,7 @@ class font2img:
         # Draw text on overlays
         self.draw_text_on_overlay(draw_overlay, text, font, kwargs)
         canvas.paste(overlay, (int(text_x), int(text_y)), overlay)
+        
         anchor = (text_center_x + kwargs['rotation_anchor_x'], text_center_y + kwargs['rotation_anchor_y'])
 
         rotated_canvas = canvas.rotate(rotation_angle, center=anchor, expand=0)
@@ -367,14 +416,46 @@ class font2img:
 
     def draw_text_on_overlay(self, draw_overlay, text, font, kwargs):
         y_text_overlay = 0
-        x_text_overlay = kwargs['border_width'] 
+        x_text_overlay = kwargs['border_width']
+
+        tag_start = "<tag>"
+        tag_end = "</tag>"
+        tagged_font_color = kwargs['tagged_word_color']   # Color for tagged words
+        tagged_font_size = kwargs['tagged_word_font_size']   # Font size for tagged words
+        is_inside_tag = False
+        current_color = kwargs['font_color']
+        current_font = font
 
         for line in text.split('\n'):
-            for char in line:
+            while line:
+                if line.startswith(tag_start):
+                    line = line[len(tag_start):]
+                    is_inside_tag = True
+                    current_color = tagged_font_color
+                    current_font = ImageFont.truetype(font.path, tagged_font_size)
+                    continue
+
+                if line.startswith(tag_end):
+                    line = line[len(tag_end):]
+                    is_inside_tag = False
+                    current_color = kwargs['font_color']
+                    current_font = font
+                    continue
+
+                char = line[0]
+                line = line[1:]
+
+                # Adjust vertical position for tagged text
+                if is_inside_tag:
+                    ascent, descent = current_font.getmetrics()
+                    font_offset = (font.getmetrics()[0] - ascent) + (descent - current_font.getmetrics()[1])
+                else:
+                    font_offset = 0
+
                 # Draw the shadow
                 draw_overlay.text(
-                    (x_text_overlay + kwargs['shadow_offset_x'], y_text_overlay + kwargs['shadow_offset_y']),
-                    char, font=font, fill=kwargs['shadow_color']
+                    (x_text_overlay + kwargs['shadow_offset_x'], y_text_overlay + kwargs['shadow_offset_y'] + font_offset),
+                    char, font=current_font, fill=kwargs['shadow_color']
                 )
 
                 # Draw the border/stroke
@@ -383,22 +464,22 @@ class font2img:
                         if dx == 0 and dy == 0:
                             continue  # Skip the character itself
                         draw_overlay.text(
-                            (x_text_overlay + dx, y_text_overlay + dy),
-                            char, font=font, fill=kwargs['border_color']
+                            (x_text_overlay + dx, y_text_overlay + dy + font_offset),
+                            char, font=current_font, fill=kwargs['border_color']
                         )
 
                 # Draw the character
                 draw_overlay.text(
-                    (x_text_overlay, y_text_overlay),
-                    char, font=font, fill=kwargs['font_color']
+                    (x_text_overlay, y_text_overlay + font_offset),
+                    char, font=current_font, fill=current_color
                 )
 
-                char_width = draw_overlay.textlength(char, font=font)
+                char_width = draw_overlay.textlength(char, font=current_font)
                 x_text_overlay += char_width + kwargs['kerning']
 
-            # Reset x position and increase y for next line, account for the border width
+            # Reset x position and increase y for next line
             x_text_overlay = kwargs['border_width']
-            y_text_overlay += int(font.size) + kwargs['line_spacing']
+            y_text_overlay += int(current_font.size) + kwargs['line_spacing']
 
         # Consider adding padding for the right border
         draw_overlay.text((x_text_overlay, y_text_overlay), '', font=font, fill=kwargs['border_color'])
