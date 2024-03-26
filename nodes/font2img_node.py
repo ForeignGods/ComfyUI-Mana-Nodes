@@ -450,14 +450,13 @@ class font2img:
     def calculate_text_block_size(self, draw, text, font, kwargs):
         lines = text.split('\n')
         max_width = 0
-        font_size = int(font.size)  # Assuming PIL's ImageFont object with a size attribute
+        font_height = font.getbbox('Agy')[3] # Height of a single line
 
         for line in lines:
-            line_width = sum(draw.textlength(char, font=font) + kwargs['kerning'] for char in line)
-            line_width -= kwargs['kerning']  # Remove the last kerning value as it's not needed after the last character
+            line_width = draw.textlength(line, font=font)  # Get the width of the line
             max_width = max(max_width, line_width)
 
-        total_height = font_size * len(lines) + kwargs['line_spacing'] * (len(lines) - 1)
+        total_height = font_height * len(lines) + kwargs['line_spacing'] * (len(lines) - 1)
 
         return max_width, total_height
 
