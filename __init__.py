@@ -4,6 +4,10 @@ from .nodes.video2audio_node import video2audio
 from .nodes.string2file_node import string2file
 from .nodes.audio2video_node import audio2video
 from .nodes.text2speech_node import text2speech
+from .nodes.animation_settings_node import animation_settings
+from .nodes.canvas_settings_node import canvas_settings
+
+from .nodes.text_graphic_element_node import text_graphic_element
 from .helpers.logger import logger
 
 my_logger = logger()
@@ -17,7 +21,10 @@ NODE_CLASS_MAPPINGS = {
     "video2audio": video2audio,
     "string2file": string2file,
     "audio2video": audio2video,
-    "text2speech": text2speech
+    "text2speech": text2speech,
+    "animation_settings": animation_settings,
+    "canvas_settings": canvas_settings,
+    "text_graphic_element_node": text_graphic_element
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
@@ -26,7 +33,10 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "video2audio": "video2audio",
     "string2file":"string2file",
     "audio2video":"audio2video",
-    "text2speech":"text2speech"
+    "text2speech":"text2speech",
+    "animation_settings":"animation_settings",
+    "canvas_settings":"canvas_settings",
+    "text_graphic_element_node":"text_graphic_element_node"
 }
 
 __all__ = ["NODE_CLASS_MAPPINGS", "NODE_DISPLAY_NAME_MAPPINGS", "WEB_DIRECTORY"]

@@ -30,7 +30,7 @@ class video2audio:
 
     CATEGORY = "Mana Nodes"
     RETURN_TYPES = ("IMAGE", "STRING","INT", "INT", "INT","INT",) 
-    RETURN_NAMES = ("frames", "audio_file","fps","frame_count", "height", "width",)
+    RETURN_NAMES = ("images", "audio_file","fps","frame_count", "height", "width",)
     FUNCTION = "run"
 
     def run(self, **kwargs):

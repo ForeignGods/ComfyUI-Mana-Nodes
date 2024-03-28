@@ -11,11 +11,10 @@ class speech2text:
 
     @classmethod
     def INPUT_TYPES(cls):
-
         spell_check_options = ["English", "Spanish", "French", 
                 "Portuguese", "German", "Italian", 
                 "Russian", "Arabic", "Basque", "Latvian", "Dutch"]
-    
+        transcription_mode = ["word","line","fill"]
         return {
             "required": {
                 "audio_file": ("STRING", {"display": "text","forceInput": True}),
@@ -23,6 +22,7 @@ class speech2text:
                 "spell_check_language": (spell_check_options, {"default": "English", "display": "dropdown"}),
                 "framestamps_max_chars": ("INT", {"default": 25, "step": 1, "display": "number"}),
                 "fps": ("INT", {"default": 30, "min": 1, "max": 60, "step": 1}),
+                "transcription_mode": (transcription_mode, {"default": "fill", "display": "dropdown"}),
                 "uppercase": ("BOOLEAN", {"default": True})
             }          
         }
@@ -55,13 +55,15 @@ class speech2text:
         # Convert raw transcription to string format
         json = self.transcription_to_json_string(corrected_transcription)
 
-        corrected_transcription_with_fps = []
-        for word, start_time, end_time in corrected_transcription:
-            # Append fps as a
-            #  fourth element to each tuple
-            corrected_transcription_with_fps.append((word, start_time, end_time, fps))
+        print('corrected_transcription:',corrected_transcription,'type:',type(corrected_transcription))
+        
+        settings_dict = {
+            "transcription_data": corrected_transcription,  # This is your list of tuples
+            "fps": fps,                                    # Assuming fps is a variable holding the fps value
+            "transcription_mode": kwargs['transcription_mode']       # Assuming transcription_mode is a variable holding the mode as a string
+        }
 
-        return (corrected_transcription_with_fps, raw_transcription_string,frame_structure_transcription,json,)
+        return (settings_dict, raw_transcription_string,frame_structure_transcription,json,)
 
     def transcription_to_string(self, raw_transcription):
         # Convert a list of (word, start_time, end_time) tuples to a string

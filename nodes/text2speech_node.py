@@ -13,8 +13,7 @@ class text2speech:
     def INPUT_TYPES(cls):
         return {
             "required": {
-                "text": ("STRING", {"display": "text","placeholder": "Text","multiline": True}),
-                "filename_prefix": ("STRING", {"display": "text", "default": "audio\\audio"})
+            "text": ("STRING", {"display": "text", "placeholder": "[laughter]\n[laughs]\n[sighs]\n[music]\n[gasps]\n[clears throat]\n— or … for hesitations\n♪ for song lyrics\nCapitalization for emphasis of a word\nMAN/WOMAN: for bias towards speaker", "multiline": True}),                "filename_prefix": ("STRING", {"display": "text", "default": "audio\\audio"})
             },
         }
 
