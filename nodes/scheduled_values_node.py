@@ -7,7 +7,8 @@ class scheduled_values:
     def INPUT_TYPES(cls):
         return {
             "required": {
-                "frame_count": ("INT", {"default": 25, "step": 1, "display": "number"}),
+                "frame_count": ("INT", {"default": 30, "step": 1, "display": "number"}),
+                "value_range": ("INT", {"default": 15, "step": 1, "display": "number"}),
             },            
             "hidden": {
                 "unique_id": "UNIQUE_ID",

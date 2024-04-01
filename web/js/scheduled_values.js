@@ -4,7 +4,6 @@ function loadChartJs(callback) {
     const script = document.createElement('script');
     script.src = 'https://cdn.jsdelivr.net/npm/chart.js';
     script.onload = () => {
-        // Load the plugin after Chart.js is loaded
         const pluginScript = document.createElement('script');
         pluginScript.src = 'https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@1.0.1/dist/chartjs-plugin-zoom.min.js';
         pluginScript.onload = callback; // Call the callback once the plugin is loaded
@@ -41,9 +40,9 @@ class TimelineWidget {
     }
 
     createChartContainer() {
-        console.log("Creating chart container");
         this.chartContainer = document.createElement('div');
         this.chartContainer.style.height = '200px';
+        this.chartContainer.style.width = '200px';
         this.chartContainer.style.border = '1px solid gray';
         this.chartContainer.style.overflow = 'auto'; // Enable scrolling
         this.node.addDOMWidget("Chart", "custom", this.chartContainer, {});
@@ -55,13 +54,14 @@ class TimelineWidget {
         const canvas = document.createElement('canvas');
         this.chartContainer.appendChild(canvas);
 
+        
         const data = {
             labels: Array.from({ length: maxX }, (_, i) => i + 1),
             datasets: [{
-                label: 'Keyframes',
+                label: 'scheduled values',
                 data: [],
                 fill: false,
-                borderColor: 'rgb(75, 192, 192)',
+                borderColor: 'rgb(255, 255, 255)',
                 tension: 0,
                 pointRadius: 5,
                 pointStyle: 'circle',
@@ -73,6 +73,13 @@ class TimelineWidget {
             type: 'line',
             data: data,
             options: {
+                maintainAspectRatio: false,
+                responsive: true,
+                layout: {
+                    padding: {
+                        right: 45 
+                    }
+                },
                 scales: {
                     x: {
                         type: 'linear',
@@ -87,9 +94,15 @@ class TimelineWidget {
                             },
                             stepSize: 1,
                             autoSkip: false
+                        },
+                        title: {
+                            display: true,
+                            text: 'frames' // Replace with your x-axis label
                         }
                     },
                     y: {
+                        min: -maxY, // Set initial minimum value for y-axis
+                        max: maxY, // Set initial maximum value for y-axis
                         ticks: {
                             callback: function(value) {
                                 if (Math.floor(value) === value) {
@@ -97,10 +110,26 @@ class TimelineWidget {
                                 }
                             },
                             stepSize: 1,
-                        }
+                            autoSkip: false
+                        },
+                        title: {
+                            display: true,
+                            text: 'values'
+                        },
                     }
                 },
                 plugins: {
+                    tooltip: {
+                        enabled: true, 
+                        callbacks: {
+                            label: function(context) {
+                                return `frame = ${context.label}, value = ${context.parsed.y}`;
+                            },
+                            title: function() {
+                                return 'scheduled value'; // Replace with your desired title
+                            }                        
+                        }
+                    },
                     zoom: {
                         zoom: {
                             wheel: {
@@ -127,10 +156,9 @@ class TimelineWidget {
         };
 
         this.chart = new Chart(canvas.getContext('2d'), config);
+
         canvas.addEventListener('click', (event) => {
-            console.log("Canvas clicked");
             const { x, y } = this.calculateValuesFromClick(event, canvas);
-            console.log(`Click coordinates: x=${x}, y=${y}`);
             this.addChartKeyframe(x, y);
         });
     }
@@ -167,10 +195,7 @@ class TimelineWidget {
     }
     
 
-    addChartKeyframe(x, y) {
-        console.log(`Adding/updating keyframe at x: ${x}, y: ${y}`);
-    
-    
+    addChartKeyframe(x, y) {    
         const keyframeIndex = this.keyframes.findIndex(kf => kf.x === x);
         if (keyframeIndex > -1) {
             this.keyframes[keyframeIndex].y = y;
@@ -209,9 +234,13 @@ app.registerExtension({
     async beforeRegisterNodeDef(nodeType, nodeData) {
         if (nodeData.name === "scheduled_values") {
             chainCallback(nodeType.prototype, 'onNodeCreated', function () {
+                const frame_count_widget = this.widgets.find(w => w.name === "frame_count");
+                const value_range_widget = this.widgets.find(w => w.name === "value_range");
+                let maxX = frame_count_widget ? parseInt(frame_count_widget.value, 10) : 20;
+                let valueRange = value_range_widget ? parseInt(value_range_widget.value, 10) : 100;
                 const timelineWidget = new TimelineWidget(this);
                 loadChartJs(() => {
-                    timelineWidget.initChart(20, 100);
+                    timelineWidget.initChart(maxX, valueRange);
                 });
                 this.timelineWidget = timelineWidget;
             });
