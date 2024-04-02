@@ -62,14 +62,10 @@ class text_graphic_element:
                 "shadow_color": ("STRING", {"default": "red", "display": "text"}),
                 "shadow_offset_x": ("INT", {"default": 0, "min": 0, "step": 1, "display": "number"}),
                 "shadow_offset_y": ("INT", {"default": 0, "min": 0, "step": 1, "display": "number"}),
-                "start_font_size": ("INT", {"default": 75, "min": 1, "step": 1, "display": "number"}),
-                "end_font_size": ("INT", {"default": 75, "min": 1, "step": 1, "display": "number"}),
-                "start_x_offset": ("INT", {"default": 0, "step": 1, "display": "number"}),
-                "end_x_offset": ("INT", {"default": 0, "step": 1, "display": "number"}),
-                "start_y_offset": ("INT", {"default": 0, "step": 1, "display": "number"}),
-                "end_y_offset": ("INT", {"default": 0, "step": 1, "display": "number"}),
+                "font_size": ("INT", {"default": 75, "min": 1, "step": 1, "display": "number"}),
+                "x_offset": ("INT", {"default": 0, "step": 1, "display": "number"}),
+                "y_offset": ("INT", {"default": 0, "step": 1, "display": "number"}),
                 "start_rotation": ("INT", {"default": 0, "min": -360, "max": 360, "step": 1}),
-                "end_rotation": ("INT", {"default": 0, "min": -360, "max": 360, "step": 1}),
                 "rotation_anchor_x": ("INT", {"default": 0, "step": 1}),
                 "rotation_anchor_y": ("INT", {"default": 0, "step": 1}),
             },
@@ -79,7 +75,8 @@ class text_graphic_element:
     RETURN_TYPES = ("TEXT_GRAPHIC_ELEMENT",)
     RETURN_NAMES = ("text_graphic_element",)
     FUNCTION = "run"
-
+    INPUT_IS_LIST = True
+    
     def run(self, **kwargs):
 
         settings = {

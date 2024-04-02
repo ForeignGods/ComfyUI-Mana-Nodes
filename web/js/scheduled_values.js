@@ -397,6 +397,13 @@ class TimelineWidget {
         }
         const xValue = scales[xScaleKey].getValueForPixel(canvasX);
         const yValue = scales[yScaleKey].getValueForPixel(canvasY);
+
+        if(xValue < 1){
+            xValue=1;
+        }
+        if(xValue > this.maxX){
+            xValue = this.maxX;
+        }
         return { x: Math.round(xValue), y: Math.round(yValue) };
     }
 
