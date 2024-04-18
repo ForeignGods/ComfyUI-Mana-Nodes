@@ -11,9 +11,6 @@ class animation_settings:
         return {
             "required": {
                 "animation_reset": (animation_reset, {"default": "word", "display": "dropdown"}),
-                "animation_easing": (animation_easing, {"default": "linear", "display": "dropdown"}),
-                "animation_duration": ("INT", {"default": 10, "min": 1, "step": 1, "display": "number"}),
-                "frame_count": ("INT", {"default": 10, "min": 1, "step": 1, "display": "number"}),
             },
         }
 

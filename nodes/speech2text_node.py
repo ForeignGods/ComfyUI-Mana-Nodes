@@ -55,7 +55,7 @@ class speech2text:
         # Convert raw transcription to string format
         json = self.transcription_to_json_string(corrected_transcription)
 
-        print('corrected_transcription:',corrected_transcription,'type:',type(corrected_transcription))
+        #print('corrected_transcription:',corrected_transcription,'type:',type(corrected_transcription))
         
         settings_dict = {
             "transcription_data": corrected_transcription,  # This is your list of tuples

@@ -6,7 +6,7 @@ function loadChartJs(callback) {
     script.onload = () => {
         const pluginScript = document.createElement('script');
         pluginScript.src = 'https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@1.0.1/dist/chartjs-plugin-zoom.min.js';
-        pluginScript.onload = callback; // Call the callback once the plugin is loaded
+        pluginScript.onload = callback;
         document.head.appendChild(pluginScript);
     };
     document.head.appendChild(script);
@@ -42,6 +42,7 @@ class TimelineWidget {
     constructor(node) {
         this.node = node;
         this.keyframes = [];
+        this.widgets = node.widgets;
         this.maxX = 20; // Default maxX
         this.maxY = 100; // Default maxY
         this.prevMaxX = 1; // Previous value of maxX
@@ -51,14 +52,12 @@ class TimelineWidget {
         this.deleteButton = null;
         this.generatedKeyframes = []; // New array to hold generated in-between keyframes
         this.createChartContainer();
-        //this.createPointsDisplay();
     }
     
     createChartContainer() {
         this.chartContainer = document.createElement('div');
         this.chartContainer.style.height = '200px';
         this.chartContainer.style.width = '200px';
-        //this.chartContainer.style.overflow = 'auto'; // Enable scrolling
         this.node.addDOMWidget("Chart", "custom", this.chartContainer, {});
     }
 
@@ -88,9 +87,9 @@ class TimelineWidget {
     createGenerationButton() {
         // Create a container for buttons and the dropdown
         const buttonsContainer = document.createElement('div');
-        buttonsContainer.classList.add('d-flex');
-        buttonsContainer.style.width = '100%'; // Ensure container fills the line
-        buttonsContainer.style.marginBottom = '10px'; // Ensure container fills the line
+        buttonsContainer.style.width = '100%';
+        buttonsContainer.style.display = 'flex';
+        buttonsContainer.style.marginBottom = '10px'; 
     
         // Define classes that will be common to buttons and the dropdown
         const commonClassList = ['btn'];
@@ -101,9 +100,9 @@ class TimelineWidget {
         this.generateButton.innerText = 'Generate In-betweens';
         this.generateButton.classList.add(...commonClassList, 'btn-secondary');        
         this.generateButton.style.height = commonHeight;
+        this.generateButton.style.flex = '1'; // Add this line
         this.generateButton.style.marginRight = '2px'; // Add spacing between elements
         this.generateButton.style.padding = '5px 10px'; // Adjust padding as needed
-        this.generateButton.style.width = '400px'; // Adjust padding as needed
         this.generateButton.onclick = () => this.generateInBetweenValues();
         buttonsContainer.appendChild(this.generateButton);
     
@@ -112,46 +111,16 @@ class TimelineWidget {
         this.deleteButton.innerText = 'Delete Generated';
         this.deleteButton.classList.add(...commonClassList, 'btn-danger');
         this.deleteButton.style.height = commonHeight;
+        this.deleteButton.style.flex = '1'; // Add this line
+
         this.deleteButton.style.marginRight = '2px'; // Add spacing between elements
         this.deleteButton.style.padding = '5px 10px'; // Adjust padding as needed
-        this.deleteButton.style.width = '400px'; // Adjust padding as needed
         this.deleteButton.onclick = () => this.deleteGeneratedValues();
         buttonsContainer.appendChild(this.deleteButton);
     
-        // Create the interpolation type dropdown
-        this.interpolationTypeSelect = document.createElement('select');
-        this.interpolationTypeSelect.classList.add(...commonClassList,'custom-select');
-        this.interpolationTypeSelect.style.height = commonHeight;
-        this.interpolationTypeSelect.style.marginLeft = 'auto'; // Push the dropdown to the end of the container
-    
-        const interpolationOptions = {
-            linear: 'Linear',
-            easeInQuad: 'Ease In Quad',
-            easeOutQuad: 'Ease Out Quad',
-            easeInOutQuad: 'Ease In-Out Quad',
-            easeInCubic: 'Ease In Cubic',
-            easeOutCubic: 'Ease Out Cubic',
-            easeInOutCubic: 'Ease In-Out Cubic',
-            easeInQuart: 'Ease In Quart',
-            easeOutQuart: 'Ease Out Quart',
-            easeInOutQuart: 'Ease In-Out Quart',
-            easeInQuint: 'Ease In Quint',
-            easeOutQuint: 'Ease Out Quint',
-            easeInOutQuint: 'Ease In-Out Quint',
-            exponential: 'Exponential',
-            // Add more types here
-        };
-        
-        // Iterate over the interpolationOptions to create and append the option elements
-        for (const [value, text] of Object.entries(interpolationOptions)) {
-        const optionElement = document.createElement('option');
-        optionElement.value = value;
-        optionElement.text = text;
-        this.interpolationTypeSelect.appendChild(optionElement);
-        }
 
-        // Append the dropdown to the buttonsContainer
-        buttonsContainer.appendChild(this.interpolationTypeSelect);
+        // Create the nterpolation type dropdown
+
     
         // Append the buttons container to the pointsDisplay
         this.pointsDisplay.appendChild(buttonsContainer);
@@ -167,24 +136,112 @@ class TimelineWidget {
         this.keyframes.forEach((kf, index) => {
             const badge = document.createElement('div');
             badge.classList.add('badge', 'm-1');
-            badge.style.border = '1px solid #666666'; // Adding a white border
-            badge.style.borderRadius = '25px'; // Adding a white border
-            badge.style.textAlign = 'center'; // Adding a white border
-            badge.style.paddingLeft = '15px'; // Padding similar to frame_count widget
-            badge.style.paddingRight = '-15px'; // Padding similar to frame_count widget
-            badge.style.color = '#999999'; // White text color            
+            badge.style.border = '1px solid #666666';
+            badge.style.borderRadius = '25px';
+            badge.style.textAlign = 'center';
+            badge.style.paddingLeft = '15px';
+            badge.style.paddingRight = '-15px';
+            badge.style.color = '#999999';       
             badge.innerHTML = `frame: ${kf.x}, value: ${kf.y}`;
-            badge.style.backgroundColor = '#222222'; // Green background color
+            badge.style.backgroundColor = '#222222';
+            badge.style.display = 'flex'; // Add this line
+            badge.style.justifyContent = 'center'; // Add this line
+            badge.style.alignItems = 'center'; 
 
             const deleteButton = document.createElement('button');
             deleteButton.classList.add('btn');
-            deleteButton.innerHTML = '<i class="bi bi-trash"></i>'; // Bootstrap icon
-            deleteButton.style.color = '#999999'; // White text color       
+            deleteButton.innerHTML = '<i class="bi bi-trash"></i>';
+            deleteButton.style.color = '#999999';  
             deleteButton.onclick = () => {
                 this.removeChartKeyframe(index);
             };
 
             badge.appendChild(deleteButton);
+
+            // Add an edit button to each badge
+            let editButton = document.createElement('button');
+            editButton.innerHTML = '<i class="bi bi-pencil"></i>';
+            editButton.classList.add('btn');
+            //move the edit button more to the left
+            editButton.style.color = '#999999';  
+   
+            // Store the this value in a variable
+            let self = this;
+            // Add event listener to the edit button
+            editButton.onclick = () => {
+                // Get the current frame and value variables of the chart point from the badge's text
+                let badgeText = badge.innerText;
+                let splitText = badgeText.split(', ');
+                let match1 = splitText[0].match(/frame: ([-+]?[0-9]*\.?[0-9]+)/);
+                let currentFrame = match1 ? match1[1] : '';
+                let match2 = splitText[1].match(/value: ([-+]?[0-9]*\.?[0-9]+)/);
+                let currentValue = match2 ? match2[1] : '';
+                
+                // Create labels and input fields for the frame and value
+                let frameLabel = document.createElement('span');
+                frameLabel.innerText = 'frame: ';
+
+                let frameInput = document.createElement('input');
+                frameInput.type = 'text';
+                frameInput.value = currentFrame;
+                frameInput.style.width = '50px'; // Adjust the value as needed
+
+                let valueLabel = document.createElement('span');
+                valueLabel.innerText = 'value: ';
+
+                let valueInput = document.createElement('input');
+                valueInput.type = 'text';
+                valueInput.value = currentValue;
+                valueInput.style.width = '50px'; // Adjust the value as needed
+
+                // Create a save button
+                let saveButton = document.createElement('button');
+                saveButton.classList.add('btn');
+                saveButton.innerHTML = '<i class="bi bi-check"></i>';
+                saveButton.style.color = '#999999';  
+                saveButton.style.marginRight = '5px'; 
+                saveButton.firstChild.style.fontSize = '1.5em'; // Adjust the value as needed// Adjust the value as needed   
+
+                // Replace the badge's innerHTML with the labels, input fields, and save button
+                badge.innerHTML = '';
+                badge.appendChild(frameLabel);
+                badge.appendChild(frameInput);
+                badge.appendChild(valueLabel);
+                badge.appendChild(valueInput);
+                badge.appendChild(saveButton);
+
+                // When creating the badge, store the index of the point
+                badge.dataset.index = index;
+
+                // Add event listener to the save button
+                saveButton.onclick = () => {
+                    // Get the new frame and value from the input fields
+                    let newFrame = parseFloat(frameInput.value);
+                    let newValue = parseFloat(valueInput.value);
+
+                    // Get the index of the old keyframe from the badge
+                    let oldIndex = parseInt(badge.dataset.index);
+
+                    // Remove the old keyframe
+                    self.removeChartKeyframe(oldIndex);
+
+                    // Add the new keyframe
+                    self.addChartKeyframe(newFrame, newValue, oldIndex);
+
+                    // Update the badge's dataset with the new frame and value
+                    badge.dataset.frame = newFrame;
+                    badge.dataset.value = newValue;
+
+                    // Replace the input fields and save button with the new frame and value
+                    badge.innerHTML = `Frame: ${newFrame}, Value: ${newValue}`;
+
+                    // Append the edit and delete buttons after updating the badge's innerHTML
+                    badge.appendChild(editButton);
+                    badge.appendChild(deleteButton);
+                };
+            };
+
+            badge.appendChild(editButton);
             this.pointsDisplay.appendChild(badge);
         });
 
@@ -192,10 +249,9 @@ class TimelineWidget {
     
     generateInBetweenValues() {
         if (this.keyframes.length < 2) return; // Safety check
-    
-        // Get the selected interpolation type from the dropdown
-        const interpolationType = this.interpolationTypeSelect.value;
-    
+        
+        let easing_type_widget = this.widgets.find(w => w.name === "easing_type").value || "linear";
+
         // Clear any previously generated keyframes
         this.generatedKeyframes = [];
     
@@ -244,7 +300,8 @@ class TimelineWidget {
         };
 
         // Use a default interpolation method if the selected one isn't available
-        const interpolate = easings[interpolationType] || easings.linear;
+        
+        const interpolate = easings[easing_type_widget] || easings.linear;
 
         // Perform interpolation based on the selected type
         for (let i = 0; i < this.keyframes.length - 1; i++) {
@@ -321,11 +378,11 @@ class TimelineWidget {
         this.chart.data.datasets[0].data = this.keyframes.map(kf => ({ x: kf.x, y: kf.y }));
         this.chart.update();
     }   
-
-    updateChart(maxX, valueRange) {
+        
+    updateTicks(maxX, valueRange) {
         this.maxX = maxX;
         this.maxY = Math.abs(valueRange);
-    
+        
         if (this.chart) {
             // Capture the current zoom state
             const xScale = this.chart.scales['x'];
@@ -349,9 +406,27 @@ class TimelineWidget {
             xScale.max = xMax;
             yScale.min = yMin;
             yScale.max = yMax;
+
             this.chart.update();
+
         }
     }
+    updateStepSize(stepSize) {
+        if (this.chart) {
+            // Adjust the step size of the chart based on the stepSize value
+            if (stepSize === 'auto') {
+                this.chart.options.scales.x.ticks.autoSkip = true;
+                this.chart.options.scales.y.ticks.autoSkip = true;
+            } else {
+                this.chart.options.scales.x.ticks.autoSkip = false;
+                this.chart.options.scales.x.ticks.stepSize = 1;
+                this.chart.options.scales.y.ticks.autoSkip = false;
+                this.chart.options.scales.y.ticks.stepSize = 1;
+            }
+
+            this.chart.update();
+        }
+    }    
     
     addChartKeyframe(x, y) {    
         const keyframeIndex = this.keyframes.findIndex(kf => kf.x === x);
@@ -449,8 +524,10 @@ class TimelineWidget {
                                     return value;
                                 }
                             },
+                            
                             stepSize: 1,
-                            autoSkip: false
+                            autoSkip: false,
+                            
                         },
                         title: {
                             display: true,
@@ -466,7 +543,8 @@ class TimelineWidget {
                                     return value;
                                 }
                             },
-                            stepSize: 1,
+                            
+                            stepSize: 1, // Use the dynamic step size
                             autoSkip: false
                         },
                         title: {
@@ -516,6 +594,7 @@ class TimelineWidget {
         
         this.chart = new Chart(canvas.getContext('2d'), config);
 
+
         canvas.addEventListener('click', (event) => {
             const { x, y } = this.calculateValuesFromClick(event, canvas);
             this.addChartKeyframe(x, y);
@@ -532,8 +611,10 @@ app.registerExtension({
             chainCallback(nodeType.prototype, 'onNodeCreated', function () {
                 const frame_count_widget = this.widgets.find(w => w.name === "frame_count");
                 const value_range_widget = this.widgets.find(w => w.name === "value_range");
+
                 let maxX = frame_count_widget ? parseInt(frame_count_widget.value, 10) : 20;
                 let valueRange = value_range_widget ? parseInt(value_range_widget.value, 10) : 100;
+                
                 const timelineWidget = new TimelineWidget(this);
                 loadChartJs(() => {
                     timelineWidget.initChart(maxX, valueRange);
@@ -548,13 +629,25 @@ app.registerExtension({
                 const value_range_widget = this.widgets.find(w => w.name === "value_range");
                 let maxX = frame_count_widget ? parseInt(frame_count_widget.value, 10) : 20;
                 let valueRange = value_range_widget ? parseInt(value_range_widget.value, 10) : 100;
+                const step_size_widget = this.widgets.find(w => w.name === "step_mode");
+                let stepSize = step_size_widget ? step_size_widget.value : "single";
+
                 if (this.prevMaxX !== maxX || this.prevValueRange !== valueRange) {
                     if (this.timelineWidget) {
-                        this.timelineWidget.updateChart(maxX, valueRange);
+                        this.timelineWidget.updateTicks(maxX, valueRange);
                     }
                     this.prevMaxX = maxX;
                     this.prevValueRange = valueRange;
                 } 
+
+                if (this.stepSize !== stepSize) {
+                    if (this.timelineWidget) {
+                        this.timelineWidget.updateStepSize(stepSize);
+                    }
+                    this.stepSize = stepSize;
+                } 
+
+
 
                 if (this.timelineWidget) {
                     // Combine keyframes and generatedKeyframes.

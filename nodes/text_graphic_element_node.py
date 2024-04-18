@@ -1,6 +1,6 @@
 from matplotlib import font_manager
 import os
-from PIL import Image, ImageDraw, ImageFont, ImageOps, ImageColor
+import json
 
 class text_graphic_element:
 
@@ -43,10 +43,6 @@ class text_graphic_element:
         all_fonts = {**system_fonts, **custom_fonts}
         return all_fonts
     
-    def get_font(self, font_name, font_size) -> ImageFont.FreeTypeFont:
-        font_file = self.FONTS[font_name]
-        return ImageFont.truetype(font_file, font_size)
-
     @classmethod
     def INPUT_TYPES(cls):
         cls.FONTS = cls.combined_font_list()
@@ -56,16 +52,15 @@ class text_graphic_element:
                 "font_file": (cls.FONT_NAMES, {"default": cls.FONT_NAMES[0]}),
                 "font_color": ("STRING", {"default": "red", "display": "text"}),
                 "kerning": ("INT", {"default": 0, "step": 1, "display": "number"}),
-                "line_spacing": ("INT", {"default": 5, "step": 1, "display": "number"}),
                 "border_width": ("INT", {"default": 0, "min": 0, "step": 1, "display": "number"}),
-                "border_color": ("INT", {"default": 0, "min": 0, "step": 1, "display": "number"}),
+                "border_color": ("STRING", {"default": "red", "display": "text"}),
                 "shadow_color": ("STRING", {"default": "red", "display": "text"}),
                 "shadow_offset_x": ("INT", {"default": 0, "min": 0, "step": 1, "display": "number"}),
                 "shadow_offset_y": ("INT", {"default": 0, "min": 0, "step": 1, "display": "number"}),
                 "font_size": ("INT", {"default": 75, "min": 1, "step": 1, "display": "number"}),
                 "x_offset": ("INT", {"default": 0, "step": 1, "display": "number"}),
                 "y_offset": ("INT", {"default": 0, "step": 1, "display": "number"}),
-                "start_rotation": ("INT", {"default": 0, "min": -360, "max": 360, "step": 1}),
+                "rotation": ("INT", {"default": 0, "min": -360, "max": 360, "step": 1}),
                 "rotation_anchor_x": ("INT", {"default": 0, "step": 1}),
                 "rotation_anchor_y": ("INT", {"default": 0, "step": 1}),
             },
@@ -75,31 +70,52 @@ class text_graphic_element:
     RETURN_TYPES = ("TEXT_GRAPHIC_ELEMENT",)
     RETURN_NAMES = ("text_graphic_element",)
     FUNCTION = "run"
-    INPUT_IS_LIST = True
-    
+    #INPUT_IS_LIST = True
+
+    def parse_int_or_json(self, value):
+        """Parse the input as JSON if it's a string in JSON format, otherwise return as is."""
+        if isinstance(value, str):
+            # Extracting and removing the $animation_reset part
+            if '$' in value:
+                parts = value.split('$', 1)
+                value = parts[0]  # JSON part
+                animation_reset = parts[1]  # animation_reset part
+            else:
+                animation_reset = None
+
+            try:
+                json_value = json.loads(value)
+            except json.JSONDecodeError:
+                json_value = value
+
+            return json_value, animation_reset
+        
+        return value, None
+
+    def process_color_input(self, border_color):
+        if isinstance(border_color, str):
+            return (border_color, None)
+        return border_color
+
     def run(self, **kwargs):
+        settings_string = kwargs.get('scheduled_values', '{}')
+        json_settings, animation_reset_from_string = self.parse_int_or_json(settings_string)
 
         settings = {
-            'font_file': kwargs.get('font_file'),
-            'font_color': kwargs.get('font_color'),
-            'kerning': kwargs.get('kerning'),
-            'line_spacing': kwargs.get('line_spacing'),
-            'border_width': kwargs.get('border_width'),
-            'border_color': kwargs.get('border_color'),
-            'shadow_color': kwargs.get('shadow_color'),
-            'shadow_offset_x': kwargs.get('shadow_offset_x'),
-            'shadow_offset_y': kwargs.get('shadow_offset_y'),
-            'start_font_size': kwargs.get('start_font_size'),
-            'end_font_size': kwargs.get('end_font_size'),
-            'start_x_offset': kwargs.get('start_x_offset'),
-            'end_x_offset': kwargs.get('end_x_offset'),
-            'start_y_offset': kwargs.get('start_y_offset'),
-            'end_y_offset': kwargs.get('end_y_offset'),
-            'start_rotation': kwargs.get('start_rotation'),
-            'end_rotation': kwargs.get('end_rotation'),
-            'rotation_anchor_x': kwargs.get('rotation_anchor_x'),
-            'rotation_anchor_y': kwargs.get('rotation_anchor_y')
+            'font_file': json_settings.get('font_file', kwargs.get('font_file')),
+            'font_color': self.process_color_input(kwargs.get('font_color')),
+            'kerning': json_settings.get('kerning', self.parse_int_or_json(kwargs.get('kerning'))),
+            'border_width': json_settings.get('border_width', self.parse_int_or_json(kwargs.get('border_width'))),
+            'border_color': self.process_color_input(kwargs.get('border_color')),
+            'shadow_color': self.process_color_input(kwargs.get('shadow_color')),
+            'shadow_offset_x': json_settings.get('shadow_offset_x', self.parse_int_or_json(kwargs.get('shadow_offset_x'))),
+            'shadow_offset_y': json_settings.get('shadow_offset_y', self.parse_int_or_json(kwargs.get('shadow_offset_y'))),
+            'font_size': json_settings.get('font_size', self.parse_int_or_json(kwargs.get('font_size'))),
+            'x_offset': json_settings.get('x_offset', self.parse_int_or_json(kwargs.get('x_offset'))),
+            'y_offset': json_settings.get('y_offset', self.parse_int_or_json(kwargs.get('y_offset'))),
+            'rotation': json_settings.get('rotation', self.parse_int_or_json(kwargs.get('rotation'))),
+            'rotation_anchor_x': json_settings.get('rotation_anchor_x', self.parse_int_or_json(kwargs.get('rotation_anchor_x'))),
+            'rotation_anchor_y': json_settings.get('rotation_anchor_y', self.parse_int_or_json(kwargs.get('rotation_anchor_y'))),
         }
 
         return (settings,)
-

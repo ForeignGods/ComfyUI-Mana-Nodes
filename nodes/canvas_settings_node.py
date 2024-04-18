@@ -15,6 +15,7 @@ class canvas_settings:
                 "background_color": ("STRING", {"default": "black", "display": "text"}),
                 "text_alignment": (alignment_options, {"default": "center center", "display": "dropdown"}),
                 "padding": ("INT", {"default": 0, "min": 0, "step": 1, "display": "number"}),
+                "line_spacing": ("INT", {"default": 5, "step": 1, "display": "number"}),
             },
             "optional": {
                 "images": ("IMAGE", {"default": None}),
@@ -34,7 +35,8 @@ class canvas_settings:
             'background_color': kwargs.get('background_color'),
             'text_alignment': kwargs.get('text_alignment'),
             'padding': kwargs.get('padding'),
-            'images': kwargs.get('images')
+            'images': kwargs.get('images'),
+            'line_spacing': kwargs.get('line_spacing'),
         }
 
         return (settings,)

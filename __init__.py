@@ -8,7 +8,7 @@ from .nodes.animation_settings_node import animation_settings
 from .nodes.canvas_settings_node import canvas_settings
 from .nodes.scheduled_element_node import scheduled_element
 from .nodes.scheduled_values_node import scheduled_values
-
+from .nodes.color_animations_node import color_animations
 from .nodes.text_graphic_element_node import text_graphic_element
 from .helpers.logger import logger
 
@@ -28,7 +28,8 @@ NODE_CLASS_MAPPINGS = {
     "canvas_settings": canvas_settings,
     "text_graphic_element": text_graphic_element,
     "scheduled_element": scheduled_element,
-    "scheduled_values": scheduled_values
+    "scheduled_values": scheduled_values,
+    "color_animations": color_animations
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
@@ -42,7 +43,8 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "canvas_settings":"canvas_settings",
     "text_graphic_element":"text_graphic_element",
     "scheduled_element":"scheduled_element",
-    "scheduled_values":"scheduled_values"
+    "scheduled_values":"scheduled_values",
+    "color_animations":"color_animations"
 }
 
 __all__ = ["NODE_CLASS_MAPPINGS", "NODE_DISPLAY_NAME_MAPPINGS", "WEB_DIRECTORY"]
