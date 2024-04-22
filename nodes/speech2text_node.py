@@ -27,7 +27,7 @@ class speech2text:
             }          
         }
 
-    CATEGORY = "Mana Nodes"
+    CATEGORY = "💠 Mana Nodes"
     RETURN_TYPES = ("TRANSCRIPTION", "STRING","STRING","STRING",)
     RETURN_NAMES = ("transcription", "raw_string","framestamps_string","timestamps_string",)
     FUNCTION = "run"

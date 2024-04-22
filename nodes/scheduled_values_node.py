@@ -40,7 +40,7 @@ class scheduled_values:
             }
         }
 
-    CATEGORY = "Mana Nodes"
+    CATEGORY = "💠 Mana Nodes/📅 Value Scheduling"
     RETURN_TYPES = ("INT",)
     RETURN_NAMES = ("scheduled_values",)
     FUNCTION = "run"

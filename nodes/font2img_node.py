@@ -60,10 +60,9 @@ class font2img:
         self.FONT_NAMES = sorted(self.FONTS.keys())
         return {
             "required": {
-                "main_font": ("TEXT_GRAPHIC_ELEMENT", {"default": None,"forceInput": True}),
+                "font": ("TEXT_GRAPHIC_ELEMENT", {"default": None,"forceInput": True}),
                 "text": ("STRING", {"multiline": True, "placeholder": "\"1\": \"Hello\",\n\"10\": \"Hello World\""}),
-                "main_font": ("TEXT_GRAPHIC_ELEMENT", {"default": None,"forceInput": True}),
-                "canvas_settings": ("CANVAS_SETTINGS", {"default": None,"forceInput": True}),
+                "canvas": ("CANVAS_SETTINGS", {"default": None,"forceInput": True}),
                 "frame_count": ("INT", {"default": 1, "min": 1, "step": 1, "display": "number"}),
             },
             "optional": {
@@ -75,11 +74,11 @@ class font2img:
     RETURN_TYPES = ("IMAGE", "STRING",)
     RETURN_NAMES = ("images", "framestamps_string",)
     FUNCTION = "run"
-    CATEGORY = "Mana Nodes"
+    CATEGORY = "💠 Mana Nodes"
 
     def run(self, **kwargs):
         frame_count = kwargs['frame_count']
-        images = kwargs.get('canvas_settings', {}).get('images', [None] * frame_count)
+        images = kwargs.get('canvas', {}).get('images', [None] * frame_count)
         transcription = kwargs.get('transcription', None)
         text = kwargs.get('text')
 
@@ -105,8 +104,8 @@ class font2img:
         transcription_fps = kwargs['transcription']['fps']
         transcription_mode = kwargs['transcription']['transcription_mode']
         transcription_data = kwargs['transcription']['transcription_data']
-        image_width = kwargs['canvas_settings']['width']
-        padding = kwargs['canvas_settings']['padding']
+        image_width = kwargs['canvas']['width']
+        padding = kwargs['canvas']['padding']
         formatted_transcription = ""
         current_sentence = ""
         sentence_words = []
@@ -225,27 +224,27 @@ class font2img:
         else:
             transcription_mode = None
 
-        main_font = kwargs.get('main_font', None)
+        main_font = kwargs.get('font', None)
         if main_font != None:
             main_font_file = main_font['font_file']
 
-        rotation = kwargs['main_font']['rotation'][0]
-        y_offset = kwargs['main_font']['y_offset'][0]
-        x_offset = kwargs['main_font']['x_offset'][0]
-        font_size = kwargs['main_font']['font_size'][0]
+        rotation = kwargs['font']['rotation'][0]
+        y_offset = kwargs['font']['y_offset'][0]
+        x_offset = kwargs['font']['x_offset'][0]
+        font_size = kwargs['font']['font_size'][0]
         
-        font_color = kwargs['main_font']['font_color'][0]
-        border_color = kwargs['main_font']['border_color'][0]
-        shadow_color = kwargs['main_font']['shadow_color'][0]
+        font_color = kwargs['font']['font_color'][0]
+        border_color = kwargs['font']['border_color'][0]
+        shadow_color = kwargs['font']['shadow_color'][0]
 
-        animation_reset_rotation = kwargs['main_font']['rotation'][1]
-        animation_reset_y_offset = kwargs['main_font']['y_offset'][1]
-        animation_reset_x_offset = kwargs['main_font']['x_offset'][1]
-        animation_reset_font_size = kwargs['main_font']['font_size'][1]
+        animation_reset_rotation = kwargs['font']['rotation'][1]
+        animation_reset_y_offset = kwargs['font']['y_offset'][1]
+        animation_reset_x_offset = kwargs['font']['x_offset'][1]
+        animation_reset_font_size = kwargs['font']['font_size'][1]
         
-        animation_reset_font_color = kwargs['main_font']['font_color'][1]
-        animation_reset_border_color = kwargs['main_font']['border_color'][1]
-        animation_reset_shadow_color = kwargs['main_font']['shadow_color'][1]
+        animation_reset_font_color = kwargs['font']['font_color'][1]
+        animation_reset_border_color = kwargs['font']['border_color'][1]
+        animation_reset_shadow_color = kwargs['font']['shadow_color'][1]
 
         rotation_duration = self.parse_animation_duration(rotation)
         y_offset_duration = self.parse_animation_duration(y_offset)
@@ -428,10 +427,10 @@ class font2img:
         return ' '.join(non_tagged_parts), ' '.join(tagged_parts)  
       
     def process_single_image(self, image, text, font, rotation_angle, x_offset, y_offset, text_position, tagged_font, font_color, border_color, shadow_color, tagged_font_color, tagged_border_color, tagged_shadow_color, kwargs ):
-        rotation_anchor_x = kwargs['main_font']['rotation_anchor_x'][0]
-        rotation_anchor_y = kwargs['main_font']['rotation_anchor_y'][0]
-        border_width = kwargs['main_font']['border_width'][0]
-        shadow_offset_x = kwargs['main_font']['shadow_offset_x'][0]
+        rotation_anchor_x = kwargs['font']['rotation_anchor_x'][0]
+        rotation_anchor_y = kwargs['font']['rotation_anchor_y'][0]
+        border_width = kwargs['font']['border_width'][0]
+        shadow_offset_x = kwargs['font']['shadow_offset_x'][0]
 
         # Create a larger canvas with the prepared image as the background
         orig_width, orig_height = image.size
@@ -449,7 +448,7 @@ class font2img:
         text_center_x = text_x + text_block_width / 2
         text_center_y = text_y + text_block_height / 2
 
-        total_kerning_width = sum(font.getlength(char) + kwargs['main_font']['kerning'][0] for char in text) - kwargs['main_font']['kerning'][0] * len(text)
+        total_kerning_width = sum(font.getlength(char) + kwargs['font']['kerning'][0] for char in text) - kwargs['font']['kerning'][0] * len(text)
 
         overlay = Image.new('RGBA', (int(text_block_width + border_width * 2 + shadow_offset_x + total_kerning_width), int(text_block_height + border_width * 2 + shadow_offset_x)), (255, 255, 255, 0))
         draw_overlay = ImageDraw.Draw(overlay)
@@ -485,15 +484,15 @@ class font2img:
             tagged_shadow_offset_x = 0
             tagged_shadow_offset_y = 0
 
-        main_border_width = kwargs['main_font']['border_width'][0]
+        main_border_width = kwargs['font']['border_width'][0]
         main_border_color = border_color
-        main_shadow_offset_x = kwargs['main_font']['shadow_offset_x'][0]
-        main_shadow_offset_y = kwargs['main_font']['shadow_offset_y'][0]
+        main_shadow_offset_x = kwargs['font']['shadow_offset_x'][0]
+        main_shadow_offset_y = kwargs['font']['shadow_offset_y'][0]
         main_shadow_color = shadow_color
 
         main_font_color = font_color
-        main_font_kerning = kwargs['main_font']['kerning'][0]
-        line_spacing = kwargs['canvas_settings']['line_spacing']
+        main_font_kerning = kwargs['font']['kerning'][0]
+        line_spacing = kwargs['canvas']['line_spacing']
 
         y_text_overlay = 0
         x_text_overlay = main_border_width
@@ -584,7 +583,7 @@ class font2img:
 
     def get_text_width(self, text, kwargs):
         
-        main_font = kwargs['main_font']
+        main_font = kwargs['font']
         main_font_size = main_font['font_size'][0]
         main_font_file = main_font['font_file']
 
@@ -601,10 +600,10 @@ class font2img:
         return text_width
 
     def calculate_text_position(self, text_width, text_height, x_offset, y_offset, kwargs):
-        text_alignment = kwargs['canvas_settings']['text_alignment'] 
-        image_width = kwargs['canvas_settings']['width']
-        image_height = kwargs['canvas_settings']['height']
-        padding = kwargs['canvas_settings']['padding']
+        text_alignment = kwargs['canvas']['text_alignment'] 
+        image_width = kwargs['canvas']['width']
+        image_height = kwargs['canvas']['height']
+        padding = kwargs['canvas']['padding']
 
         # Adjust the base position based on text_alignment and margin
         if text_alignment == "left top":
@@ -647,7 +646,7 @@ class font2img:
         max_width = 0
         font_height = font.getbbox('Agy')[3] # Height of a single line
         tagged_font_height = tagged_font.getbbox('Agy')[3]
-        line_spacing = kwargs['canvas_settings']['line_spacing']
+        line_spacing = kwargs['canvas']['line_spacing']
 
         for line in lines:
             non_tagged_text, tagged_text = self.separate_text(line)
@@ -697,10 +696,10 @@ class font2img:
     # TODO: ugly method has to be refactored
     def prepare_image(self, input_image, kwargs):
 
-        image_width = kwargs['canvas_settings']['width']
-        image_height = kwargs['canvas_settings']['height']
-        padding = kwargs['canvas_settings']['padding']
-        background_color = kwargs['canvas_settings']['background_color'] 
+        image_width = kwargs['canvas']['width']
+        image_height = kwargs['canvas']['height']
+        padding = kwargs['canvas']['padding']
+        background_color = kwargs['canvas']['background_color'] 
 
         if not isinstance(input_image, list):
             if isinstance(input_image, torch.Tensor):

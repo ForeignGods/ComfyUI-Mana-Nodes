@@ -28,7 +28,7 @@ class video2audio:
             "optional": {}
         }
 
-    CATEGORY = "Mana Nodes"
+    CATEGORY = "💠 Mana Nodes"
     RETURN_TYPES = ("IMAGE", "STRING","INT", "INT", "INT","INT",) 
     RETURN_NAMES = ("images", "audio_file","fps","frame_count", "height", "width",)
     FUNCTION = "run"

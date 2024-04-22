@@ -30,7 +30,7 @@ class audio2video:
 
         }
 
-    CATEGORY = "Mana Nodes"
+    CATEGORY = "💠 Mana Nodes"
     RETURN_TYPES = ("STRING",) 
     RETURN_NAMES = ("video_file",)
     FUNCTION = "run"

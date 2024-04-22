@@ -22,7 +22,7 @@ class string2file:
         }
     
     INPUT_IS_LIST = True
-    CATEGORY = "Mana Nodes"
+    CATEGORY = "💠 Mana Nodes"
     RETURN_TYPES = ()
     RETURN_NAMES = ()
     FUNCTION = "run"

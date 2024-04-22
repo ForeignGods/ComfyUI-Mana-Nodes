@@ -1,5 +1,4 @@
 import { app } from "../../../scripts/app.js";
-
 function loadChartJs(callback) {
     const script = document.createElement('script');
     script.src = 'https://cdn.jsdelivr.net/npm/chart.js';
@@ -97,13 +96,15 @@ class TimelineWidget {
     
         // Create and append the generate button
         this.generateButton = document.createElement('button');
-        this.generateButton.innerText = 'Generate In-betweens';
+        this.generateButton.innerText = 'Generate Values';
         this.generateButton.classList.add(...commonClassList, 'btn-secondary');        
         this.generateButton.style.height = commonHeight;
         this.generateButton.style.flex = '1'; // Add this line
         this.generateButton.style.marginRight = '2px'; // Add spacing between elements
         this.generateButton.style.padding = '5px 10px'; // Adjust padding as needed
         this.generateButton.onclick = () => this.generateInBetweenValues();
+        // add border radius to the button
+        this.generateButton.style.borderRadius = '5px';
         buttonsContainer.appendChild(this.generateButton);
     
         // Create and append the delete button
@@ -112,7 +113,8 @@ class TimelineWidget {
         this.deleteButton.classList.add(...commonClassList, 'btn-danger');
         this.deleteButton.style.height = commonHeight;
         this.deleteButton.style.flex = '1'; // Add this line
-
+        // add border radius to the button
+        this.deleteButton.style.borderRadius = '5px';
         this.deleteButton.style.marginRight = '2px'; // Add spacing between elements
         this.deleteButton.style.padding = '5px 10px'; // Adjust padding as needed
         this.deleteButton.onclick = () => this.deleteGeneratedValues();
@@ -147,22 +149,23 @@ class TimelineWidget {
             badge.style.display = 'flex'; // Add this line
             badge.style.justifyContent = 'center'; // Add this line
             badge.style.alignItems = 'center'; 
-
+            badge.style.height = '30px'; // Adjust the value as needed
             const deleteButton = document.createElement('button');
             deleteButton.classList.add('btn');
             deleteButton.innerHTML = '<i class="bi bi-trash"></i>';
             deleteButton.style.color = '#999999';  
+            deleteButton.style.marginLeft = '-15px';
             deleteButton.onclick = () => {
                 this.removeChartKeyframe(index);
             };
 
-            badge.appendChild(deleteButton);
 
             // Add an edit button to each badge
             let editButton = document.createElement('button');
             editButton.innerHTML = '<i class="bi bi-pencil"></i>';
             editButton.classList.add('btn');
-            //move the edit button more to the left
+            
+            // add minus padding to the left of the button
             editButton.style.color = '#999999';  
    
             // Store the this value in a variable
@@ -176,7 +179,7 @@ class TimelineWidget {
                 let currentFrame = match1 ? match1[1] : '';
                 let match2 = splitText[1].match(/value: ([-+]?[0-9]*\.?[0-9]+)/);
                 let currentValue = match2 ? match2[1] : '';
-                
+
                 // Create labels and input fields for the frame and value
                 let frameLabel = document.createElement('span');
                 frameLabel.innerText = 'frame: ';
@@ -184,7 +187,9 @@ class TimelineWidget {
                 let frameInput = document.createElement('input');
                 frameInput.type = 'text';
                 frameInput.value = currentFrame;
-                frameInput.style.width = '50px'; // Adjust the value as needed
+                frameInput.style.width = '25px'; // Set the width dynamically
+                frameInput.style.height = '15px'; // Adjust the value as needed
+
 
                 let valueLabel = document.createElement('span');
                 valueLabel.innerText = 'value: ';
@@ -192,14 +197,15 @@ class TimelineWidget {
                 let valueInput = document.createElement('input');
                 valueInput.type = 'text';
                 valueInput.value = currentValue;
-                valueInput.style.width = '50px'; // Adjust the value as needed
+                valueInput.style.width = '25px'; // Set the width dynamically
+                valueInput.style.height = '15px'; // Adjust the value as needed
 
                 // Create a save button
                 let saveButton = document.createElement('button');
                 saveButton.classList.add('btn');
                 saveButton.innerHTML = '<i class="bi bi-check"></i>';
                 saveButton.style.color = '#999999';  
-                saveButton.style.marginRight = '5px'; 
+                //saveButton.style.marginRight = '20px'; 
                 saveButton.firstChild.style.fontSize = '1.5em'; // Adjust the value as needed// Adjust the value as needed   
 
                 // Replace the badge's innerHTML with the labels, input fields, and save button
@@ -233,7 +239,7 @@ class TimelineWidget {
                     badge.dataset.value = newValue;
 
                     // Replace the input fields and save button with the new frame and value
-                    badge.innerHTML = `Frame: ${newFrame}, Value: ${newValue}`;
+                    badge.innerHTML = `frame: ${newFrame}, value: ${newValue}`;
 
                     // Append the edit and delete buttons after updating the badge's innerHTML
                     badge.appendChild(editButton);
@@ -242,6 +248,7 @@ class TimelineWidget {
             };
 
             badge.appendChild(editButton);
+            badge.appendChild(deleteButton);
             this.pointsDisplay.appendChild(badge);
         });
 
@@ -324,7 +331,7 @@ class TimelineWidget {
         // Update the chart with two datasets: one for user keyframes, one for generated keyframes
         this.chart.data.datasets = [
             {
-                label: 'User Keyframes',
+                label: 'User Values',
                 data: this.keyframes,
                 fill: false,
                 borderColor: 'rgb(75, 192, 192)',
@@ -334,7 +341,7 @@ class TimelineWidget {
                 showLine: true
             },
             {
-                label: 'Generated In-Betweens',
+                label: 'Generated Values',
                 data: this.generatedKeyframes,
                 fill: false,
                 borderColor: 'rgb(255, 159, 64)',

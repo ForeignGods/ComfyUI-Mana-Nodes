@@ -17,7 +17,7 @@ class text2speech:
             },
         }
 
-    CATEGORY = "Mana Nodes"
+    CATEGORY = "💠 Mana Nodes"
     RETURN_TYPES = ("STRING",)
     RETURN_NAMES = ("audio_file",)
     FUNCTION = "run"

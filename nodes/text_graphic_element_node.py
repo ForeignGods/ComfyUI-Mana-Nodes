@@ -50,6 +50,7 @@ class text_graphic_element:
         return {
             "required": {
                 "font_file": (cls.FONT_NAMES, {"default": cls.FONT_NAMES[0]}),
+                "font_size": ("INT", {"default": 75, "min": 1, "step": 1, "display": "number"}),
                 "font_color": ("STRING", {"default": "red", "display": "text"}),
                 "kerning": ("INT", {"default": 0, "step": 1, "display": "number"}),
                 "border_width": ("INT", {"default": 0, "min": 0, "step": 1, "display": "number"}),
@@ -57,7 +58,6 @@ class text_graphic_element:
                 "shadow_color": ("STRING", {"default": "red", "display": "text"}),
                 "shadow_offset_x": ("INT", {"default": 0, "min": 0, "step": 1, "display": "number"}),
                 "shadow_offset_y": ("INT", {"default": 0, "min": 0, "step": 1, "display": "number"}),
-                "font_size": ("INT", {"default": 75, "min": 1, "step": 1, "display": "number"}),
                 "x_offset": ("INT", {"default": 0, "step": 1, "display": "number"}),
                 "y_offset": ("INT", {"default": 0, "step": 1, "display": "number"}),
                 "rotation": ("INT", {"default": 0, "min": -360, "max": 360, "step": 1}),
@@ -66,9 +66,9 @@ class text_graphic_element:
             },
         }
 
-    CATEGORY = "Mana Nodes"
+    CATEGORY = "💠 Mana Nodes/⚙️ Generator Settings"
     RETURN_TYPES = ("TEXT_GRAPHIC_ELEMENT",)
-    RETURN_NAMES = ("text_graphic_element",)
+    RETURN_NAMES = ("font",)
     FUNCTION = "run"
     #INPUT_IS_LIST = True
 

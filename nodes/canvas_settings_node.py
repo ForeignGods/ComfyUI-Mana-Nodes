@@ -22,9 +22,9 @@ class canvas_settings:
             },
         }
 
-    CATEGORY = "Mana Nodes"
+    CATEGORY = "💠 Mana Nodes/⚙️ Generator Settings"
     RETURN_TYPES = ("CANVAS_SETTINGS",)
-    RETURN_NAMES = ("canvas_settings",)
+    RETURN_NAMES = ("canvas",)
     FUNCTION = "run"
 
     def run(self, **kwargs):
