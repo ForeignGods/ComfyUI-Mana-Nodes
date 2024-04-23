@@ -177,7 +177,7 @@ class font2img:
         if duration <= 1:
             return 0
         cycle_length = duration * 2 - 2
-        position = (current_frame - 1) % cycle_length
+        position = current_frame % cycle_length
         if position >= duration:
             return cycle_length - position
         return position
@@ -185,14 +185,14 @@ class font2img:
     def calculate_sequence_frame(self, current_frame, start_frame, duration, reset_mode):
         if reset_mode == 'word' or reset_mode == 'line':
             active = (current_frame - start_frame) < duration
-            return current_frame - start_frame if active else duration - 1
+            return (current_frame - start_frame) + 1 if active else duration 
         elif reset_mode == 'never':
-            return current_frame if current_frame <= duration else duration - 1
+            return current_frame + 1 if current_frame <= duration else duration 
         elif reset_mode == 'looped':
-            return (current_frame - 1) % duration
+            return (current_frame % duration) + 1
         elif reset_mode == 'pingpong':
-            return self.calculate_pingpong_position(current_frame, duration)
-        return 0  
+            return self.calculate_pingpong_position(current_frame, duration) + 1
+        return 1  
     
     # Helper functions
     def animation_reset(self, animation_reset_mode, new_text, old_text, transcription_mode):
@@ -231,6 +231,7 @@ class font2img:
         rotation = kwargs['font']['rotation'][0]
         y_offset = kwargs['font']['y_offset'][0]
         x_offset = kwargs['font']['x_offset'][0]
+        print('list',y_offset)
         font_size = kwargs['font']['font_size'][0]
         
         font_color = kwargs['font']['font_color'][0]
@@ -250,7 +251,7 @@ class font2img:
         y_offset_duration = self.parse_animation_duration(y_offset)
         x_offset_duration = self.parse_animation_duration(x_offset)
         font_size_duration = self.parse_animation_duration(font_size)
-        
+        print('duration',y_offset_duration)
         font_color_duration = self.parse_animation_duration(font_color)
         shadow_color_duration = self.parse_animation_duration(shadow_color)
         border_color_duration = self.parse_animation_duration(border_color)
@@ -329,13 +330,16 @@ class font2img:
             first_pass = False
             last_text = text
             removed_tags_last_text = removed_tags_text
+            print('animation_started',animation_started_frame_y_offset)
 
             # Calculate sequence frames for each property
             sequence_frame_rotation = self.calculate_sequence_frame(i, animation_started_frame_rotation, rotation_duration, animation_reset_rotation)
             sequence_frame_y_offset = self.calculate_sequence_frame(i, animation_started_frame_y_offset, y_offset_duration, animation_reset_y_offset)
             sequence_frame_x_offset = self.calculate_sequence_frame(i, animation_started_frame_x_offset, x_offset_duration, animation_reset_x_offset)
             sequence_frame_font_size = self.calculate_sequence_frame(i, animation_started_frame_font_size, font_size_duration, animation_reset_font_size)
-            
+
+            print('sequence_frame_y_offset',sequence_frame_y_offset)
+
             sequence_frame_font_color = self.calculate_sequence_frame(i, animation_started_frame_font_color, font_color_duration, animation_reset_font_color)
             sequence_frame_border_color = self.calculate_sequence_frame(i, animation_started_frame_border_color, border_color_duration, animation_reset_border_color)
             sequence_frame_shadow_color = self.calculate_sequence_frame(i, animation_started_frame_shadow_color, shadow_color_duration, animation_reset_shadow_color)
@@ -349,6 +353,8 @@ class font2img:
             current_rotation = self.get_frame_specific_value(sequence_frame_rotation, rotation) if isinstance(rotation, list) else rotation
             current_y_offset = self.get_frame_specific_value(sequence_frame_y_offset, y_offset) if isinstance(y_offset, list) else y_offset
             current_x_offset = self.get_frame_specific_value(sequence_frame_x_offset, x_offset) if isinstance(x_offset, list) else x_offset
+
+            print('value:',current_y_offset)
 
             current_font_size = self.get_frame_specific_value(sequence_frame_font_size, font_size) if isinstance(font_size, list) else font_size
             font = self.get_font(main_font_file, current_font_size)

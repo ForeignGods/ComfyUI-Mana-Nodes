@@ -100,7 +100,6 @@ class text_graphic_element:
     def run(self, **kwargs):
         settings_string = kwargs.get('scheduled_values', '{}')
         json_settings, animation_reset_from_string = self.parse_int_or_json(settings_string)
-
         settings = {
             'font_file': json_settings.get('font_file', kwargs.get('font_file')),
             'font_color': self.process_color_input(kwargs.get('font_color')),

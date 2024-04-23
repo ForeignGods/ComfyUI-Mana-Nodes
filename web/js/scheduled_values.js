@@ -49,7 +49,7 @@ class TimelineWidget {
         this.pointsDisplay = null;
         this.generateButton = null;
         this.deleteButton = null;
-        this.generatedKeyframes = []; // New array to hold generated in-between keyframes
+        this.generatedKeyframes = [];
         this.createChartContainer();
     }
     
@@ -326,8 +326,8 @@ class TimelineWidget {
 
             // Always include the end frame
             this.generatedKeyframes.push(endFrame);
+
         }
-        
         // Update the chart with two datasets: one for user keyframes, one for generated keyframes
         this.chart.data.datasets = [
             {
@@ -351,7 +351,7 @@ class TimelineWidget {
                 showLine: true
             }
         ];
-    
+        localStorage.setItem('savedGeneratedKeyframes', JSON.stringify(this.generatedKeyframes));
         // Update chart with new data
         this.chart.update();
     
@@ -383,6 +383,9 @@ class TimelineWidget {
     updateChartData() {
         this.keyframes.sort((a, b) => a.x - b.x);
         this.chart.data.datasets[0].data = this.keyframes.map(kf => ({ x: kf.x, y: kf.y }));
+
+        //this.generatedKeyframes.sort((a, b) => a.x - b.x);
+        //this.chart.data.datasets[1].data = this.generatedKeyframes.map(kf => ({ x: kf.x, y: kf.y }));
         this.chart.update();
     }   
         
@@ -462,6 +465,7 @@ class TimelineWidget {
         }
 
         this.updateGenerateButtonState();
+        localStorage.setItem('savedKeyframes', JSON.stringify(this.keyframes));
     }
 
     calculateValuesFromClick(event, canvas) {
@@ -497,13 +501,23 @@ class TimelineWidget {
         const data = {
             labels: Array.from({ length: maxX }, (_, i) => i + 1),
             datasets: [{
-                label: 'User Keyframes',
+                label: 'User Values',
                 data: this.keyframes,
                 fill: false,
                 borderColor: 'rgb(75, 192, 192)',
                 tension: 0,
                 pointRadius: 5,
                 pointStyle: 'rectRot',
+                showLine: true
+            },
+            {
+                label: 'Generated Values',
+                data: this.generatedKeyframes,
+                fill: false,
+                borderColor: 'rgb(255, 159, 64)',
+                tension: 0,
+                pointRadius: 5,
+                pointStyle: 'circle',
                 showLine: true
             }]
         };
@@ -615,6 +629,25 @@ app.registerExtension({
     name: "ManaNodes.scheduled_values",
     async beforeRegisterNodeDef(nodeType, nodeData) {
         if (nodeData.name === "scheduled_values") {
+
+            // Restoring state in onConfigure
+            chainCallback(nodeType.prototype, "onConfigure", function () {
+                const savedKeyframes = JSON.parse(localStorage.getItem('savedKeyframes'));
+                const savedGeneratedKeyframes = JSON.parse(localStorage.getItem('savedGeneratedKeyframes'));
+                
+
+                if (savedKeyframes) {
+                    console.log('gesavedKeyframeslp',savedKeyframes);
+                    this.timelineWidget.keyframes = savedKeyframes;
+                }
+
+                if (savedGeneratedKeyframes) {
+                    console.log('savedGeneratedKeyframes',savedGeneratedKeyframes);
+                    this.timelineWidget.generatedKeyframes = savedGeneratedKeyframes;
+
+                }
+            });
+
             chainCallback(nodeType.prototype, 'onNodeCreated', function () {
                 const frame_count_widget = this.widgets.find(w => w.name === "frame_count");
                 const value_range_widget = this.widgets.find(w => w.name === "value_range");

@@ -17,11 +17,11 @@ class audio2video:
     def INPUT_TYPES(cls):
         return {
             "required": {
-                "audio_file": ("STRING", {"display": "text", "forceInput": True}),
                 "images": ("IMAGE", {"display": "text", "forceInput": True}),
                 "filename_prefix": ("STRING", {"default": "video\\video"})
             },
             "optional": {
+                "audio_file": ("STRING", {"display": "text", "forceInput": True}),
                 "fps": ("INT", {"default": 30, "min": 1, "max": 60, "step": 1})
             },
             "hidden": {
@@ -46,7 +46,7 @@ class audio2video:
         full_path = self.construct_video_path(kwargs)
         
         # Create and save the video clip
-        video_clip = self.create_video_clip(pil_frames, fps, kwargs['audio_file'], full_path)
+        video_clip = self.create_video_clip(pil_frames, fps, kwargs.get('audio_file',None), full_path)
 
         # Generate preview metadata
         preview = self.generate_preview_metadata(full_path)
@@ -87,16 +87,37 @@ class audio2video:
 
         return full_path
 
-    def create_video_clip(self, frames, fps, audio_file_path, output_path):
-        numpy_frames = [np.array(frame) for frame in frames]
+    # def create_video_clip(self, frames, fps, audio_file_path, output_path):
+    #     numpy_frames = [np.array(frame) for frame in frames]
+    #     video_clip = ImageSequenceClip(numpy_frames, fps=fps)
+    #     video_clip = video_clip.set_audio(AudioFileClip(audio_file_path))
+    #     video_clip.write_videofile(output_path, codec="libx264", fps=fps)
+    #     return video_clip
+    
+    def create_video_clip(self, pil_frames, fps, audio_file, full_path):
+        numpy_frames = [np.array(frame) for frame in pil_frames]
         video_clip = ImageSequenceClip(numpy_frames, fps=fps)
-        video_clip = video_clip.set_audio(AudioFileClip(audio_file_path))
-        video_clip.write_videofile(output_path, codec="libx264", fps=fps)
-        return video_clip
 
+        # Add audio to the video clip if audio_file is not None
+        if audio_file is not None:
+            audio_clip = AudioFileClip(audio_file)
+            video_clip = video_clip.set_audio(audio_clip)
+
+        # Write the video clip to a file
+        video_clip.write_videofile(full_path, codec='libx264')
+
+        return video_clip
+    
     def generate_preview_metadata(self, full_path):
         filename = os.path.basename(full_path)
-        subfolder = os.path.basename(os.path.dirname(full_path))
+        parent_folder = os.path.dirname(full_path)
+
+        # Check if the parent folder is the output folder
+        if os.path.basename(parent_folder) == 'output':
+            subfolder = ''  # No subfolder
+        else:
+            subfolder = os.path.basename(parent_folder)  # Subfolder exists
+
         return [
             {
                 "filename": filename,

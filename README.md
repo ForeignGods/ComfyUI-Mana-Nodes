@@ -410,14 +410,17 @@ Dimensions of the extracted frames.
 
 #### Required Inputs
 
-#### `audio` 
-Audio file path or URL.
 #### `frames` 
 Sequence of images to be used as video frames.
 #### `filename_prefix` 
 Prefix for naming the video file. (relative to .\ComfyUI\output)
 #### `fps` 
 Frames per second for the video.
+
+#### Optional Inputs
+
+#### `audio_file` 
+Audio file path or URL.
 
 #### Outputs
 
