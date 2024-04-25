@@ -191,7 +191,7 @@ class font2img:
         elif reset_mode == 'looped':
             return (current_frame % duration) + 1
         elif reset_mode == 'pingpong':
-            return self.calculate_pingpong_position(current_frame, duration) + 1
+            return self.calculate_pingpong_position(current_frame, duration) 
         return 1  
     
     # Helper functions
@@ -231,9 +231,9 @@ class font2img:
         rotation = kwargs['font']['rotation'][0]
         y_offset = kwargs['font']['y_offset'][0]
         x_offset = kwargs['font']['x_offset'][0]
-        print('list',y_offset)
         font_size = kwargs['font']['font_size'][0]
-        
+        #print('font_size',font_size)
+
         font_color = kwargs['font']['font_color'][0]
         border_color = kwargs['font']['border_color'][0]
         shadow_color = kwargs['font']['shadow_color'][0]
@@ -251,7 +251,7 @@ class font2img:
         y_offset_duration = self.parse_animation_duration(y_offset)
         x_offset_duration = self.parse_animation_duration(x_offset)
         font_size_duration = self.parse_animation_duration(font_size)
-        print('duration',y_offset_duration)
+        #print('font_size_duration',font_size_duration)
         font_color_duration = self.parse_animation_duration(font_color)
         shadow_color_duration = self.parse_animation_duration(shadow_color)
         border_color_duration = self.parse_animation_duration(border_color)
@@ -330,7 +330,7 @@ class font2img:
             first_pass = False
             last_text = text
             removed_tags_last_text = removed_tags_text
-            print('animation_started',animation_started_frame_y_offset)
+            #print('animation_started',animation_started_frame_y_offset)
 
             # Calculate sequence frames for each property
             sequence_frame_rotation = self.calculate_sequence_frame(i, animation_started_frame_rotation, rotation_duration, animation_reset_rotation)
@@ -338,7 +338,7 @@ class font2img:
             sequence_frame_x_offset = self.calculate_sequence_frame(i, animation_started_frame_x_offset, x_offset_duration, animation_reset_x_offset)
             sequence_frame_font_size = self.calculate_sequence_frame(i, animation_started_frame_font_size, font_size_duration, animation_reset_font_size)
 
-            print('sequence_frame_y_offset',sequence_frame_y_offset)
+            #print('sequence_frame_font_size',sequence_frame_font_size)
 
             sequence_frame_font_color = self.calculate_sequence_frame(i, animation_started_frame_font_color, font_color_duration, animation_reset_font_color)
             sequence_frame_border_color = self.calculate_sequence_frame(i, animation_started_frame_border_color, border_color_duration, animation_reset_border_color)
@@ -354,9 +354,9 @@ class font2img:
             current_y_offset = self.get_frame_specific_value(sequence_frame_y_offset, y_offset) if isinstance(y_offset, list) else y_offset
             current_x_offset = self.get_frame_specific_value(sequence_frame_x_offset, x_offset) if isinstance(x_offset, list) else x_offset
 
-            print('value:',current_y_offset)
-
             current_font_size = self.get_frame_specific_value(sequence_frame_font_size, font_size) if isinstance(font_size, list) else font_size
+            #print('current_font_size:',current_font_size)
+
             font = self.get_font(main_font_file, current_font_size)
 
             current_font_color = self.get_frame_specific_value(sequence_frame_font_color, font_color) if isinstance(font_color, list) else font_color

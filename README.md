@@ -507,6 +507,8 @@ Prefix for naming the text file. (relative to .\output)
 
 ## To-Do
 
+- [ ] Improve Speech Recognition
+- [ ] Improve Text to Speech
 - [ ] SVG Loader/Animator
 - [ ] Text to Image Generator Alpha Channel
 - [ ] Add Font Support for non Latin Characters
