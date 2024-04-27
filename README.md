@@ -7,11 +7,19 @@
     <img alt="GitHub all releases" src="https://img.shields.io/github/downloads/ForeignGods/ComfyUI-Mana-Nodes/latest/total">
 </a>
 -->
+
+Welcome to the ComfyUI-Mana-Nodes project! 
+
+This collection of custom nodes is designed to supercharge text-based content creation within the ComfyUI environment. 
+
+Whether you're working on dynamic captions, transcribing audio, or crafting engaging visual content, Mana Nodes has got you covered.
+
 If you like Mana Nodes, give our repo a [⭐ Star](https://github.com/ForeignGods/ComfyUI-Mana-Nodes) and [👀 Watch](https://github.com/ForeignGods/ComfyUI-Mana-Nodes/subscription) our repository to stay updated.
   
 ## Installation
-You can install these nodes via the [ComfyUI-Manager](https://github.com/ltdrdata/ComfyUI-Manager)
-Simply clone the repo into the `custom_nodes` directory with this command:
+You can install Mana Nodes via the [ComfyUI-Manager](https://github.com/ltdrdata/ComfyUI-Manager)
+
+Or simply clone the repo into the `custom_nodes` directory with this command:
 
 ```
 git clone https://github.com/ForeignGods/ComfyUI-Mana-Nodes.git
