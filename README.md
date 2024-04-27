@@ -181,6 +181,9 @@ Used as input on ✒️ <b>Text to Image Generator</b> node to define the canvas
 <details>
   <summary>⏰ <b>Scheduled Values</b></summary>
 
+![Screenshot 2024-04-27 at 17-07-10 ComfyUI](https://github.com/ForeignGods/ComfyUI-Mana-Nodes/assets/78089013/ee456e65-9950-4138-8b37-23b007ec92d9)
+
+
 #### Required Inputs
 
 #### `frame_count`
