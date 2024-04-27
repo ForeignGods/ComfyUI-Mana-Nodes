@@ -11,61 +11,57 @@ class speech2text:
 
     @classmethod
     def INPUT_TYPES(cls):
-
         spell_check_options = ["English", "Spanish", "French", 
                 "Portuguese", "German", "Italian", 
                 "Russian", "Arabic", "Basque", "Latvian", "Dutch"]
-    
+        transcription_mode = ["word","line","fill"]
         return {
             "required": {
                 "audio_file": ("STRING", {"display": "text","forceInput": True}),
                 "wav2vec2_model": (cls.get_wav2vec2_models(), {"display": "dropdown", "default": "ailegends/xlsr-jonatasgrosman-wav2vec2-large-xlsr-53-english"}),
                 "spell_check_language": (spell_check_options, {"default": "English", "display": "dropdown"}),
-                "framestamps_max_chars": ("INT", {"default": 25, "step": 1, "display": "number"})
-            },            
-            "optional": {
-                "fps": ("INT", {"forceInput": True})
-            }
+                "framestamps_max_chars": ("INT", {"default": 25, "step": 1, "display": "number"}),
+                "fps": ("INT", {"default": 30, "min": 1, "max": 60, "step": 1}),
+                "transcription_mode": (transcription_mode, {"default": "fill", "display": "dropdown"}),
+                "uppercase": ("BOOLEAN", {"default": True})
+            }          
         }
 
-    CATEGORY = "Mana Nodes"
+    CATEGORY = "💠 Mana Nodes"
     RETURN_TYPES = ("TRANSCRIPTION", "STRING","STRING","STRING",)
     RETURN_NAMES = ("transcription", "raw_string","framestamps_string","timestamps_string",)
     FUNCTION = "run"
     OUTPUT_NODE = True
 
     def run(self, audio_file, wav2vec2_model, spell_check_language,framestamps_max_chars,**kwargs):
-       
         fps = kwargs.get('fps',30)
         # Load and process with Wav2Vec2 model
         audio_array = self.audiofile_to_numpy(audio_file)
         raw_transcription = self.transcribe_with_timestamps(audio_array, wav2vec2_model)
-        #print("raw_transcription", raw_transcription)
 
         # Correct with spell checker
         corrected_transcription = self.correct_transcription_with_language_model(raw_transcription, spell_check_language)
-        #print("corrected_transcription", corrected_transcription)
+        
+        if kwargs['uppercase'] != True:
+        # Assuming 'transcriptions' is a list of dictionaries
+            corrected_transcription = [(word.lower(), start_time, end_time) for word, start_time, end_time in corrected_transcription]
         
         # Generate string formatted like JSON for transcription with timestamps
         frame_structure_transcription = self.transcription_to_frame_structure_string(corrected_transcription,fps,framestamps_max_chars)
-        #print("frame_structure_transcription", frame_structure_transcription)
         
         # Convert raw transcription to string format
         raw_transcription_string = self.transcription_to_string(corrected_transcription)
-        #print("raw_transcription_string", raw_transcription_string)
         
         # Convert raw transcription to string format
         json = self.transcription_to_json_string(corrected_transcription)
-        #print("json", json)
+        
+        settings_dict = {
+            "transcription_data": corrected_transcription,  # This is your list of tuples
+            "fps": fps,                                    # Assuming fps is a variable holding the fps value
+            "transcription_mode": kwargs['transcription_mode']       # Assuming transcription_mode is a variable holding the mode as a string
+        }
 
-        corrected_transcription_with_fps = []
-        for word, start_time, end_time in corrected_transcription:
-            # Append fps as a
-            #  fourth element to each tuple
-            corrected_transcription_with_fps.append((word, start_time, end_time, fps))
-
-        #print("corrected_transcription_with_fps", corrected_transcription_with_fps)
-        return (corrected_transcription_with_fps, raw_transcription_string,frame_structure_transcription,json,)
+        return (settings_dict, raw_transcription_string,frame_structure_transcription,json,)
 
     def transcription_to_string(self, raw_transcription):
         # Convert a list of (word, start_time, end_time) tuples to a string
@@ -149,15 +145,12 @@ class speech2text:
             logits = model(inputs.input_values).logits
 
         predicted_ids = torch.argmax(logits, dim=-1)
-        #print("Transcription:", transcription)
 
         # Calculate timestamps
         raw_timestamps = self.calculate_timestamps(predicted_ids, inputs.input_values.shape[1], processor)
-        #print("Raw timestamps:", raw_timestamps)
 
         # Filter out padding tokens from timestamps
         timestamps = [(token, time) for token, time in raw_timestamps if token != "<pad>"]
-        #print("Filtered timestamps:", timestamps)
 
         # Group tokens into words
         word_timestamps = self.group_timestamps_into_words(timestamps)

@@ -80,9 +80,11 @@ function addUploadWidget(nodeType, widgetName) {
 
 // Adds an upload button to the nodes
 app.registerExtension({
-  name: "mana.video2audio",
+  name: "ManaNodes.video2audio",
   async beforeRegisterNodeDef(nodeType, nodeData, app) {
+    
     if (nodeData?.input?.required?.video?.[1]?.mana_video_upload === true) {
+
       addUploadWidget(nodeType, 'video');
       addVideoPreview(nodeType, { comboWidget: 'video' });
     }

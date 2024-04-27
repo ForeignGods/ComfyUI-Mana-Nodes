@@ -1,23 +1,11 @@
-# ComfyUI-Mana-Nodes
+# ComfyUI-Mana-Nodes ![Static Badge](https://img.shields.io/badge/release-v1.0-black?style=plastic&logo=GitHub&logoColor=white&color=green) [![Downloads](https://img.shields.io/github/downloads/ForeignGods/ComfyUI-Mana-Nodes/total.svg)](https://github.com/ForeignGods/ComfyUI-Mana-Nodes/releases)
 
-- [Installation](#installation)
-- [Demo](#demo)
-- [To-Do](#to-do)
-- [Nodes](#nodes)
-  - [font2img Node](#font2img-node)
-  - [video2audio Node](#video2audio-node)
-  - [speech2text Node](#speech2text-node)
-  - [text2speech Node](#text2speech-node)
-  - [string2file Node](#string2file-node)
-  - [audio2video Node](#audio2video-node)
-- [Example Workflows](#example-workflows)
-  - [Font Animation](#font-animation)
-  - [Speech Reconition](#speech-recognition)
-- [Font Licences](#font-licences)
-  - [Font Links](#font-links)
-- [Contributing](#contributing)
+TODO: Add short intro and description to Mana Nodes here. And maybe animated or static logo MANA NODES instead of simple title.
+
+If you like Mana Nodes, give our repo a [⭐ Star](https://github.com/ForeignGods/ComfyUI-Mana-Nodes) and [👀 Watch](https://github.com/ForeignGods/ComfyUI-Mana-Nodes/subscription) our repository to stay updated.
   
 ## Installation
+You can install these nodes via the [ComfyUI-Manager](https://github.com/ltdrdata/ComfyUI-Manager)
 Simply clone the repo into the `custom_nodes` directory with this command:
 
 ```
@@ -34,181 +22,314 @@ If you are using a venv, make sure you have it activated before installation and
 pip install -r requirements.txt
 ```
 
-## Demo
-
-<img src="https://github.com/ForeignGods/ComfyUI-Mana-Nodes/assets/78089013/5a35d2d6-ae15-4ee1-ba81-582975633a93" width="200" height="300" alt="gif_00008-ezgif com-optimize">
-<img src="https://github.com/ForeignGods/ComfyUI-Mana-Nodes/assets/78089013/ca8a5636-7d82-4f72-82a7-f21dacfb4d01" width="200" height="300" alt="gif_00008-ezgif com-optimize">
-<img src="https://github.com/ForeignGods/ComfyUI-Mana-Nodes/assets/78089013/82e418bb-07d3-47a0-b329-d312c376dab3" width="200" height="300" alt="gif_00008-ezgif com-optimize">
-<img src="https://github.com/ForeignGods/ComfyUI-Mana-Nodes/assets/78089013/b45ae2c0-60f7-4a32-87af-80b7a26783ab" width="200" height="300" alt="gif_00008-ezgif com-optimize">
-
-https://github.com/ForeignGods/ComfyUI-Mana-Nodes/assets/78089013/657330d9-4745-4acf-b1cc-de9336104f3d
-
-## To-Do
-
-- [x] font2image Batch Animation
-- [x] Split Video to Frames and Audio
-- [x] speech2text
-- [x] text2speech
-- [ ] SVG Loader/Animator
-- [ ] font2image Alpha Channel
-- [ ] add font support for other languages
-- [ ] 3d effect for text, bevel/emboss, inner shading, fade in/out effect
-- [ ] input scheduled values for the animation
-
 ## Nodes
 
-## font2img Node
+<details>
+  <summary>✒️ <b>Text to Image Generator</b></summary>
+  
+#### Required Inputs
 
-### Required Inputs
+#### `font`
 
-Configure the font2img node by setting the following parameters in ComfyUI:
+To set the font and its styling you need to input 🆗 <b>Font Properties</b> node here.
 
-- `font_file` fonts located in the <b>custom_nodes\ComfyUI-Mana-Nodes\font\example_font.ttf</b> directory (supports .ttf, .otf, .woff, .woff2).
-- `font_color` Color of the text. (https://www.w3.org/wiki/CSS3/Color/Extended_color_keywords)
-- `background_color` Background color of the image.
-- `border_color` Color of the border around the text.
-- `border_width` Width of the text border.
-- `shadow_color` Width of the text border.
-- `shadow_offset_x` Horizontal offset of the shadow.
-- `shadow_offset_y` Vertical offset of the shadow.
-- `line_spacing` Spacing between lines of text.
-- `kerning` Spacing between characters of font.
-- `padding` Padding between image border and font.
-- `frame_count` Number of frames (images) to generate.
-- `image_width` Width of the generated images.
-- `image_height` Height of the generated images.
-- `transcription_mode` Mode of text transcription ('word', 'line', 'fill').
-- `text_alignment` Alignment of the text in the image.
-- `text_interpolation_options` Mode of text interpolation ('strict', 'interpolation', 'cumulative').
-- `text` The text to render in the images. (is ignored when optional input transcription is given)
-- `animation_reset` Defines when the animation resets ('word', 'line', 'never').
-- `animation_easing` Easing function for animation (e.g., 'linear', 'exponential').
-- `animation_duration` Duration of the animation.
-- `start_font_size`, `end_font_size` Starting and ending size of the font. 
-- `start_x_offset`, `end_x_offset`, `start_y_offset`, `end_y_offset` Offsets for text positioning.
-- `start_rotation`, `end_rotation` Rotation angles for the text.
-- `rotation_anchor_x`, `rotation_anchor_y` offset of the rotation anchor point, relative to the texts initial position.
+#### `canvas`
 
-### Optional Inputs
-
-- `input_images` Text will be overlayed on input_images instead of background_color.
-- `transcription` Transcription from the speech2text node, contains dict with timestamps, framerate and transcribed words.
-
-### Outputs
-
-- `images` The generated images with the specified text and configurations.
-- `transcription_framestamps` Outputs a string containing the framestamps, new line calculated based on image width. (Can be useful to manually correct mistakes by speech recognition)
-  - <b>Example:</b> Save this output with string2file -> correct mistakes -> remove transcription input from font2img -> paste corrected framestamps into text input field of font2img node.
-
-### Parameters Explanation
+To configure the canvas input the 🖼️ <b>Canvas Properties</b>
 
 #### `text`
-- Specifies the text to be rendered on the images. Supports multiline text input for rendering on separate lines.
-  - For simple text: Input the text directly as a string.
-  - For frame-specific text (in modes like 'strict' or 'cumulative'): Use a JSON-like format where each line specifies a frame number and the corresponding text. Example:
+
+Specifies the text to be rendered on the images. Supports multiline text input for rendering on separate lines.
+- For simple text: Input the text directly as a string.
+- For frame-specific text: Use a JSON-like format where each line specifies a frame number and the corresponding text. Example:
     ``` 
     "1": "Hello",
     "10": "World",
     "20": "End"
     ```
 
-#### `text_interpolation_options`
-- Defines the mode of text interpolation between frames.
-  - `strict`: Text is only inserted at specified frames.
-  - `interpolation`: Gradually interpolates text characters between frames.
-  - `cumulative`: Text set for a frame persists until updated in a subsequent frame.
+#### `frame_count`
+
+Sets the amount of frames this node will output.
+
+#### Optional Inputs
+
+#### `transcription`
+
+Input the transcription output from the <b>🎤 Speech Recognition</b> node here.
+Based on this transcription data, 🖼️ <b>Canvas Properties</b> and 🆗 <b>Font Properties</b> the text should be formatted in a way that builds up lines of words until there is no space on the canvas left (transcription_mode: fill, line).
+
+#### `highlight_font`
+
+Input a secondary font 🆗 <b>Font Properties</b>, that is used to highlight the active caption (transcription_mode: fill, line). When manually setting the text the following syntax can be used to defined which word/character:
+``` 
+Hello <tag>World</tag>
+``` 
+
+#### Outputs
+
+#### `images` 
+
+The generated images with the specified text and configurations, in common ComfyUI format (compatible with other nodes).
+
+#### `transcription_framestamps` 
+
+Framestamps formatted based on canvas, font and transcription settings.
+Can be useful to manually correct errors by 🎤 <b>Speech Recognition</b> node.
+Example: Save this output with 📝 <b>Save/Preview Text</b> -> manually correct mistakes -> remove transcription input from ✒️ <b>Text to Image Generator</b> node -> paste corrected framestamps into text input field of ✒️ <b>Text to Image Generator</b> node.
 
 
-#### `start_x_offset`, `end_x_offset`, `start_y_offset`, `end_y_offset`
-- Sets the starting and ending offsets for text positioning on the X and Y axes, allowing for text transition across the image.
-- Input as integers. Example: `start_x_offset = 10`, `end_x_offset = 50` moves the text from 10 pixels from the left to 50 pixels from the left across frames.
-- Negative values can be used to offset in opposite direction `start_x_offset = -100`, `end_x_offset = 0`
+</details>
 
-#### `start_rotation`, `end_rotation`
-- Defines the starting and ending rotation angles for the text, enabling it to rotate between these angles.
-- Input as integers in degrees. Example: `start_rotation = 0`, `end_rotation = 180` rotates the text from 0 to 180 degrees across frames.
+<details>
+  <summary>🆗 <b>Font Properties</b></summary>
+  
+#### Required Inputs
 
-#### `start_font_size`, `end_font_size`
+#### `font_file`
 
-- Sets the starting and ending font sizes for the text, allowing the text size to dynamically change across frames.
-- Input as integers representing the font size in points. Example: `start_font_size = 12`, `end_font_size = 24` will gradually increase the text size from 12 to 24 points across the frames.
+Fonts located in the custom_nodes\ComfyUI-Mana-Nodes\font_files\example_font.ttf or system font directories (supports .ttf, .otf, .woff, .woff2).
 
+#### `font_size` 
 
-#### `animation_reset`
+Either set single value font_size or input animation definition via the ⏰ <b>Scheduled Values</b> node. (Convert font_size to input)
 
-- Dictates when the animation effect resets to its starting conditions.
-  - word: Resets animation with each new word.
-  - line: Resets animation at the beginning of each new line of text.
-  - never: The animation does not reset, but continues throughout.
+#### `font_color` 
 
-#### `animation_easing`
+Either set single color value (CSS3/Color/Extended color keywords) or input animation definition via the 🌈 <b>Preset Color Animations</b> node. (Convert font_color to input)
 
-- Controls the pacing of the animation.
-  - Examples include linear, exponential, quadratic, cubic, elastic, bounce, back, ease_in_out_sine, ease_out_back, ease_in_out_expo.
-  - Each option provides a different acceleration curve for the animation, affecting how the text transitions and rotates.
+#### `x_offset`, `y_offset`  
+
+Either set single horiontal and vertical offset value or input animation definition via the ⏰ <b>Scheduled Values</b> node. (Convert x_offset/y_offset to input)
+
+#### `rotation` 
+
+Either set single rotation value or input animation definition via the ⏰ <b>Scheduled Values</b> node. (Convert rotation to input)
+
+#### `rotation_anchor_x`, `rotation_anchor_y` 
+
+Horizontal and vertical offsets of the rotation anchor point, relative to the texts initial position.
+
+#### `kerning` 
+
+Spacing between characters of font.
+
+#### `border_width` 
+
+Width of the text border.
+
+#### `border_color` 
+
+Either set single color value (CSS3/Color/Extended color keywords) or input animation definition via the 🌈 <b>Preset Color Animations</b> node. (Convert border_color to input)
+
+#### `shadow_color` 
+
+Either set single color value (CSS3/Color/Extended color keywords) or input animation definition via the 🌈 <b>Preset Color Animations</b> node. (Convert shadow_color to input)
+
+#### `shadow_offset_x`, `shadow_offset_y`  
+
+Horizontal and vertical offset of the text shadow.
+
+#### Outputs
+
+#### `font` 
+
+Used as input on ✒️ <b>Text to Image Generator</b> node for the font and highlight_font.
+
+</details>
+
+<details>
+  <summary>🖼️ <b>Canvas Properties</b></summary>
+
+#### Required Inputs
+
+#### `height`, `width` 
+
+Dimensions of the canvas.
+
+#### `background_color`
+
+Background color of the canvas. (CSS3/Color/Extended color keywords)
+
+#### `padding` 
+
+Padding between image border and font.
+
+#### `line_spacing` 
+
+Spacing between lines of text on the canvas.
+
+#### Optional Inputs
+
+#### `images`
+
+Can be used to input images instead of using background_color. 
+
+#### Outputs
+
+#### `canvas` 
+
+Used as input on ✒️ <b>Text to Image Generator</b> node to define the canvas settings.
+
+</details>
+
+<details>
+  <summary>⏰ <b>Scheduled Values</b></summary>
+
+#### Required Inputs
+
+#### `frame_count`
+
+Sets the range of the x axis of the chart. (always starts at 1)
+
+#### `value_range`
+
+Sets the range of the y axis of the chart. (Example: 25, will would be ranging from -25 to 25)
+This can be changed by zooming via the mousewheel and will reset to the specified value if changed.
+
+#### `easing_type` 
+
+Is used to generate values in between of the manually added values by the user by clicking the <b>Generate Values</b> button.
+            
+The available easing functions are:
+
+- linear
+- easeInQuad
+- easeOutQuad
+- easeInOutQuad
+- easeInCubic
+- easeOutCubic
+- easeInOutCubic
+- easeInQuart
+- easeOutQuart
+- easeInOutQuart
+- easeInQuint
+- easeOutQuint
+- easeInOutQuint
+- exponential
+
+#### `step_mode` 
+
+The option <b>single</b> will force the chart to display every single tick/step on the chart.
+The option <b>auto</b> will automatically remove ticks/step to prevent overlapping.
+
+#### `animation_reset` 
+
+Used to specify the reset behaviour of the animation.
+
+- word: animation will be reset when a new word is displayed, stays on last value when animation finished before word change.
+- line: animation will be reset when a new line is displayed, stays on last value when animation finished before line change.
+- never: animation will just run once and stop on last value. (Not affected by word or line change)
+- looped: animation will endlessly loop. (Not affected by word or line change)
+- pingpong: animation will first play forward then back and so on. (Not affected by word or line change)
+
+#### `scheduled_values` 
+
+Adding Values: Click on the chart to add keyframes at specific points.
+Editing Values: Double-click on a keyframe to edit its frame and value.
+Deleting Values: Click on the delete button associated with each keyframe to remove it.
+Generating Values: Click on the "Generate Values" button to interpolate values between existing keyframes.
+Deleting Generated Values: Click on the "Delete Generated" button to remove all interpolated values.
+
+#### Outputs
+
+#### `scheduled_values` 
+
+Outputs a list of frame and value pairs and the animation_reset option.
+At the moment this output can be used to animate the following widgets (Convert property to input) of the 🆗 <b>Font Properties</b> node:
+- font_size (font, higlight_font)
+- x_offset (font)
+- y_offset (font)
+- rotation (font)
+
+</details>
+
+<details>
+  <summary>🌈 <b>Preset Color Animations</b></summary>
+
+#### Required Inputs
+
+#### `color_preset` 
+
+Currently the following color animation presets are available:
+- rainbow
+- sunset
+- grey
+- ocean
+- forest
+- fire
+- sky
+- earth
 
 #### `animation_duration`
 
-- The length of time each animation takes to complete, measured in frames.
-- A larger value means a slower, more gradual transition, while a smaller value results in a quicker animation.
+Sets the length of the animation measured as frames.
 
-#### `transcription_mode`
+#### `animation_reset` 
 
-- Determines how the transcribed text is applied across frames.
-  - word: Each word appears on its corresponding frame based on the transcription timestamps.
-  - line: Similar to word, but text is added line by line.
-  - fill: Continuously fills the frame with text, adding new words at their specific timestamps.
+Used to specify the reset behaviour of the animation.
 
-## video2audio Node
+- word: animation will be reset when a new word is displayed, stays on last value when animation finished before word change.
+- line: animation will be reset when a new line is displayed, stays on last value when animation finished before line change.
+- never: animation will just run once and stop on last value. (Not affected by word or line change)
+- looped: animation will endlessly loop. (Not affected by word or line change)
+- pingpong: animation will first play forward then back and so on. (Not affected by word or line change)
+  
+#### Outputs
 
-Extracts frames and audio from a video file.
+#### `scheduled_colors` 
 
-### Required Inputs
+Outputs a list of frame and color definitions and the animation_reset option.
+At the moment this output can be used to animate the following widgets (Convert property to input) of the 🆗 <b>Font Properties</b> node:
+- font_color (font, higlight_font)
+- border_color (font, higlight_font)
+- shadow_color (font, higlight_font)
 
-- `video` Path the video file.
-- `frame_limit` Maximum number of frames to extract from the video.
-- `frame_start` Starting frame number for extraction.
-- `filename_prefix` Prefix for naming the extracted audio file. (relative to .\ComfyUI-Mana-Nodes)
+</details>
 
-### Outputs
-
-- `frames` Extracted frames as image tensors.
-- `frame_count` Total number of frames extracted.
-- `audio` Path of the extracted audio file.
-- `fps` Frames per second of the video.
-- `height`, `width:` Dimensions of the extracted frames.
-
-## speech2text Node
+<details>
+  <summary>🎤 <b>Speech Recognition</b></summary>
 
 Converts spoken words in an audio file to text using a deep learning model.
 
-### Required Inputs
+#### Required Inputs
 
-- `audio` Audio file path or URL.
-- `wav2vec2_model` The Wav2Vec2 model used for speech recognition. (https://huggingface.co/models?search=wav2vec2)
-- `spell_check_language` Language for the spell checker.
-- `framestamps_max_chars` Maximum characters allowed until new framestamp lines created.
+#### `audio` 
+Audio file path or URL.
+#### `wav2vec2_model` 
+The Wav2Vec2 model used for speech recognition. (https://huggingface.co/models?search=wav2vec2)
+#### `spell_check_language` 
+Language for the spell checker.
+#### `framestamps_max_chars` 
+Maximum characters allowed until new framestamp line is created.
 
-### Optional Inputs
+#### Optional Inputs
 
-- `fps` Frames per second, used for synchronizing with video. (Default set to 30)
+#### `fps` 
+Frames per second, used for synchronizing with video. (Default set to 30)
 
-### Outputs
+#### Outputs
 
-- `transcription` Text transcription of the audio. (Should only be used as font2img transcription input)
-- `raw_string` Raw string of the transcription without timestamps.
-- `framestamps_string` Frame-stamped transcription.
-- `timestamps_string` Transcription with timestamps.
+#### `transcription` 
+Text transcription of the audio. (Should only be used as font2img transcription input)
+#### `raw_string` 
+Raw string of the transcription without timestamps.
+### `framestamps_string` 
+Frame-stamped transcription.
+### `timestamps_string` 
+Transcription with timestamps.
 
-### Example Outputs
+#### Example Outputs
 
-- `raw_string` Returns the transcribed text as one line.
+#### `raw_string` 
+Returns the transcribed text as one line.
 
 ```
 THE GREATEST TRICK THE DEVIL EVER PULLED WAS CONVINCING THE WORLD HE DIDN'T EXIST
 ```
 
-- `framestamps_string` Depending on the <b>framestamps_max_chars</b> parameter the sentece will be cleared and starts to build up again until max_chars is reached again. 
+#### `framestamps_string` 
+Depending on the <b>framestamps_max_chars</b> parameter the sentece will be cleared and starts to build up again until max_chars is reached again. 
   - In this example <b>framestamps_max_chars</b> is set to <b>25</b>.
 
 ```
@@ -228,7 +349,8 @@ THE GREATEST TRICK THE DEVIL EVER PULLED WAS CONVINCING THE WORLD HE DIDN'T EXIS
 "178": "DIDN'T EXIST",
 ```
 
-`timestamps_string` Returns all transcribed words, their start_time and end_time in json format as a string.
+#### `timestamps_string` 
+Returns all transcribed words, their start_time and end_time in json format as a string.
 
 ```
 [
@@ -251,28 +373,87 @@ THE GREATEST TRICK THE DEVIL EVER PULLED WAS CONVINCING THE WORLD HE DIDN'T EXIS
 ]
 ```
 
+</details>
 
-## text2speech Node
+<details>
+  <summary>🎞️ <b>Split Video</b></summary>
+
+
+#### Required Inputs
+
+#### `video` 
+Path the video file.
+#### `frame_limit` 
+Maximum number of frames to extract from the video.
+#### `frame_start` 
+Starting frame number for extraction.
+#### `filename_prefix` 
+Prefix for naming the extracted audio file. (relative to .\ComfyUI\output)
+
+#### Outputs
+
+#### `frames` 
+Extracted frames as image tensors.
+#### `frame_count` 
+Total number of frames extracted.
+#### `audio_file` 
+Path of the extracted audio file.
+#### `fps` 
+Frames per second of the video.
+#### `height`, `width:` 
+Dimensions of the extracted frames.
+
+</details>
+
+<details>
+  <summary>🎥 <b>Combine Video</b></summary>
+
+#### Required Inputs
+
+#### `frames` 
+Sequence of images to be used as video frames.
+#### `filename_prefix` 
+Prefix for naming the video file. (relative to .\ComfyUI\output)
+#### `fps` 
+Frames per second for the video.
+
+#### Optional Inputs
+
+#### `audio_file` 
+Audio file path or URL.
+
+#### Outputs
+
+#### `video_file` 
+Path to the created video file.
+
+</details>
+
+<details>
+  <summary>📣 <b>Generate Audio</b></summary>
+
 
 Converts text to speech and saves the output as an audio file.
 
-### Required Inputs
+#### Required Inputs
 
-- `text` The text to be converted into speech.
-- `filename_prefix` Prefix for naming the audio file. (relative to .\ComfyUI-Mana-Nodes)
+#### `text` 
+The text to be converted into speech.
+#### `filename_prefix` 
+Prefix for naming the audio file. (relative to .\ComfyUI\output)
 
 This node uses a text-to-speech pipeline to convert input text into spoken words, saving the result as a WAV file. The generated audio file is named using the provided filename prefix and is stored relative to the .\ComfyUI-Mana-Nodes directory.
 
 Model: [https://huggingface.co/spaces/suno/bark](https://huggingface.co/suno/bark)
 
-### Foreign Language
+#### Foreign Language
 
 Bark supports various languages out-of-the-box and automatically determines language from input text. When prompted with code-switched text, Bark will even attempt to employ the native accent for the respective languages in the same voice.
 
 Example:
 <pre>Buenos días Miguel. Tu colega piensa que tu alemán es extremadamente malo. But I suppose your english isn't terrible.</pre>
 
-### Non-Speech Sounds
+#### Non-Speech Sounds
 
 Below is a list of some known non-speech sounds, but we are finding more every day.
 <pre>
@@ -291,14 +472,14 @@ MAN/WOMAN: for bias towards speaker
 Example:
 <pre>" [clears throat] Hello, my name is Suno. And, uh — and I like pizza. [laughs] But I also have other interests such as... ♪ singing ♪."</pre>
 
-### Music
+#### Music
 
 Bark can generate all types of audio, and, in principle, doesn’t see a difference between speech and music. Sometimes Bark chooses to generate text as music, but you can help it out by adding music notes around your lyrics.
 
 Example:
 <pre>♪ In the jungle, the mighty jungle, the lion barks tonight ♪</pre>
 
-### Speaker Prompts
+#### Speaker Prompts
 
 You can provide certain speaker prompts such as NARRATOR, MAN, WOMAN, etc. Please note that these are not always respected, especially if a conflicting audio history prompt is given.
 
@@ -306,45 +487,33 @@ Example:
 <pre>WOMAN: I would like an oatmilk latte please.
 MAN: Wow, that's expensive!</pre>
 
-## string2file Node
 
-Writes a given string to a text file.
 
-### Required Inputs
+</details>
+<details>
+  <summary>📝 <b>Save/Preview Text</b></summary>
 
-- `string` The string to be written to the file.
-- `filename_prefix` Prefix for naming the text file. (relative to .\ComfyUI-Mana-Nodes)
+#### Required Inputs
 
-## audio2video Node
+#### `string` 
+The string to be written to the file.
+#### `filename_prefix` 
+Prefix for naming the text file. (relative to .\output)
 
-Combines a sequence of images (frames) with an audio file to create a video.
+</details>
 
-### Required Inputs
-
-- `audio` Audio file path or URL.
-- `frames` Sequence of images to be used as video frames.
-- `filename_prefix` Prefix for naming the video file. (relative to .\ComfyUI-Mana-Nodes)
-- `fps` Frames per second for the video.
-
-### Outputs
-
-- `video_file_path` Path to the created video file.
 
 ## Example Workflows
 
-### Font Animation 
+## To-Do
 
-These workflows are included in the example_workflows directory: 
-
-#### example_workflow_1.json 
-
-### Speech Recognition
-
-![Screenshot 2024-03-05 at 15-54-43 ComfyUI](https://github.com/ForeignGods/ComfyUI-Mana-Nodes/assets/78089013/91c8c306-761e-4fa9-a9a8-c0c0e3cc3c96)
-
-#### example_workflow_2.json 
-
-![Screenshot 2024-03-14 at 15-24-36 ComfyUI](https://github.com/ForeignGods/ComfyUI-Mana-Nodes/assets/78089013/8caba06f-e24e-4096-96a4-21a91fdb6c5b)
+- [ ] Improve Speech Recognition
+- [ ] Improve Text to Speech
+- [ ] Node to download fonts from DaFont.com
+- [ ] SVG Loader/Animator
+- [ ] Text to Image Generator Alpha Channel
+- [ ] Add Font Support for non Latin Characters
+- [ ] 3D Effects, Bevel/Emboss, Inner Shading, Fade in/out 
 
 ## Font Licences
 - <b>Personal Use:</b> The included fonts are for personal, non-commercial use. Please refrain from using these fonts in any commercial project without obtaining the appropriate licenses.

@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+import folder_paths
 
 class string2file:
 
@@ -10,39 +11,37 @@ class string2file:
     def INPUT_TYPES(cls):
         return {
             "required": {
-                "string": ("STRING", {"default": None, "display": "string", "forceInput": True}),
-                "filename_prefix": ("STRING", {"default": "text_files\\text"})
+                "filename_prefix": ("STRING", {"default": "text\\text"}),
+                "string": ("STRING", {"forceInput": True}),                
+            },            
+            "hidden": {
+                "unique_id": "UNIQUE_ID",
+                "extra_pnginfo": "EXTRA_PNGINFO"
             }
+            
         }
-
-    CATEGORY = "Mana Nodes"
+    
+    INPUT_IS_LIST = True
+    CATEGORY = "💠 Mana Nodes"
     RETURN_TYPES = ()
+    RETURN_NAMES = ()
     FUNCTION = "run"
     OUTPUT_NODE = True
 
-    def run(self, string, filename_prefix):
-        try:
-            script_dir = os.path.dirname(os.path.dirname(__file__))
+    def run(self, string, filename_prefix,unique_id = None, extra_pnginfo=None):
+        full_path = os.path.join(folder_paths.get_output_directory(), os.path.normpath(filename_prefix[0]))
+        if not full_path.endswith('.txt'):
+            full_path += '.txt'
+        Path(os.path.dirname(full_path)).mkdir(parents=True, exist_ok=True)
 
-            # Check if filename_prefix contains directory information
-            if "\\" in filename_prefix or "/" in filename_prefix:
-                # Normalize path
-                file_name_with_path = os.path.normpath(filename_prefix)
-                # Join with script directory
-                full_path = os.path.join(script_dir, file_name_with_path)
-                directory = os.path.dirname(full_path)
-                # Create directory if it doesn't exist
-                Path(directory).mkdir(parents=True, exist_ok=True)
-            else:
-                full_path = os.path.join(script_dir, filename_prefix)
+        # Write the string to the file
+        with open(full_path, 'w') as file:
+            file.write(string[0])
 
-            # Append .txt if not present
-            if not full_path.endswith('.txt'):
-                full_path += '.txt'
+        if unique_id and extra_pnginfo and "workflow" in extra_pnginfo[0]:
+            workflow = extra_pnginfo[0]["workflow"]
+            node = next((x for x in workflow["nodes"] if str(x["id"]) == unique_id[0]), None)
+            if node:
+                node["widgets_values"] = [string]
 
-            # Write the string to the file
-            with open(full_path, 'w') as file:
-                file.write(string)
-            return (None,)
-        except Exception as e:
-            return str(e),
+        return {"ui": {"text": string}, "result": (string,)}

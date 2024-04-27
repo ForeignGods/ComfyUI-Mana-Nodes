@@ -15,8 +15,6 @@ const style = `
 
 export function chainCallback(object, property, callback) {
   if (object == undefined) {
-    //This should not happen.
-    console.error("Tried to add callback to non-existant object");
     return;
   }
   if (property in object) {
@@ -42,8 +40,8 @@ export function formatUploadedUrl(params) {
     params.filename = params.name;
     delete params.name;
   }
-
-  return api.apiURL("/view?" + new URLSearchParams(params));
+  const url = api.apiURL("/view?" + new URLSearchParams(params));
+  return url;
 };
 
 export function addVideoPreview(nodeType, options = {}) {
@@ -133,7 +131,6 @@ export function addVideoPreview(nodeType, options = {}) {
         this.animatedImages = true;
         const widgetIdx = this.widgets?.findIndex((w) => w.name === ANIM_PREVIEW_WIDGET);
 
-        // Instead of using the canvas we'll use a IMG
         if (widgetIdx > -1) {
           // Replace content
           const widget = this.widgets[widgetIdx];
@@ -150,7 +147,6 @@ export function addVideoPreview(nodeType, options = {}) {
           widget.serializeValue = () => ({
             height: host.el.clientHeight,
           });
-          // widget.computeSize = (w) => ([w, 220]);
 
           widget.options.host.updateImages(this.imgs);
         }
@@ -223,29 +219,38 @@ export function addVideoPreview(nodeType, options = {}) {
   chainCallback(nodeType.prototype, "onExecuted", function (message) {
     if (message?.videos) {
       this.images = message?.videos.map(formatUploadedUrl);
+      if(nodeType.comfyClass === 'audio2video') {
+        localStorage.setItem('savedVideoUrls', JSON.stringify(this.images));
+      }
     }
   });
+
+  // Restoring state in onConfigure
+  chainCallback(nodeType.prototype, "onConfigure", function () {
+    if(nodeType.comfyClass === 'audio2video') {
+      const savedVideoUrls = JSON.parse(localStorage.getItem('savedVideoUrls'));
+      if (savedVideoUrls) {
+          this.images = savedVideoUrls;
+      } 
+    }
+
+  });
+
 }
 
 app.registerExtension({
-  name: "video2audio",
+  name: "ManaNodes.audio2video",
   init() {
-    // Inserting custom style into the document head
-    const styleElement = $el('style', {
+    $el('style', {
       textContent: style,
       parent: document.head,
     });
-
   },
   async beforeRegisterNodeDef(nodeType, nodeData) {
-    // Apply customization only if it's the correct node type
-    if (nodeData.name !== "video2audio" || nodeData.name !== "audio2video") {
+    if (nodeData.name !== "audio2video") {
       return;
     }
 
-    console.log(nodeType);
     addVideoPreview(nodeType);
-
   },
 });
-
