@@ -41,15 +41,19 @@ class video2audio:
         if not frames:
             raise ValueError("No frames could be extracted from the video.")
         if not audio:
-            raise ValueError("No audio could be extracted from the video.")
+            audio = "No audio track in the video."
         return (torch.cat(frames, dim=0), audio, fps, len(frames), height, width,)
-
+    
     def extract_audio_with_moviepy(self, video_path, kwargs):
         # Convert WindowsPath object to string
         video_file_path_str = str(video_path)
 
         # Load the video file
         video = VideoFileClip(video_file_path_str)
+
+        # Check if the video has an audio track
+        if video.audio is None:
+            return None, video.fps
 
         # Calculate start and end time in seconds
         fps = video.fps  # frames per second
