@@ -1,6 +1,7 @@
-# ComfyUI-Mana-Nodes ![Static Badge](https://img.shields.io/badge/release-v1.0-black?style=plastic&logo=GitHub&logoColor=white&color=green) [![Downloads](https://img.shields.io/github/downloads/ForeignGods/ComfyUI-Mana-Nodes/total.svg)](https://github.com/ForeignGods/ComfyUI-Mana-Nodes/releases)
 
-TODO: Add short intro and description to Mana Nodes here. And maybe animated or static logo MANA NODES instead of simple title.
+![ezgif com-optimize(2)](https://github.com/ForeignGods/ComfyUI-Mana-Nodes/assets/78089013/f48b37c2-c3db-408f-ada8-a6bf336b6549)
+
+![Static Badge](https://img.shields.io/badge/release-v1.0-black?style=plastic&logo=GitHub&logoColor=white&color=green) [![Downloads](https://img.shields.io/github/downloads/ForeignGods/ComfyUI-Mana-Nodes/total.svg)](https://github.com/ForeignGods/ComfyUI-Mana-Nodes/releases)
 
 If you like Mana Nodes, give our repo a [⭐ Star](https://github.com/ForeignGods/ComfyUI-Mana-Nodes) and [👀 Watch](https://github.com/ForeignGods/ComfyUI-Mana-Nodes/subscription) our repository to stay updated.
   
