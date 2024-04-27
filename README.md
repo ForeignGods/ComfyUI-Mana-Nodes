@@ -532,7 +532,8 @@ Prefix for naming the text file. (relative to .\output)
 - [ ] 3D Effects, Bevel/Emboss, Inner Shading, Fade in/out 
 
 ## Contributing
-<a href="https://www.buymeacoffee.com/foreigngods" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a>
 
-Your contributions to improve Mana Nodes are welcome! If you have suggestions or enhancements, feel free to fork this repository, apply your changes, and create a pull request. For significant modifications or feature requests, please open an issue first to discuss what you'd like to change.
+Your contributions to improve Mana Nodes are welcome! 
+
+If you have suggestions or enhancements, feel free to fork this repository, apply your changes, and create a pull request. For significant modifications or feature requests, please open an issue first to discuss what you'd like to change.
 
