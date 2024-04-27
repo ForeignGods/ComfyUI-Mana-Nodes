@@ -509,6 +509,7 @@ Prefix for naming the text file. (relative to .\output)
 
 - [ ] Improve Speech Recognition
 - [ ] Improve Text to Speech
+- [ ] Node to download fonts from DaFont.com
 - [ ] SVG Loader/Animator
 - [ ] Text to Image Generator Alpha Channel
 - [ ] Add Font Support for non Latin Characters

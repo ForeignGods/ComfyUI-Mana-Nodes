@@ -16,29 +16,29 @@ my_logger.error("Mana Web")
 WEB_DIRECTORY = "./web"
 
 NODE_CLASS_MAPPINGS = {
-    "font2img": font2img,
-    "speech2text": speech2text,
-    "video2audio": video2audio,
-    "string2file": string2file,
-    "audio2video": audio2video,
-    "text2speech": text2speech,
-    "canvas_settings": canvas_settings,
-    "text_graphic_element": text_graphic_element,
-    "scheduled_values": scheduled_values,
-    "color_animations": color_animations
+    "Text to Image Generator": font2img,
+    "Speech Recognition": speech2text,
+    "Split Video": video2audio,
+    "Save/Preview Text": string2file,
+    "Combine Video": audio2video,
+    "Generate Audio": text2speech,
+    "Canvas Properties": canvas_settings,
+    "Font Properties": text_graphic_element,
+    "Scheduled Values": scheduled_values,
+    "Preset Color Animations": color_animations
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
-    "font2img": "✒️ Text to Image Generator",
-    "speech2text": "🎤 Speech Recognition",
-    "video2audio": "🎞️ Split Video",
-    "string2file":"📝 Save/Preview Text",
-    "audio2video":"🎥 Combine Video",
-    "text2speech":"📣 Generate Audio",
-    "canvas_settings":"🖼️ Canvas Properties",
-    "text_graphic_element":"🆗 Font Properties",
-    "scheduled_values":"⏰ Scheduled Values",
-    "color_animations":"🌈 Preset Color Animations"
+    "Text to Image Generator": "✒️ Text to Image Generator",
+    "Speech Recognition": "🎤 Speech Recognition",
+    "Split Video": "🎞️ Split Video",
+    "Save/Preview Text":"📝 Save/Preview Text",
+    "Combine Video":"🎥 Combine Video",
+    "Generate Audio":"📣 Generate Audio",
+    "Canvas Properties":"🖼️ Canvas Properties",
+    "Font Properties":"🆗 Font Properties",
+    "Scheduled Values":"⏰ Scheduled Values",
+    "Preset Color Animations":"🌈 Preset Color Animations"
 }
 
 __all__ = ["NODE_CLASS_MAPPINGS", "NODE_DISPLAY_NAME_MAPPINGS", "WEB_DIRECTORY"]
