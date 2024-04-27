@@ -2,12 +2,12 @@
 ![ezgif com-optimize(2)](https://github.com/ForeignGods/ComfyUI-Mana-Nodes/assets/78089013/f48b37c2-c3db-408f-ada8-a6bf336b6549)
 
 ![Static Badge](https://img.shields.io/badge/release-v1.0.0-black?style=plastic&logo=GitHub&logoColor=white&color=green) 
+[![Custom Badge](https://img.shields.io/badge/buy-coffe-orange?style=plastic&logo=buymeacoffee&logoColor=white&link=URL)](https://buymeacoffee.com/foreigngods)
 <!-- 
 <a href="https://github.com/ForeignGods/ComfyUI-Mana-Nodes/releases">
     <img alt="GitHub all releases" src="https://img.shields.io/github/downloads/ForeignGods/ComfyUI-Mana-Nodes/latest/total">
 </a>
 -->
-
 Welcome to the ComfyUI-Mana-Nodes project! 
 
 This collection of custom nodes is designed to supercharge text-based content creation within the ComfyUI environment. 
@@ -530,23 +530,6 @@ Prefix for naming the text file. (relative to .\output)
 - [ ] Text to Image Generator Alpha Channel
 - [ ] Add Font Support for non Latin Characters
 - [ ] 3D Effects, Bevel/Emboss, Inner Shading, Fade in/out 
-
-## Font Licences
-- <b>Personal Use:</b> The included fonts are for personal, non-commercial use. Please refrain from using these fonts in any commercial project without obtaining the appropriate licenses.
-- <b>License Compliance:</b> Each font may come with its own license agreement. It is the responsibility of the user to review and comply with these agreements. Some fonts may require a license for commercial use, modification, or distribution.
-- <b>Removing Fonts:</b> If any font creator or copyright holder wishes their font to be removed from this repository, please contact us, and we will promptly comply with your request.
-
-### Font Links
-- https://www.dafont.com/akira-expanded.font
-- https://www.dafont.com/aurora-pro.font
-- https://www.dafont.com/another-danger.font
-- https://www.dafont.com/doctor-glitch.font
-- https://www.dafont.com/ghastly-panic.font
-- https://www.dafont.com/metal-gothic.font
-- https://www.dafont.com/the-constellation.font
-- https://www.dafont.com/the-augusta.font
-- https://www.dafont.com/vogue.font
-- https://www.dafont.com/wreckside.font
 
 ## Contributing
 <a href="https://www.buymeacoffee.com/foreigngods" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a>
