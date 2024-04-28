@@ -4,7 +4,7 @@ import { ComfyWidgets } from "../../../scripts/widgets.js";
 app.registerExtension({
     name: "ManaNodes.string2file",
     async beforeRegisterNodeDef(nodeType, nodeData, app) {
-        if (nodeData.name === "string2file") {
+        if (nodeData.name === "Save/Preview Text") {
             function populate(values) {
 
 				let previewText;
