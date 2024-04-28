@@ -446,7 +446,7 @@ Path to the created video file.
 </details>
 
 <details>
-  <summary>📣 <b>Generate Audio</b></summary>
+  <summary>📣 <b>Generate Audio</b> (experimental)</summary>
 
 
 Converts text to speech and saves the output as an audio file.
