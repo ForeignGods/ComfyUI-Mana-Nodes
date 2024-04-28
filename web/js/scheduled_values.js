@@ -628,23 +628,19 @@ class TimelineWidget {
 app.registerExtension({
     name: "ManaNodes.scheduled_values",
     async beforeRegisterNodeDef(nodeType, nodeData) {
-        if (nodeData.name === "scheduled_values") {
+        if (nodeData.name === "Scheduled Values") {
 
             // Restoring state in onConfigure
             chainCallback(nodeType.prototype, "onConfigure", function () {
                 const savedKeyframes = JSON.parse(localStorage.getItem('savedKeyframes'));
                 const savedGeneratedKeyframes = JSON.parse(localStorage.getItem('savedGeneratedKeyframes'));
                 
-
                 if (savedKeyframes) {
-                    console.log('gesavedKeyframeslp',savedKeyframes);
                     this.timelineWidget.keyframes = savedKeyframes;
                 }
 
                 if (savedGeneratedKeyframes) {
-                    console.log('savedGeneratedKeyframes',savedGeneratedKeyframes);
                     this.timelineWidget.generatedKeyframes = savedGeneratedKeyframes;
-
                 }
             });
 
@@ -661,6 +657,7 @@ app.registerExtension({
                 });
                 loadBootstrapCss();
                 this.timelineWidget = timelineWidget;
+                console.log(this.timelineWidget);
 
             });
 

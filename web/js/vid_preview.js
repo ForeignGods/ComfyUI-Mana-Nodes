@@ -247,7 +247,7 @@ app.registerExtension({
     });
   },
   async beforeRegisterNodeDef(nodeType, nodeData) {
-    if (nodeData.name !== "audio2video") {
+    if (nodeData.name !== "Combine Video") {
       return;
     }
 
