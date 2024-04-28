@@ -537,6 +537,8 @@ TODO: Add Speech Recognition/Caption Generation example_workflow_2.json.
 - [ ] Text to Image Generator Alpha Channel
 - [ ] Add Font Support for non Latin Characters
 - [ ] 3D Effects, Bevel/Emboss, Inner Shading, Fade in/out 
+- [ ] Find a better way to define color animations
+- [ ] Make more Font Properties animatable
 
 ## Contributing
 
