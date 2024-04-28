@@ -38,7 +38,7 @@ function chainCallback(object, property, callback) {
 }
 
 class TimelineWidget {
-    constructor(node) {
+    constructor(node, id) {
         this.node = node;
         this.keyframes = [];
         this.widgets = node.widgets;
@@ -50,6 +50,7 @@ class TimelineWidget {
         this.generateButton = null;
         this.deleteButton = null;
         this.generatedKeyframes = [];
+        this.id = id;
         this.createChartContainer();
     }
     
@@ -57,7 +58,9 @@ class TimelineWidget {
         this.chartContainer = document.createElement('div');
         this.chartContainer.style.height = '200px';
         this.chartContainer.style.width = '200px';
-        this.node.addDOMWidget("Chart", "custom", this.chartContainer, {});
+
+        this.node.addDOMWidget("chart", "custom", this.chartContainer, {});
+        
     }
 
     updateGenerateButtonState() {
@@ -351,8 +354,11 @@ class TimelineWidget {
                 showLine: true
             }
         ];
-        localStorage.setItem('savedGeneratedKeyframes', JSON.stringify(this.generatedKeyframes));
-        // Update chart with new data
+        
+
+
+        localStorage.setItem('savedGeneratedKeyframes_'+ this.id, JSON.stringify(this.generatedKeyframes));
+
         this.chart.update();
     
         // Refresh the points display and buttons
@@ -465,7 +471,8 @@ class TimelineWidget {
         }
 
         this.updateGenerateButtonState();
-        localStorage.setItem('savedKeyframes', JSON.stringify(this.keyframes));
+        localStorage.setItem('savedKeyframes_' + this.id, JSON.stringify(this.keyframes));
+
     }
 
     calculateValuesFromClick(event, canvas) {
@@ -630,10 +637,26 @@ app.registerExtension({
     async beforeRegisterNodeDef(nodeType, nodeData) {
         if (nodeData.name === "Scheduled Values") {
 
-            // Restoring state in onConfigure
             chainCallback(nodeType.prototype, "onConfigure", function () {
-                const savedKeyframes = JSON.parse(localStorage.getItem('savedKeyframes'));
-                const savedGeneratedKeyframes = JSON.parse(localStorage.getItem('savedGeneratedKeyframes'));
+                const id_widget = this.widgets.find(w => w.name === "id");
+                if (id_widget.value == 0) {
+                    
+                    let max = 1000000; 
+                    id_widget.value = Math.floor(Math.random() * max);
+                }
+
+                this.timelineWidget.id = id_widget.value;
+                const x = this.widgets.find(w => w.name === "frame_count").value;
+                const y = this.widgets.find(w => w.name === "value_range").value;
+                this.timelineWidget.maxX = x;
+                this.timelineWidget.maxY = y;
+                this.timelineWidget.updateTicks(x, y);
+
+                const step_size = this.widgets.find(w => w.name === "step_mode").value;
+                this.timelineWidget.updateStepSize(step_size);
+
+                const savedKeyframes = JSON.parse(localStorage.getItem('savedKeyframes_' + id_widget.value));
+                const savedGeneratedKeyframes = JSON.parse(localStorage.getItem('savedGeneratedKeyframes_' + id_widget.value));
                 
                 if (savedKeyframes) {
                     this.timelineWidget.keyframes = savedKeyframes;
@@ -650,20 +673,23 @@ app.registerExtension({
 
                 let maxX = frame_count_widget ? parseInt(frame_count_widget.value, 10) : 20;
                 let valueRange = value_range_widget ? parseInt(value_range_widget.value, 10) : 100;
-                
+
                 const timelineWidget = new TimelineWidget(this);
                 loadChartJs(() => {
                     timelineWidget.initChart(maxX, valueRange);
                 });
                 loadBootstrapCss();
                 this.timelineWidget = timelineWidget;
-                console.log(this.timelineWidget);
+                let max = 1000000; 
+                this.timelineWidget.id = Math.floor(Math.random() * max);
+                this.widgets.find(w => w.name === "id").value = this.timelineWidget.id;
 
             });
 
             chainCallback(nodeType.prototype, 'onDrawBackground', function () {
                 const frame_count_widget = this.widgets.find(w => w.name === "frame_count");
                 const value_range_widget = this.widgets.find(w => w.name === "value_range");
+
                 let maxX = frame_count_widget ? parseInt(frame_count_widget.value, 10) : 20;
                 let valueRange = value_range_widget ? parseInt(value_range_widget.value, 10) : 100;
                 const step_size_widget = this.widgets.find(w => w.name === "step_mode");
@@ -684,9 +710,8 @@ app.registerExtension({
                     this.stepSize = stepSize;
                 } 
 
-
-
                 if (this.timelineWidget) {
+                    this.widgets.find(w => w.name === "id").value = this.timelineWidget.id;
                     // Combine keyframes and generatedKeyframes.
                     let combinedKeyframes = [...this.timelineWidget.keyframes, ...this.timelineWidget.generatedKeyframes];
                 
