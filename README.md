@@ -518,8 +518,15 @@ Prefix for naming the text file. (relative to .\output)
 
 </details>
 
-
 ## Example Workflows
+
+[example_workflow_1.json](example_workflows/example_workflow_1.json)
+
+The values for the ⏰ Scheduled Values node cannot be imported yet (you have to add them yourself).
+
+![Screenshot 2024-04-28 at 19-18-01 ComfyUI](https://github.com/ForeignGods/ComfyUI-Mana-Nodes/assets/78089013/fa739ab0-91e5-4df7-9bd9-727abb6fb86a)
+
+TODO: Add Speech Recognition/Caption Generation example_workflow_2.json.
 
 ## To-Do
 
