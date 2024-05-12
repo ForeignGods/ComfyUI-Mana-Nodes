@@ -18,7 +18,7 @@ class speech2text:
         return {
             "required": {
                 "audio_file": ("STRING", {"display": "text","forceInput": True}),
-                "wav2vec2_model": (cls.get_wav2vec2_models(), {"display": "dropdown", "default": "ailegends/xlsr-jonatasgrosman-wav2vec2-large-xlsr-53-english"}),
+                "wav2vec2_model": (cls.get_wav2vec2_models(), {"display": "dropdown", "default": "jonatasgrosman/wav2vec2-large-xlsr-53-english"}),
                 "spell_check_language": (spell_check_options, {"default": "English", "display": "dropdown"}),
                 "framestamps_max_chars": ("INT", {"default": 25, "step": 1, "display": "number"}),
                 "fps": ("INT", {"default": 30, "min": 1, "max": 60, "step": 1}),

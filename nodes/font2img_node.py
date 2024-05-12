@@ -85,7 +85,7 @@ class font2img:
             formatted_transcription = self.format_transcription(kwargs)
             text = formatted_transcription
         else:
-            formatted_transcription = None
+            formatted_transcription = text
 
         frame_text_dict, is_structured_input = self.parse_text_input(text, kwargs)
         frame_text_dict = self.cumulative_text(frame_text_dict, frame_count)
