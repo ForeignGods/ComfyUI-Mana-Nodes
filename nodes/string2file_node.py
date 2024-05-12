@@ -28,11 +28,9 @@ class string2file:
     FUNCTION = "run"
     OUTPUT_NODE = True
 
-    def run(self, string, filename_prefix,unique_id = None, extra_pnginfo=None):
-        full_path = os.path.join(folder_paths.get_output_directory(), os.path.normpath(filename_prefix[0]))
-        if not full_path.endswith('.txt'):
-            full_path += '.txt'
-        Path(os.path.dirname(full_path)).mkdir(parents=True, exist_ok=True)
+    def run(self, string,unique_id = None, extra_pnginfo=None, **kwargs):
+
+        full_path = self.construct_text_path(kwargs)
 
         # Write the string to the file
         with open(full_path, 'w') as file:
@@ -45,3 +43,25 @@ class string2file:
                 node["widgets_values"] = [string]
 
         return {"ui": {"text": string}, "result": (string,)}
+    
+    def construct_text_path(self, kwargs):
+        base_directory = folder_paths.get_output_directory()
+        filename_prefix = os.path.normpath(kwargs['filename_prefix'][0])
+        full_path = os.path.join(base_directory, filename_prefix)
+
+        # Ensure the path ends with .mp4
+        if not full_path.endswith('.txt'):
+            full_path += '.txt'
+
+        # Increment filename if it already exists
+        counter = 1
+        while os.path.exists(full_path):
+            # Construct a new path with an incremented number
+            new_filename = f"{filename_prefix}_{counter}.txt"
+            full_path = os.path.join(base_directory, new_filename)
+            counter += 1
+
+        # Create the directory if it does not exist
+        Path(os.path.dirname(full_path)).mkdir(parents=True, exist_ok=True)
+
+        return full_path
