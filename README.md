@@ -1,4 +1,3 @@
-
 ![ezgif com-optimize(2)](https://github.com/ForeignGods/ComfyUI-Mana-Nodes/assets/78089013/f48b37c2-c3db-408f-ada8-a6bf336b6549)
 
 ![Static Badge](https://img.shields.io/badge/release-v1.0.0-black?style=plastic&logo=GitHub&logoColor=white&color=green) 
@@ -520,13 +519,36 @@ Prefix for naming the text file. (relative to .\output)
 
 ## Example Workflows
 
+### LCM AnimateDiff Text Animation 
+
+#### Demo
+
+| Demo 1 | Demo 2 | Demo 3 |
+| ------ | ------ | ------ |
+|![demo1](https://github.com/ForeignGods/ComfyUI-Mana-Nodes/assets/78089013/7b77b9cc-457f-4061-ac6c-2f78efb8bffc)|![demo2](https://github.com/ForeignGods/ComfyUI-Mana-Nodes/assets/78089013/89bc4309-6c46-4d08-9d9c-521e00415e65)|![demo3](https://github.com/ForeignGods/ComfyUI-Mana-Nodes/assets/78089013/ae2e09c5-459c-4b4d-ad71-4db31684573f)|
+
+
+#### Workflow
+
 [example_workflow_1.json](example_workflows/example_workflow_1.json)
 
 The values for the ⏰ Scheduled Values node cannot be imported yet (you have to add them yourself).
 
 ![Screenshot 2024-04-28 at 19-18-01 ComfyUI](https://github.com/ForeignGods/ComfyUI-Mana-Nodes/assets/78089013/fa739ab0-91e5-4df7-9bd9-727abb6fb86a)
 
-TODO: Add Speech Recognition/Caption Generation example_workflow_2.json.
+### Speech Recognition Caption Generator 
+
+#### Demo
+
+Turn on audio.
+
+https://github.com/ForeignGods/ComfyUI-Mana-Nodes/assets/78089013/e5a39327-db61-46ad-abea-10e27e4551c1
+
+#### Workflow
+
+[example_workflow_2.json](example_workflows/example_workflow_2.json)
+
+![TRANSCRIPTION](https://github.com/ForeignGods/ComfyUI-Mana-Nodes/assets/78089013/e4d6aa73-3a4b-483e-b763-73b88c8cb261)
 
 ## To-Do
 
