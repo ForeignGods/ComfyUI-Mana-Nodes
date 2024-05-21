@@ -111,7 +111,7 @@ class font2img:
         sentence_frame_numbers = []
 
         for i, (word, start_time, end_time) in enumerate(transcription_data):
-            frame_number = round(start_time * transcription_fps)
+            frame_number = 1 + round(start_time * transcription_fps)
 
             if not current_sentence:
                 current_sentence = word
