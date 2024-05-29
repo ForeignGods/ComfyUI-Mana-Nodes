@@ -67,6 +67,7 @@ class font2img:
             "optional": {
                 "transcription": ("TRANSCRIPTION", {"default": None,"forceInput": True}),
                 "highlight_font": ("TEXT_GRAPHIC_ELEMENT", {"default": None,"forceInput": True}),
+                "skip_first_frames": ("INT", {"default": 0, "min": 0, "step": 1, "display": "number"}),
             }
         }
 
@@ -660,7 +661,8 @@ class font2img:
         structured_format = False
         frame_text_dict = {}
         frame_count = kwargs['frame_count']
-
+        skip_first_frames = kwargs.get('skip_first_frames', 0)
+        
         # Filter out empty lines
         lines = [line for line in text.split('\n') if line.strip()]
 
@@ -670,7 +672,7 @@ class font2img:
             for line in lines:
                 parts = line.split(':', 1)
                 if len(parts) == 2:
-                    frame_number = parts[0].strip().replace('"', '')
+                    frame_number = str(int(parts[0].strip().replace('"', ''))-skip_first_frames)
                     text = parts[1].strip().replace('"', '').replace(',', '')
                     frame_text_dict[frame_number] = text
         else:
