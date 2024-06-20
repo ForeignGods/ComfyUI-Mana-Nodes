@@ -1,0 +1,15 @@
+[project]
+name = "comfyui-mana-nodes"
+description = "Font Animation, Speech Recognition, Caption Generator, TTS"
+version = "1.0.0"
+license = "LICENSE"
+dependencies = ["numpy", "torch", "torchvision", "Pillow", "moviepy", "librosa", "transformers", "opencv-python-headless", "requests", "matplotlib", "scipy", "pyspellchecker"]
+
+[project.urls]
+Repository = "https://github.com/ForeignGods/ComfyUI-Mana-Nodes"
+#  Used by Comfy Registry https://comfyregistry.org
+
+[tool.comfy]
+PublisherId = ""
+DisplayName = "ComfyUI-Mana-Nodes"
+Icon = ""
